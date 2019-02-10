@@ -20,7 +20,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-
 #define BOLDRED "\033[1m\033[31m"     // bold red
 #define BOLDGREEN "\033[1m\033[32m"   // bold green
 #define BOLDYELLOW "\033[1m\033[33m"  // bold yellow
@@ -29,6 +28,8 @@
 #define BOLDCYAN "\033[1m\033[36m"    // bold cyan
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
+
+#define SCRIPT_VERSION "v1.0.0-beta-2, Feb 9, 2019"
 
 int main(int argc, char** argv) {
 
@@ -67,25 +68,22 @@ int main(int argc, char** argv) {
     // Refer http://pubs.opengroup.org/onlinepubs/7990989775/xsh/readdir.html
     // for readdir()
 
-
     while ((de = readdir(dr)) != NULL) {
         if ((*(*de).d_name != '.') && (strcmp(de->d_name, "..") != 0)) {
             if (de->d_type != DT_REG) {
-                printf("%s%s%s   ", BOLDBLUE, de->d_name, COLORRESET);
+                printf("  %s%s%s   ", BOLDBLUE, de->d_name, COLORRESET);
             } else if (stat(de->d_name, &sb) == 0 && sb.st_mode & S_IXUSR) {
-                printf("%s%s%s   ", BOLDGREEN, de->d_name, COLORRESET);
+                printf("  %s%s%s   ", BOLDGREEN, de->d_name, COLORRESET);
             } else if (access(de->d_name, W_OK) != 0) {
-                printf("%s%s%s   ", BOLDYELLOW, de->d_name, COLORRESET);
+                printf("  %s%s%s   ", BOLDYELLOW, de->d_name, COLORRESET);
+            } else if (access(de->d_name, R_OK) != 0) {
+                printf("  %s%s%s   ", BOLDYELLOW, de->d_name, COLORRESET);
             } else {
-                printf("%s   ", (*de).d_name);
+                printf("  %s   ", (*de).d_name);
             }
-
+            printf("\n");
         }
-
     }
-
-    printf("\n");
-  
     closedir(dr);
 
     return 0;
