@@ -1,7 +1,7 @@
 #!/bin/sh
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Feb 8, 2018
+# Date: Feb 9, 2018
 # https://github.com/WestleyR/list-files
 # Version-1.0.0
 #
@@ -55,20 +55,8 @@ for arg in "$@"; do
 done
 
 echo "  Checking dependcies:"
-echo -n "  Checking for: pl... "
-if ! [ -x "$(command -v pl)" ]; then
-    echo "missing"
-    echo "ERROR: Need 'pl'"
-    echo
-    echo "Please download/install pl from:"
-    echo "https://github.com/WestleyR/print-line"
-    exit 1
-fi
-pl --green "yes"
 
-
-
-pl -n --yellow "  Checking for: " -r --cyan "strcomp... "
+echo -n "  Checking for: strcomp... "
 if ! [ -x "$(command -v strcomp)" ]; then
     pl --red "missing"
     echo "ERROR: Need 'strcomp'"
@@ -77,9 +65,9 @@ if ! [ -x "$(command -v strcomp)" ]; then
     echo "https://github.com/WestleyR/strcomp"
     exit 1
 fi
-pl --green "yes"
+echo "yes"
 
-pl -n --yellow "  Checking for: " -r --cyan "make... "
+echo -n "  Checking for: make... "
 if ! [ -x "$(command -v make)" ]; then
     pl --red "missing"
     echo "ERROR: Need 'make'"
@@ -89,16 +77,16 @@ if ! [ -x "$(command -v make)" ]; then
     echo ">> $ sudo apt-get install build-essential"
     exit 1
 fi
-pl --green "yes"
+echo "yes"
 
-pl -n --yellow "  Checking for: " -r --cyan "${COMPILER}... "
+echo -n "  Checking for: ${COMPILER}... "
 if ! [ -x "$(command -v ${COMPILER})" ]; then
-    pl --red "no"
+    echo "no"
 
     COMPILER_B="tcc"
-    pl -n --yellow "  Now looking for backup compiler: " -r --cyan "${COMPILER_B}... "
+    echo "  Now looking for backup compiler: ${COMPILER_B}... "
     if ! [ -x "$(command -v ${COMPILER_B})" ]; then
-        pl --red "no"
+        echo "no"
         echo "ERROR: No compiler found."
         echo "ERROR: Need 'gcc', or 'tcc'"
         echo
@@ -106,7 +94,7 @@ if ! [ -x "$(command -v ${COMPILER})" ]; then
         echo ">> $ sudo apt-get install build-essential"
         exit 1
     else
-        pl --green "yes"
+        echo "yes"
         echo
         echo "ERROR: The compiler (${COMPILER}), is not found..."
         echo "But, you do have ${COMPILER_B}. Try:"
@@ -116,28 +104,28 @@ if ! [ -x "$(command -v ${COMPILER})" ]; then
         exit 1
     fi
 fi
-pl --green "yes"
+echo "yes"
 
-pl -p "  %{magenta}Setting prefix : %{r}%{white}${PREFIX}${r}"
-pl -p "  %{magenta}Setting compiler : %{r}%{white}${COMPILER}%{r}"
+echo "  Setting prefix : ${PREFIX}"
+echo "  Setting compiler : ${COMPILER}"
 
-pl --yellow "  Checking for existing files..."
+echo "  Checking for existing files..."
 
 for file in $FILES_NEEDED; do
-    pl -n -p "  %{yellow}Checking for file %{r}: %{cyan}${file}...%{r} "
+    echo -n "  Checking for file : ${file}... "
     if [ ! -e "$file" ]; then
-        pl --red "no"
-        pl --red "ERROR: " -r "File missing : ${file}"
+        echo "no"
+        echo "ERROR: File missing : ${file}"
         echo
         echo "Try redownloading print-line from https://github.com/WestleyR/pac"
         echo
         exit 100
     else
-        pl --green "yes"
+        echo "yes"
     fi
 done
 
-pl --blue "  Building makefile..."
+echo "  Building makefile..."
 
 cat << EOF > "$MAKEFILE"
 # Created by: WestleyR
@@ -205,10 +193,12 @@ cat "${MAKEFRAG}/${INSTALL_MAKE}" >> "$MAKEFILE"
 cat "${MAKEFRAG}/${CLEAN_MAKE}" >> "$MAKEFILE"
 cat "${MAKEFRAG}/${UNINSTALL_MAKE}" >> "$MAKEFILE"
 
-pl --green "DONE." -e
-pl --green "Makefile ready; " -r "do:" -e
-pl -p "  %{yellow}$%{r} make %{cyan}[make_option]"
-pl -p "  %{yellow}$%{r} sudo make install"
+echo "DONE."
+echo
+echo "Makefile ready; do:"
+echo
+echo "  $ make [make_option]"
+echo "  $ sudo make install"
 echo
 
 #
