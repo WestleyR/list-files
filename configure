@@ -48,9 +48,9 @@ for arg in "$@"; do
     if [ "$arg" = "-h" ] || [ "$arg" = "--help" ]; then
         help_menu
     elif [ $(echo "$arg" | strcomp -s="--prefix=") -eq 0 ]; then
-        PREFIX=`echo "$arg" | sed 's/--prefix=//'`
+        PREFIX=`echo "$arg" | strcomp -S=9`
     elif [ $(echo "$arg" | strcomp -s="--compiler=") -eq 0 ]; then
-        COMPILER=`echo "$arg" | sed 's/--compiler=//'`
+        COMPILER=`echo "$arg" | strcomp -S=11`
     fi
 done
 

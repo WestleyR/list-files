@@ -1,11 +1,17 @@
-//#include <sys/stat.h>
-//#include <unistd.h>
-//#include <dirent.h>
-//#include <grp.h>
-//#include <time.h>
-//#include <limits.h>
-//#include <pwd.h>
-//#include <sys/types.h>
+// created by: WestleyR
+// email: westleyr@nym.hush.com
+// https://github.com/WestleyR/list-files
+// date: Feb 9, 2019
+// version-1.0.0
+//
+// The Clear BSD License
+//
+// Copyright (c) 2019 WestleyR
+// All rights reserved.
+//
+// This software is licensed under a Clear BSD License.
+//
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,43 +21,21 @@
 #include <unistd.h>
 
 
-#define BOLDRED "\033[1m\033[31m"    //  Bold Red
-#define BOLDGREEN "\033[1m\033[32m"    //  Bold Green
-#define BOLDYELLOW "\033[1m\033[33m"    //  Bold Yellow
-#define BOLDBLUE "\033[1m\033[34m"    //  Bold Blue
-#define BOLDMAGENTA "\033[1m\033[35m"    //  Bold Magenta
-#define BOLDCYAN "\033[1m\033[36m"    //  Bold Cyan
-#define BOLDWHITE "\033[1m\033[37m"    // Bold White
-#define COLORRESET "\033[0m"            // reset
+#define BOLDRED "\033[1m\033[31m"     // bold red
+#define BOLDGREEN "\033[1m\033[32m"   // bold green
+#define BOLDYELLOW "\033[1m\033[33m"  // bold yellow
+#define BOLDBLUE "\033[1m\033[34m"    // bold blue
+#define BOLDMAGENTA "\033[1m\033[35m" // bold magenta
+#define BOLDCYAN "\033[1m\033[36m"    // bold cyan
+#define BOLDWHITE "\033[1m\033[37m"   // bold white
+#define COLORRESET "\033[0m"          // reset
 
 int main(int argc, char** argv) {
 
-    // Pointer for directory entry
     struct dirent *de;
-
-    // opendir() returns a pointer of DIR type.
-//    DIR *dr = opendir("");
     DIR *dr;
-
     struct stat sb;
-
-
-
-//    DIR *dr = opendir(argv[1]);
-
-
-//    struct stat s;
-
-
-//    if (stat(dr, &s) == 0 ) {
-//    if (s.st_mode & S_IFREG ) {
-//
-//    }
-
-//    struct stat dirStat;
-
     struct stat s;
-
     char* fileName;
 
     if (argc <= 1) {
