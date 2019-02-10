@@ -29,7 +29,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-2, Feb 9, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-3, Feb 9, 2019"
 
 int main(int argc, char** argv) {
 
@@ -39,12 +39,35 @@ int main(int argc, char** argv) {
     struct stat s;
     char* fileName;
 
-    if (argc <= 1) {
+    int listAll = 0;
+    int longList = 0;
+
+//    if (argc <= 1) {
+//        fileName = ".";
+//        dr = opendir(".");
+//    } else {
+//        fileName = argv[1];
+//        dr = opendir(argv[1]);
+//    }
+
         fileName = ".";
         dr = opendir(".");
-    } else {
-        fileName = argv[1];
-        dr = opendir(argv[1]);
+
+
+    for (int i=1; i < argc; i++) {
+        if (strcmp(argv[i], "-a") == 0) {
+            listAll = 1;
+        } else if (strcmp(argv[i], "-l") == 0) {
+            longList = 1;
+        } else if (strstr(argv[i], "--") != argv[i]) {
+//            if (argv[i+1] != NULL) {
+                fileName = argv[i];
+                dr = opendir(argv[i]);
+//            } else {
+//                fileName = ".";
+//                dr = opendir(".");
+//            }
+        }
     }
 
     if (stat(fileName, &s) != 0) {
@@ -64,7 +87,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-
     // Refer http://pubs.opengroup.org/onlinepubs/7990989775/xsh/readdir.html
     // for readdir()
 
@@ -81,10 +103,31 @@ int main(int argc, char** argv) {
             } else {
                 printf("  %s   ", (*de).d_name);
             }
-            printf("\n");
+            if (longList == 1) {
+                printf("\n");
+            }
+        } else if (listAll == 1) {
+            if (de->d_type != DT_REG) {
+                printf("  %s%s%s   ", BOLDBLUE, de->d_name, COLORRESET);
+            } else if (stat(de->d_name, &sb) == 0 && sb.st_mode & S_IXUSR) {
+                printf("  %s%s%s   ", BOLDGREEN, de->d_name, COLORRESET);
+            } else if (access(de->d_name, W_OK) != 0) {
+                printf("  %s%s%s   ", BOLDYELLOW, de->d_name, COLORRESET);
+            } else if (access(de->d_name, R_OK) != 0) {
+                printf("  %s%s%s   ", BOLDYELLOW, de->d_name, COLORRESET);
+            } else {
+                printf("  %s   ", (*de).d_name);
+            }
+            if (longList == 1) {
+                printf("\n");
+            }
         }
     }
     closedir(dr);
+
+    if (longList != 1) {
+        printf("\n");
+    }
 
     return 0;
 }
