@@ -19,5 +19,4 @@ sudo make install
 
 *And yes, lf can be compiled with `tcc` (tiny c compiler), just run `./configure` with `--compiler=tcc` flag.*
 
-
 <br>
