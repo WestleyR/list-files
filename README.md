@@ -9,10 +9,9 @@
 This is how to install `lf` from source:
 
 ```
-cd to/wherever/you/want/this/repo/
-git clone https://github.com/WestleyR/lf
+cd /tmp
+git clone https://github.com/WestleyR/list-files
 cd lf/
-./configure [--prefix=/where/to/install]  # default /usr/bin
 make
 sudo make install
 ```
