@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Mar 8, 2019
+// date: Mar 17, 2019
 // version-1.0.0
 //
 // The Clear BSD License
@@ -31,7 +31,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-8, Mar 8, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-10, Mar 17, 2019"
 
 char *script_name;
 
