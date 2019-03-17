@@ -233,35 +233,88 @@ int main(int argc, char** argv) {
 
 //            if (de->d_type != DT_REG) {
 //            if (S_ISREG(info.st_mode)) {
-            if (S_ISDIR(info.st_mode)) {
-                printf("  %s%s%s\n", BOLDBLUE, de->d_name, COLORRESET);
-            } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
-                printf("  %s%s%s\n", BOLDGREEN, de->d_name, COLORRESET);
-            //} else if (access(de->d_name, W_OK) != 0) {
-            //} else if (access(foo, W_OK) != 0) {
-            //    printf("  %s%s%s\n", BOLDYELLOW, de->d_name, COLORRESET);
-            //} else if (access(de->d_name, R_OK) != 0) {
-            } else if (access(full_file_path, R_OK) != 0) {
-                printf("  %s%s%s\n", BOLDMAGENTA, de->d_name, COLORRESET);
-            //} else if (S_ISLNK(info.st_mode)) {
-            } else if (S_ISLNK(info.st_mode)) {
+
+
+           if (S_ISLNK(info.st_mode)) {
                char symlink_path[256];
-//               ssize_t len = readlink(full_file_path, buff, sizeof(buff)-1);
                ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
                if (len != -1) {
                    symlink_path[len] = '\0';
                } else {
                    printf("unable to fine link");
                }
-                printf ("  %s%s  %s->  %s\n", BOLDCYAN, de->d_name, COLORRESET, symlink_path);
+               printf ("  %s%s  %s->  %s\n", BOLDCYAN, de->d_name, COLORRESET, symlink_path);
+            } else if (S_ISDIR(info.st_mode)) {
+                printf("  %s%s%s\n", BOLDBLUE, de->d_name, COLORRESET);
+            } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+                printf("  %s%s%s\n", BOLDGREEN, de->d_name, COLORRESET);
+            } else if (access(full_file_path, R_OK) != 0) {
+                printf("  %s%s%s\n", BOLDMAGENTA, de->d_name, COLORRESET);
             } else {
                 printf("  %s\n", de->d_name);
             }
-//            if (longList == 1) {
-//                printf("\n");
-//            }
         } else if (listAll == 1) {
-            if (de->d_type != DT_REG) {
+            struct stat info;
+            char buf[10];
+            char *full_file_path;
+            full_file_path = concat(fileName, de->d_name);
+            if (lstat(full_file_path, &info) != 0) {
+                printf("error: unable to open stat on: %s\n", de->d_name);
+                exit(20);
+            }
+
+            // TODO: use 'l' for links
+            printf((S_ISDIR(info.st_mode)) ? "d" : "-");
+            printf((info.st_mode & S_IRUSR) ? "r" : "-");
+            printf((info.st_mode & S_IWUSR) ? "w" : "-");
+            printf((info.st_mode & S_IXUSR) ? "x" : "-");
+            printf((info.st_mode & S_IRGRP) ? "r" : "-");
+            printf((info.st_mode & S_IWGRP) ? "w" : "-");
+            printf((info.st_mode & S_IXGRP) ? "x" : "-");
+            printf((info.st_mode & S_IROTH) ? "r" : "-");
+            printf((info.st_mode & S_IWOTH) ? "w" : "-");
+            printf((info.st_mode & S_IXOTH) ? "x" : "-");
+
+            if (S_ISDIR(info.st_mode)) {
+                printf("   d");
+            } else if (S_ISLNK(info.st_mode)) {
+                printf("   l");
+            } else {
+                printf("   f");
+            }
+            printf((info.st_mode & S_IRUSR) ? "r" : "-");
+            printf((info.st_mode & S_IWUSR) ? "w" : "-");
+            printf((info.st_mode & S_IXUSR) ? "x  " : "-  ");
+
+            struct passwd *pw = getpwuid(info.st_uid);
+            struct group *gr = getgrgid(info.st_gid);
+
+            printf("  %-8s : ", pw->pw_name);
+            printf("%-8s ", gr->gr_name);
+
+            printf(" %-8s ", readable_fs(info.st_size, buf));
+
+           if (S_ISLNK(info.st_mode)) {
+               char symlink_path[256];
+               ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
+               if (len != -1) {
+                   symlink_path[len] = '\0';
+               } else {
+                   printf("unable to fine link");
+               }
+               printf ("  %s%s  %s->  %s\n", BOLDCYAN, de->d_name, COLORRESET, symlink_path);
+            } else if (S_ISDIR(info.st_mode)) {
+                printf("  %s%s%s\n", BOLDBLUE, de->d_name, COLORRESET);
+            } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+                printf("  %s%s%s\n", BOLDGREEN, de->d_name, COLORRESET);
+            } else if (access(full_file_path, R_OK) != 0) {
+                printf("  %s%s%s\n", BOLDMAGENTA, de->d_name, COLORRESET);
+            } else {
+                printf("  %s\n", de->d_name);
+            }
+
+
+/*            if (de->d_type != DT_REG) {
                 printf("  %s%s%s   ", BOLDBLUE, de->d_name, COLORRESET);
             } else if (stat(de->d_name, &sb) == 0 && sb.st_mode & S_IXUSR) {
                 printf("  %s%s%s   ", BOLDGREEN, de->d_name, COLORRESET);
@@ -274,14 +327,14 @@ int main(int argc, char** argv) {
             }
             if (longList == 1) {
                 printf("\n");
-            }
+            }*/
         }
     }
     closedir(dr);
 
-//    if (longList != 1) {
-//        printf("\n");
-//    }
+    if (longList != 0) {
+        printf("\n");
+    }
 
     return 0;
 }
