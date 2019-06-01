@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Mar 17, 2019
+// date: May 31, 2019
 // version-1.0.0
 //
 // The Clear BSD License
@@ -31,7 +31,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-10, Mar 17, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-12, May 31, 2019"
 
 char *script_name;
 
@@ -228,7 +228,7 @@ int main(int argc, char** argv) {
 //            char buf[10];
 //            lstat(de->d_name, &info);
 
-            printf(" %-8s ", readable_fs(info.st_size, buf));
+            printf(" %-12s ", readable_fs(info.st_size, buf));
             //printf(" %-6ld ", st.st_size);
 
 //            if (de->d_type != DT_REG) {
@@ -292,7 +292,7 @@ int main(int argc, char** argv) {
             printf("  %-8s : ", pw->pw_name);
             printf("%-8s ", gr->gr_name);
 
-            printf(" %-8s ", readable_fs(info.st_size, buf));
+            printf(" %-10s ", readable_fs(info.st_size, buf));
 
            if (S_ISLNK(info.st_mode)) {
                char symlink_path[256];
