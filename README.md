@@ -10,6 +10,7 @@ This is how to install `lf` from source:
 
 ```
 cd /tmp
+
 git clone https://github.com/WestleyR/list-files
 cd lf/
 make
@@ -22,12 +23,12 @@ sudo make install
 
 ```bash
 $ ./lf 
--rwxr-xr-x   frwx    westleyk : westleyk  17.4 kB        lf
--rw-r--r--   frw-    westleyk : westleyk  693 B          Makefile
-drwxr-xr-x   drwx    westleyk : westleyk  4.0 kB         src
-drwxr-xr-x   drwx    westleyk : westleyk  4.0 kB         pre-compiled
--rw-r--r--   frw-    westleyk : westleyk  359 B          README.md
--rw-r--r--   frw-    westleyk : westleyk  1.6 kB         LICENSE
+-rwx r-xr-x  westleyk : westleyk  17.3 kB        lf
+-rw- r--r--  westleyk : westleyk  693 B          Makefile
+drwx r-xr-x  westleyk : westleyk  4.0 kB         src
+drwx r-xr-x  westleyk : westleyk  4.0 kB         pre-compiled
+-rw- r--r--  westleyk : westleyk  809 B          README.md
+-rw- r--r--  westleyk : westleyk  1.6 kB         LICENSE
 ```
 
 <br>
