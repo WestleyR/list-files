@@ -30,7 +30,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-16, Jul 13, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-18, Jul 13, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -65,13 +65,27 @@ char* readable_fs(double size, char *buf) {
     return(buf);
 }
 
-/*char* concat(const char *s1, const char *s2) {
-    char *result = malloc(strlen(s1) + strlen(s2) + 1);
-    // TODO: in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return(result);
-}*/
+int ends_ext(const char *string, const char* ext) {
+  string = strrchr(string, '.');
+
+  if (string != NULL) {
+      return(strcmp(string, ext));
+  }
+
+  return(-1);
+}
+
+int is_zip_file(const char* file) {
+    if (ends_ext(file, ".gz") == 0) {
+        return(0);
+    } else if (ends_ext(file, ".lz4") == 0) {
+        return(0);
+    } else if (ends_ext(file, ".zip") == 0) {
+        return(0);
+    }
+
+    return(-1);
+}
 
 int file_info(const char* file_path) {
     struct stat sb;
@@ -80,51 +94,53 @@ int file_info(const char* file_path) {
     char full_file_path[256];
     full_file_path[0] = '\0';
     strcat(full_file_path, base_path);
-    strcat(full_file_path, "/");
     strcat(full_file_path, file_path);
-        if (lstat(full_file_path, &info) != 0) {
-            perror("lstat");
-            printf("error: unable to open stat on: %s\n", full_file_path);
-            exit(20);
-        }
 
-        // TODO: use 'l' for links
-        printf((S_ISDIR(info.st_mode)) ? "d" : "-");
-        printf((info.st_mode & S_IRUSR) ? "r" : "-");
-        printf((info.st_mode & S_IWUSR) ? "w" : "-");
-        printf((info.st_mode & S_IXUSR) ? "x" : "-");
-        printf((info.st_mode & S_IRGRP) ? " r" : " -");
-        printf((info.st_mode & S_IWGRP) ? "w" : "-");
-        printf((info.st_mode & S_IXGRP) ? "x" : "-");
-        printf((info.st_mode & S_IROTH) ? "r" : "-");
-        printf((info.st_mode & S_IWOTH) ? "w" : "-");
-        printf((info.st_mode & S_IXOTH) ? "x" : "-");
+    if (lstat(full_file_path, &info) != 0) {
+        perror("lstat");
+        printf("error: unable to open stat on: %s\n", full_file_path);
+        exit(20);
+    }
 
-        struct passwd *pw = getpwuid(info.st_uid);
-        struct group *gr = getgrgid(info.st_gid);
+    // TODO: use 'l' for links
+    printf((S_ISDIR(info.st_mode)) ? "d" : "-");
+    printf((info.st_mode & S_IRUSR) ? "r" : "-");
+    printf((info.st_mode & S_IWUSR) ? "w" : "-");
+    printf((info.st_mode & S_IXUSR) ? "x" : "-");
+    printf((info.st_mode & S_IRGRP) ? " r" : " -");
+    printf((info.st_mode & S_IWGRP) ? "w" : "-");
+    printf((info.st_mode & S_IXGRP) ? "x" : "-");
+    printf((info.st_mode & S_IROTH) ? "r" : "-");
+    printf((info.st_mode & S_IWOTH) ? "w" : "-");
+    printf((info.st_mode & S_IXOTH) ? "x" : "-");
 
-        printf("  %-8s : ", pw->pw_name);
-        printf("%-8s ", gr->gr_name);
-        printf(" %-12s ", readable_fs(info.st_size, buf));
+    struct passwd *pw = getpwuid(info.st_uid);
+    struct group *gr = getgrgid(info.st_gid);
 
-        if (S_ISLNK(info.st_mode)) {
-            char symlink_path[256];
-            ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
-            if (len != -1) {
-                symlink_path[len] = '\0';
-            } else {
-                printf("unable to fine link");
-            }
-            printf ("  %s%s  %s->  %s\n", BOLDCYAN, file_path, COLORRESET, symlink_path);
-        } else if (S_ISDIR(info.st_mode)) {
-            printf("  %s%s%s\n", BOLDBLUE, file_path, COLORRESET);
-        } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
-            printf("  %s%s%s\n", BOLDGREEN, file_path, COLORRESET);
-        } else if (access(full_file_path, R_OK) != 0) {
-            printf("  %s%s%s\n", BOLDMAGENTA, file_path, COLORRESET);
+    printf("  %-8s : ", pw->pw_name);
+    printf("%-8s ", gr->gr_name);
+    printf(" %-12s ", readable_fs(info.st_size, buf));
+
+    if (S_ISLNK(info.st_mode)) {
+        char symlink_path[256];
+        ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
+        if (len != -1) {
+            symlink_path[len] = '\0';
         } else {
-            printf("  %s\n", file_path);
+            printf("unable to fine link");
         }
+        printf ("  %s%s  %s->  %s\n", BOLDCYAN, file_path, COLORRESET, symlink_path);
+    } else if (S_ISDIR(info.st_mode)) {
+        printf("  %s%s%s\n", BOLDBLUE, file_path, COLORRESET);
+    } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+        printf("  %s%s%s\n", BOLDGREEN, file_path, COLORRESET);
+    } else if (is_zip_file(full_file_path) == 0) {
+        printf("  %s%s%s\n", BOLDRED, file_path, COLORRESET);
+    } else if (access(full_file_path, R_OK) != 0) {
+        printf("  %s%s%s\n", BOLDMAGENTA, file_path, COLORRESET);
+    } else {
+        printf("  %s\n", file_path);
+    }
 
     return(0);
 }
@@ -155,36 +171,53 @@ int list_files(const char* list_path, int list_all, int mr_list) {
     return(0);
 }
 
+void add_char_to_string(char* s, char c) {
+    int len = strlen(s);
+    s[len] = c;
+    s[len+1] = '\0';
+}
+
+int add_slash(char* path) {
+    int len = strlen(path);
+    if (path[len-1] != '/') {
+        add_char_to_string(path, '/');
+    }
+
+    return(0);
+}
+
 int prep_list(const char *file_path, int list_all, int mr_list) {
     struct stat s;
+    char* path = strdup(file_path);
 
-    if (stat(file_path, &s) != 0) {
-        printf("%s: unable to open: %s\n", script_name, file_path);
+    if (stat(path, &s) != 0) {
+        printf("%s: unable to open: %s\n", script_name, path);
         return(1);
     }
 
     if (S_ISREG(s.st_mode)) {
         if (mr_list != 0) {
-            printf("%s\n", file_path);
+            printf("%s\n", path);
         }
         if (file_info(file_path) != 0) {
             printf("error while listing file\n");
         }
         return(0);
     }
-    base_path = strdup(file_path);
+    add_slash(path);
+    base_path = strdup(path);
 
     if (access(file_path, F_OK) != -1) {
         if (access(file_path, R_OK) == -1) {
-            fprintf(stderr, "lf: %s: Not readable.\n", file_path);
+            fprintf(stderr, "lf: %s: Not readable.\n", path);
             exit(1);
         }
     } else {
-        fprintf(stderr, "lf: cannot access %s: No such file or directory\n", file_path);
+        fprintf(stderr, "lf: cannot access %s: No such file or directory\n", path);
         exit(1);
     }
 
-    if (list_files(file_path, list_all, mr_list) != 0) {
+    if (list_files(path, list_all, mr_list) != 0) {
         printf("There was a problome listing files\n");
         exit(1);
     }
