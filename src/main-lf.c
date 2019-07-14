@@ -30,7 +30,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-20, Jul 13, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-22, Jul 13, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -47,6 +47,13 @@ int abs_path = 0;
 void help_menu() {
     printf("Usage:\n");
     printf("  %s [option] <path>\n", script_name);
+    printf("\n");
+    printf("Options:\n");
+    printf("  -a      list all files\n");
+    printf("  -p      list files with rel path\n");
+    printf("  -1, -m  only print file names\n");
+    printf("  -h      print help menu\n");
+    printf("  -v      print version\n");
     printf("\n");
     printf("Permisions:\n");
     printf("  - = file\n");
@@ -217,12 +224,13 @@ int prep_list(const char *file_path, int list_all) {
     char* path = strdup(file_path);
 
     if (stat(path, &s) != 0) {
-        printf("%s: unable to open: %s\n", script_name, path);
-        return(1);
+        fprintf(stderr, "%s: No such file or directory\n", path);
+        exit(2);
+        //printf("%s: unable to open: %s\n", script_name, path);
+        //return(2);
     }
 
-    if (!S_ISDIR(s.st_mode)) {
-//    if (S_ISREG(s.st_mode)) {
+    if (S_ISDIR(s.st_mode) == 0) {
         if (mr_list != 0) {
             printf("%s\n", path);
             return(0);
@@ -237,11 +245,11 @@ int prep_list(const char *file_path, int list_all) {
 
     if (access(file_path, F_OK) != -1) {
         if (access(file_path, R_OK) == -1) {
-            fprintf(stderr, "lf: %s: Not readable.\n", path);
+            fprintf(stderr, "%s: Not readable\n", path);
             exit(1);
         }
     } else {
-        fprintf(stderr, "lf: cannot access %s: No such file or directory\n", path);
+        fprintf(stderr, "PANIC: cannot access %s: No such file or directory\n", path);
         exit(1);
     }
 
