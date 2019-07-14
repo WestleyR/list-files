@@ -30,10 +30,19 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-18, Jul 13, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-20, Jul 13, 2019"
 
 char *script_name;
 char *base_path = NULL;
+
+// mechine readable output
+int mr_list = 0;
+
+// reletave path
+int rel_path = 0;
+
+// abs path
+int abs_path = 0;
 
 void help_menu() {
     printf("Usage:\n");
@@ -92,9 +101,16 @@ int file_info(const char* file_path) {
     struct stat info;
     char buf[10];
     char full_file_path[256];
+    char *print_name = NULL;
     full_file_path[0] = '\0';
     strcat(full_file_path, base_path);
     strcat(full_file_path, file_path);
+
+    if (rel_path != 0) {
+        print_name = full_file_path;
+    } else {
+        print_name = strdup(file_path);
+    }
 
     if (lstat(full_file_path, &info) != 0) {
         perror("lstat");
@@ -117,9 +133,9 @@ int file_info(const char* file_path) {
     struct passwd *pw = getpwuid(info.st_uid);
     struct group *gr = getgrgid(info.st_gid);
 
-    printf("  %-8s : ", pw->pw_name);
+    printf("  %-8s ", pw->pw_name);
     printf("%-8s ", gr->gr_name);
-    printf(" %-12s ", readable_fs(info.st_size, buf));
+    printf(" %-8s", readable_fs(info.st_size, buf));
 
     if (S_ISLNK(info.st_mode)) {
         char symlink_path[256];
@@ -129,24 +145,24 @@ int file_info(const char* file_path) {
         } else {
             printf("unable to fine link");
         }
-        printf ("  %s%s  %s->  %s\n", BOLDCYAN, file_path, COLORRESET, symlink_path);
+        printf ("  %s%s  %s->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
     } else if (S_ISDIR(info.st_mode)) {
-        printf("  %s%s%s\n", BOLDBLUE, file_path, COLORRESET);
+        printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
     } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
-        printf("  %s%s%s\n", BOLDGREEN, file_path, COLORRESET);
+        printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
     } else if (is_zip_file(full_file_path) == 0) {
-        printf("  %s%s%s\n", BOLDRED, file_path, COLORRESET);
+        printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
     } else if (access(full_file_path, R_OK) != 0) {
-        printf("  %s%s%s\n", BOLDMAGENTA, file_path, COLORRESET);
+        printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
     } else {
-        printf("  %s\n", file_path);
+        printf("  %s\n", print_name);
     }
 
     return(0);
 }
 
 // Will list files in a directory
-int list_files(const char* list_path, int list_all, int mr_list) {
+int list_files(const char* list_path, int list_all) {
     DIR *dr;
     struct dirent *de;
 
@@ -159,7 +175,16 @@ int list_files(const char* list_path, int list_all, int mr_list) {
         }
 
         if (mr_list != 0) {
-            printf("%s\n", de->d_name);
+            if (rel_path != 0) {
+                char r_path[126];
+                r_path[0] = '\0';
+                strcat(r_path, list_path);
+                strcat(r_path, de->d_name);
+                printf("%s\n", r_path);
+                r_path[0] = '\0';
+            } else {
+                printf("%s\n", de->d_name);
+            }
         } else {
             if (file_info(de->d_name) != 0) {
                 printf("ERROR: while listing file: %s\n", de->d_name);
@@ -186,7 +211,7 @@ int add_slash(char* path) {
     return(0);
 }
 
-int prep_list(const char *file_path, int list_all, int mr_list) {
+int prep_list(const char *file_path, int list_all) {
     struct stat s;
     char* path = strdup(file_path);
 
@@ -198,6 +223,7 @@ int prep_list(const char *file_path, int list_all, int mr_list) {
     if (S_ISREG(s.st_mode)) {
         if (mr_list != 0) {
             printf("%s\n", path);
+            return(0);
         }
         if (file_info(file_path) != 0) {
             printf("error while listing file\n");
@@ -217,7 +243,7 @@ int prep_list(const char *file_path, int list_all, int mr_list) {
         exit(1);
     }
 
-    if (list_files(path, list_all, mr_list) != 0) {
+    if (list_files(path, list_all) != 0) {
         printf("There was a problome listing files\n");
         exit(1);
     }
@@ -234,9 +260,6 @@ int main(int argc, char** argv) {
     // -a option
     int list_all = 0;
 
-    // mechine readable output
-    int mr_list = 0;
-
     file_path = "./";
     base_path = "";
 
@@ -245,6 +268,11 @@ int main(int argc, char** argv) {
             list_all = 1;
         } else if ((strcmp(argv[i], "-1") == 0) || (strcmp(argv[i], "-m") == 0)) {
             mr_list = 1;
+        } else if (strcmp(argv[i], "-p") == 0) {
+            rel_path = 1;
+//            break;
+        } else if (strcmp(argv[i], "-P") == 0) {
+            abs_path = 1;
         } else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
             help_menu();
             return(0);
@@ -253,13 +281,13 @@ int main(int argc, char** argv) {
             return(0);
         } else if ((strstr(argv[i], "--") != argv[i]) && (strstr(argv[i], "--") != argv[i])) {
             file_path = argv[i];
-            prep_list(file_path, list_all, mr_list);
+            prep_list(file_path, list_all);
             arg_list = 1;
         }
     }
 
     if (arg_list == 0) {
-        prep_list(file_path, list_all, mr_list);
+        prep_list(file_path, list_all);
     }
 
     return(0);
