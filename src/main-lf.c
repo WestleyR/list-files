@@ -35,6 +35,9 @@
 char *script_name;
 char *base_path = NULL;
 
+int max_own_len = 0;
+int max_grup_len = 0;
+
 // mechine readable output
 int mr_list = 0;
 
@@ -142,8 +145,8 @@ int file_info(const char* file_path) {
     struct group *gr = getgrgid(info.st_gid);
 
     printf("  %-8s ", pw->pw_name);
-    printf("%-8s ", gr->gr_name);
-    printf(" %-8s", readable_fs(info.st_size, buf));
+    printf("%-10s ", gr->gr_name);
+    printf(" %-12s", readable_fs(info.st_size, buf));
 
     if (S_ISLNK(info.st_mode)) {
         char symlink_path[256];
@@ -204,6 +207,56 @@ int list_files(const char* list_path, int list_all) {
     return(0);
 }
 
+// Will loop files in a directory, and get the max lenth for all the permamiters
+int max_len_files(const char* list_path, int list_all) {
+    DIR *dr;
+    struct dirent *de;
+    struct stat info;
+
+    dr = opendir(list_path);
+    while ((de = readdir(dr)) != NULL) {
+        if (list_all == 0) {
+            if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+                continue;
+            }
+        }
+
+//        printf("name: %s\n", de->d_name);
+
+	    char full_file_path[256];
+	    full_file_path[0] = '\0';
+    	strcat(full_file_path, base_path);
+	    strcat(full_file_path, de->d_name);
+
+	    //printf("FULL: %s\n", full_file_path);
+
+        if (lstat(full_file_path, &info) != 0) {
+            perror("lstat");
+            printf("error: unable to open stat on: %s\n", full_file_path);
+            exit(20);
+        }
+
+        struct passwd *pw = getpwuid(info.st_uid);
+        struct group *gr = getgrgid(info.st_gid);
+
+        int own = strlen(pw->pw_name);
+//        printf("own: %s: %d\n", pw->pw_name, own);
+        if (own > max_own_len) {
+            max_own_len = own;
+        }
+
+        int grup = strlen(gr->gr_name);
+//        printf("grup: %s: %d\n", gr->gr_name, grup);
+        if (grup > max_grup_len) {
+            max_grup_len = grup;
+        }
+	    full_file_path[0] = '\0';
+    }
+    closedir(dr);
+
+    return(0);
+}
+
 void add_char_to_string(char* s, char c) {
     int len = strlen(s);
     s[len] = c;
@@ -252,6 +305,10 @@ int prep_list(const char *file_path, int list_all) {
         fprintf(stderr, "PANIC: cannot access %s: No such file or directory\n", path);
         exit(1);
     }
+
+    max_len_files(path, list_all);
+    printf("MAX_LEN_OWN: %d\n", max_own_len);
+    printf("MAX_LEN_GROUP: %d\n", max_grup_len);
 
     if (list_files(path, list_all) != 0) {
         printf("There was a problome listing files\n");
