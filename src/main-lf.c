@@ -118,6 +118,7 @@ int file_info(const char* file_path) {
         exit(20);
     }
 
+
     // TODO: use 'l' for links
     printf((S_ISDIR(info.st_mode)) ? "d" : "-");
     printf((info.st_mode & S_IRUSR) ? "r" : "-");
@@ -220,7 +221,8 @@ int prep_list(const char *file_path, int list_all) {
         return(1);
     }
 
-    if (S_ISREG(s.st_mode)) {
+    if (!S_ISDIR(s.st_mode)) {
+//    if (S_ISREG(s.st_mode)) {
         if (mr_list != 0) {
             printf("%s\n", path);
             return(0);
