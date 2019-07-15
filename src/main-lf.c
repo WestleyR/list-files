@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Jul 13, 2019
+// date: Jul 14, 2019
 // version-1.0.0
 //
 // The Clear BSD License
@@ -30,7 +30,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0-beta-22, Jul 13, 2019"
+#define SCRIPT_VERSION "v1.0.0-beta-24, Jul 14, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -144,8 +144,8 @@ int file_info(const char* file_path) {
     struct passwd *pw = getpwuid(info.st_uid);
     struct group *gr = getgrgid(info.st_gid);
 
-    printf("  %-8s ", pw->pw_name);
-    printf("%-10s ", gr->gr_name);
+    printf("  %*s ", max_own_len, pw->pw_name);
+    printf("  %*s ", max_grup_len, gr->gr_name);
     printf(" %-12s", readable_fs(info.st_size, buf));
 
     if (S_ISLNK(info.st_mode)) {
@@ -221,14 +221,10 @@ int max_len_files(const char* list_path, int list_all) {
             }
         }
 
-//        printf("name: %s\n", de->d_name);
-
 	    char full_file_path[256];
 	    full_file_path[0] = '\0';
     	strcat(full_file_path, base_path);
 	    strcat(full_file_path, de->d_name);
-
-	    //printf("FULL: %s\n", full_file_path);
 
         if (lstat(full_file_path, &info) != 0) {
             perror("lstat");
@@ -240,13 +236,11 @@ int max_len_files(const char* list_path, int list_all) {
         struct group *gr = getgrgid(info.st_gid);
 
         int own = strlen(pw->pw_name);
-//        printf("own: %s: %d\n", pw->pw_name, own);
         if (own > max_own_len) {
             max_own_len = own;
         }
 
         int grup = strlen(gr->gr_name);
-//        printf("grup: %s: %d\n", gr->gr_name, grup);
         if (grup > max_grup_len) {
             max_grup_len = grup;
         }
@@ -279,8 +273,6 @@ int prep_list(const char *file_path, int list_all) {
     if (stat(path, &s) != 0) {
         fprintf(stderr, "%s: No such file or directory\n", path);
         exit(2);
-        //printf("%s: unable to open: %s\n", script_name, path);
-        //return(2);
     }
 
     if (S_ISDIR(s.st_mode) == 0) {
@@ -307,8 +299,8 @@ int prep_list(const char *file_path, int list_all) {
     }
 
     max_len_files(path, list_all);
-    printf("MAX_LEN_OWN: %d\n", max_own_len);
-    printf("MAX_LEN_GROUP: %d\n", max_grup_len);
+//    printf("MAX_LEN_OWN: %d\n", max_own_len);
+//    printf("MAX_LEN_GROUP: %d\n", max_grup_len);
 
     if (list_files(path, list_all) != 0) {
         printf("There was a problome listing files\n");
