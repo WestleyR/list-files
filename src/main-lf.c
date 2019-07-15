@@ -2,7 +2,7 @@
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
 // date: Jul 14, 2019
-// version-1.0.0
+// version-1.0.1
 //
 // The Clear BSD License
 //
@@ -30,10 +30,14 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.0, Jul 14, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-1, Jul 14, 2019"
 
 char *script_name;
 char *base_path = NULL;
+
+// For auto ajusting formatting
+int max_own_len = 0;
+int max_grup_len = 0;
 
 // mechine readable output
 int mr_list = 0;
@@ -140,12 +144,12 @@ int file_info(const char* file_path) {
     struct passwd *pw = getpwuid(info.st_uid);
     struct group *gr = getgrgid(info.st_gid);
 
-    printf("  %-8s", pw->pw_name);
-    printf("  %-8s ", gr->gr_name);
+    printf("  %*s", max_own_len, pw->pw_name);
+    printf("  %*s ", max_grup_len, gr->gr_name);
     printf(" %-12s", readable_fs(info.st_size, buf));
 
     if (S_ISLNK(info.st_mode)) {
-        char symlink_path[256];
+        char symlink_path[126];
         ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
         if (len != -1) {
             symlink_path[len] = '\0';
@@ -203,6 +207,55 @@ int list_files(const char* list_path, int list_all) {
     return(0);
 }
 
+
+// Will loop files in a directory, and get the max lenth for all the permamiters
+int max_len_files(const char* list_path, int list_all) {
+    DIR *dr;
+    struct dirent *de;
+    struct stat info;
+
+    struct passwd *pw;
+    struct group *gr;
+
+    char full_file_path[126];
+    full_file_path[0] = '\0';
+
+    dr = opendir(list_path);
+    while ((de = readdir(dr)) != NULL) {
+        if (list_all == 0) {
+            if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+                continue;
+            }
+        }
+
+        strcat(full_file_path, base_path);
+        strcat(full_file_path, de->d_name);
+
+        if (lstat(full_file_path, &info) != 0) {
+            perror("lstat");
+            printf("error: unable to open stat on: %s\n", full_file_path);
+            exit(20);
+        }
+
+        pw = getpwuid(info.st_uid);
+        gr = getgrgid(info.st_gid);
+
+        int own = strlen(pw->pw_name);
+        if (own > max_own_len) {
+            max_own_len = own;
+        }
+
+        int grup = strlen(gr->gr_name);
+        if (grup > max_grup_len) {
+            max_grup_len = grup;
+        }
+        full_file_path[0] = '\0';
+    }
+    closedir(dr);
+
+    return(0);
+}
+
 void add_char_to_string(char* s, char c) {
     int len = strlen(s);
     s[len] = c;
@@ -250,6 +303,10 @@ int prep_list(const char *file_path, int list_all) {
         exit(1);
     }
 
+    max_len_files(path, list_all);
+    //    printf("MAX_LEN_OWN: %d\n", max_own_len);
+    //    printf("MAX_LEN_GROUP: %d\n", max_grup_len);
+
     if (list_files(path, list_all) != 0) {
         printf("There was a problome listing files\n");
         exit(1);
@@ -273,13 +330,16 @@ int main(int argc, char** argv) {
     for (int i=1; i < argc; i++) {
         if (strcmp(argv[i], "-a") == 0) {
             list_all = 1;
+            break;
         } else if ((strcmp(argv[i], "-1") == 0) || (strcmp(argv[i], "-m") == 0)) {
             mr_list = 1;
+            break;
         } else if (strcmp(argv[i], "-p") == 0) {
             rel_path = 1;
-            //            break;
+            break;
         } else if (strcmp(argv[i], "-P") == 0) {
             abs_path = 1;
+            break;
         } else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
             help_menu();
             return(0);
