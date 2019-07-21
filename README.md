@@ -1,6 +1,6 @@
 # List File(s) And Directory(s)
 
-`lf` is a **simple**, and **fast** file/directory lister with color hightlighting, and prints file permision!
+`lf` is a **simple**, and **fast** file/directory lister with color hightlighting, file permision and file links!
 
 <br>
 
@@ -9,15 +9,13 @@
 This is how to install `lf` from source:
 
 ```
-cd /tmp
+cd /tmp  # optional
 
-git clone https://github.com/WestleyR/list-files
+git clone https://github.com/WestleyR/list-files.git
 cd lf/
 make
 sudo make install
 ```
-
-*And yes, lf can be compiled with `tcc` (tiny c compiler) edit in `Makefile`.*
 
 ## Example:
 

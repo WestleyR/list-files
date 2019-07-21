@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Jul 20, 2019
+# Date: Jul 21, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.1
+# Version-1.0.2
 #
 # The Clear BSD License
 #
@@ -22,6 +22,22 @@ MAIN = src/main-lf.c
 
 .PHONY:
 all: $(TARGET)
+
+.PHONY:
+options:
+	@echo "Make options:"
+	@echo ""
+	@echo "$$ make [option]"
+	@echo ""
+	@echo " [no-option], all           compile the project"
+	@echo " static                     compile the static project"
+	@echo " without-owner-group-names  dont print the user/group names,"
+	@echo "                            instead print the uid/gid."
+	@echo " install                    install the binary to the PREFIX,"
+	@echo "                            (dafault '/usr/local/bin')"
+	@echo " clean                      clean the binary"
+	@echo " uninstall                  uninstall the binary from PREFIX"
+	@echo ""
 
 .PHONY:
 $(TARGET): $(MAIN)
