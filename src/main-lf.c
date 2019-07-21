@@ -19,7 +19,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <grp.h>
+
+#ifndef STATIC_BUILD
 #include <pwd.h>
+#endif
 
 #define BOLDRED "\033[1m\033[31m"     // bold red
 #define BOLDGREEN "\033[1m\033[32m"   // bold green
@@ -30,7 +33,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-2, Jul 20, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-4, Jul 20, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -141,11 +144,15 @@ int file_info(const char* file_path) {
     printf((info.st_mode & S_IWOTH) ? "w" : "-");
     printf((info.st_mode & S_IXOTH) ? "x" : "-");
 
+#ifdef STATIC_BUILD
+    printf("  %4d", info.st_uid);
+    printf("  %4d ", info.st_gid);
+#else
     struct passwd *pw = getpwuid(info.st_uid);
     struct group *gr = getgrgid(info.st_gid);
-
     printf("  %*s", max_own_len, pw->pw_name);
     printf("  %*s ", max_grup_len, gr->gr_name);
+#endif
     printf(" %-12s", readable_fs(info.st_size, buf));
 
     if (S_ISLNK(info.st_mode)) {
@@ -207,7 +214,7 @@ int list_files(const char* list_path, int list_all) {
     return(0);
 }
 
-
+#ifndef STATIC_BUILD
 // Will loop files in a directory, and get the max lenth for all the permamiters
 int max_len_files(const char* list_path, int list_all) {
     DIR *dr;
@@ -255,6 +262,7 @@ int max_len_files(const char* list_path, int list_all) {
 
     return(0);
 }
+#endif
 
 void add_char_to_string(char* s, char c) {
     int len = strlen(s);
@@ -303,9 +311,9 @@ int prep_list(const char *file_path, int list_all) {
         exit(1);
     }
 
+#ifndef STATIC_BUILD
     max_len_files(path, list_all);
-    //    printf("MAX_LEN_OWN: %d\n", max_own_len);
-    //    printf("MAX_LEN_GROUP: %d\n", max_grup_len);
+#endif
 
     if (list_files(path, list_all) != 0) {
         printf("There was a problome listing files\n");

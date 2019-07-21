@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Feb 19, 2019
+# Date: Jul 20, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.0
+# Version-1.0.1
 #
 # The Clear BSD License
 #
@@ -29,7 +29,11 @@ $(TARGET): $(MAIN)
 
 .PHONY:
 static: $(MAIN)
-	$(CC) $(CFLAGS) -static -o $(TARGET) $(MAIN)
+	$(CC) $(CFLAGS) -D STATIC_BUILD -static -o $(TARGET) $(MAIN)
+
+.PHONY:
+without-ouner-group-names: $(MAIN)
+	$(CC) $(CFLAGS) -D STATIC_BUILD -o $(TARGET) $(MAIN)
 
 .PHONY:
 install: $(TARGET)
