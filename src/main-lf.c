@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Jul 14, 2019
+// date: Jul 20, 2019
 // version-1.0.1
 //
 // The Clear BSD License
@@ -30,7 +30,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-1, Jul 14, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-2, Jul 20, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -54,8 +54,8 @@ void help_menu() {
     printf("\n");
     printf("Options:\n");
     printf("  -a      list all files\n");
-    printf("  -p      list files with rel path\n");
-    printf("  -1, -m  only print file names\n");
+    printf("  -p      list files with relative path\n");
+    printf("  -1, -m  only print file names (mr)\n");
     printf("  -h      print help menu\n");
     printf("  -v      print version\n");
     printf("\n");
@@ -187,7 +187,7 @@ int list_files(const char* list_path, int list_all) {
 
         if (mr_list != 0) {
             if (rel_path != 0) {
-                char r_path[126];
+                char r_path[200];
                 r_path[0] = '\0';
                 strcat(r_path, list_path);
                 strcat(r_path, de->d_name);
@@ -330,16 +330,12 @@ int main(int argc, char** argv) {
     for (int i=1; i < argc; i++) {
         if (strcmp(argv[i], "-a") == 0) {
             list_all = 1;
-            break;
         } else if ((strcmp(argv[i], "-1") == 0) || (strcmp(argv[i], "-m") == 0)) {
             mr_list = 1;
-            break;
         } else if (strcmp(argv[i], "-p") == 0) {
             rel_path = 1;
-            break;
         } else if (strcmp(argv[i], "-P") == 0) {
             abs_path = 1;
-            break;
         } else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
             help_menu();
             return(0);
