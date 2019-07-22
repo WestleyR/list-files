@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Jul 20, 2019
+// date: Jul 21, 2019
 // version-1.0.1
 //
 // The Clear BSD License
@@ -33,7 +33,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-4, Jul 20, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-6, Jul 21, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -48,6 +48,9 @@ int mr_list = 0;
 // reletave path
 int rel_path = 0;
 
+// no color option
+int no_color_print = 0;
+
 // abs path
 int abs_path = 0;
 
@@ -59,6 +62,9 @@ void help_menu() {
     printf("  -a      list all files\n");
     printf("  -p      list files with relative path\n");
     printf("  -1, -m  only print file names (mr)\n");
+    printf("  -n      dont print with color\n");
+    printf("  -c      print with color\n");
+    printf("  -C      auto color (default)\n");
     printf("  -h      print help menu\n");
     printf("  -v      print version\n");
     printf("\n");
@@ -155,25 +161,49 @@ int file_info(const char* file_path) {
 #endif
     printf(" %-12s", readable_fs(info.st_size, buf));
 
-    if (S_ISLNK(info.st_mode)) {
-        char symlink_path[126];
-        ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
-        if (len != -1) {
-            symlink_path[len] = '\0';
+
+    if (no_color_print == 0) {
+        if (S_ISLNK(info.st_mode)) {
+            char symlink_path[126];
+            ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
+            if (len != -1) {
+                symlink_path[len] = '\0';
+            } else {
+                printf("unable to fine link");
+            }
+            printf ("  %s%s  %s->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
+        } else if (S_ISDIR(info.st_mode)) {
+            printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
+        } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+            printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
+        } else if (is_zip_file(full_file_path) == 0) {
+            printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
+        } else if (access(full_file_path, R_OK) != 0) {
+            printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
         } else {
-            printf("unable to fine link");
+            printf("  %s\n", print_name);
         }
-        printf ("  %s%s  %s->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
-    } else if (S_ISDIR(info.st_mode)) {
-        printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
-    } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
-        printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
-    } else if (is_zip_file(full_file_path) == 0) {
-        printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
-    } else if (access(full_file_path, R_OK) != 0) {
-        printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
     } else {
-        printf("  %s\n", print_name);
+        if (S_ISLNK(info.st_mode)) {
+            char symlink_path[126];
+            ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
+            if (len != -1) {
+                symlink_path[len] = '\0';
+            } else {
+                printf("unable to fine link");
+            }
+            printf ("  %s  ->  %s\n", print_name, symlink_path);
+        } else if (S_ISDIR(info.st_mode)) {
+            printf("  %s\n", print_name);
+        } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+            printf("  %s\n", print_name);
+        } else if (is_zip_file(full_file_path) == 0) {
+            printf("  %s\n", print_name);
+        } else if (access(full_file_path, R_OK) != 0) {
+            printf("  %s\n", print_name);
+        } else {
+            printf("  %s\n", print_name);
+        }
     }
 
     return(0);
@@ -332,6 +362,12 @@ int main(int argc, char** argv) {
     // -a option
     int list_all = 0;
 
+    // If piped or redirected
+    if (isatty(STDOUT_FILENO) == 0) {
+        no_color_print = 1;
+    }
+
+
     file_path = "./";
     base_path = "";
 
@@ -344,6 +380,12 @@ int main(int argc, char** argv) {
             rel_path = 1;
         } else if (strcmp(argv[i], "-P") == 0) {
             abs_path = 1;
+        } else if (strcmp(argv[i], "-n") == 0) {
+            no_color_print = 1;
+        } else if (strcmp(argv[i], "-c") == 0) {
+            no_color_print = 0;
+        } else if (strcmp(argv[i], "-C") == 0) {
+            // do nothing
         } else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
             help_menu();
             return(0);
