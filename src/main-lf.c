@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Jul 21, 2019
+// date: Jul 28, 2019
 // version-1.0.1
 //
 // The Clear BSD License
@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <grp.h>
 
-#ifndef STATIC_BUILD
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
 #include <pwd.h>
 #endif
 
@@ -33,14 +33,16 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-6, Jul 21, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-8, Jul 28, 2019"
 
 char *script_name;
 char *base_path = NULL;
 
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
 // For auto ajusting formatting
 int max_own_len = 0;
 int max_grup_len = 0;
+#endif
 
 // mechine readable output
 int mr_list = 0;
@@ -150,7 +152,7 @@ int file_info(const char* file_path) {
     printf((info.st_mode & S_IWOTH) ? "w" : "-");
     printf((info.st_mode & S_IXOTH) ? "x" : "-");
 
-#ifdef STATIC_BUILD
+#ifdef WITHOUT_NAME_GROUP_OUTPUT
     printf("  %4d", info.st_uid);
     printf("  %4d ", info.st_gid);
 #else
@@ -244,7 +246,7 @@ int list_files(const char* list_path, int list_all) {
     return(0);
 }
 
-#ifndef STATIC_BUILD
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
 // Will loop files in a directory, and get the max lenth for all the permamiters
 int max_len_files(const char* list_path, int list_all) {
     DIR *dr;
@@ -286,6 +288,7 @@ int max_len_files(const char* list_path, int list_all) {
         if (grup > max_grup_len) {
             max_grup_len = grup;
         }
+
         full_file_path[0] = '\0';
     }
     closedir(dr);
@@ -341,7 +344,7 @@ int prep_list(const char *file_path, int list_all) {
         exit(1);
     }
 
-#ifndef STATIC_BUILD
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
     max_len_files(path, list_all);
 #endif
 
