@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Jul 28, 2019
+# Date: Aug 10, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.3
+# Version-1.0.4
 #
 # The Clear BSD License
 #
@@ -50,6 +50,10 @@ static: $(MAIN)
 .PHONY:
 without-ouner-group-names: $(MAIN)
 	$(CC) $(CFLAGS) -D WITHOUT_NAME_GROUP_OUTPUT -o $(TARGET) $(MAIN)
+
+.PHONY:
+test: $(TARGET)
+	@sh ./run-tests
 
 .PHONY:
 install: $(TARGET)

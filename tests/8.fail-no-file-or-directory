@@ -1,0 +1,31 @@
+
+set -e
+
+c="lf /foo/bar"
+
+if [ "$($c)" ]; then
+	echo "FAIL: unexpected success while running: '${c}'"
+	exit 1
+fi
+
+c="lf -p /foo/bar"
+
+if [ "$($c)" ]; then
+	echo "FAIL: unexpected success while running: '${c}'"
+	exit 1
+fi
+
+c="lf -1 /foo/bar"
+
+if [ "$($c)" ]; then
+	echo "FAIL: unexpected success while running: '${c}'"
+	exit 1
+fi
+
+c="lf -1 -p /foo/bar"
+
+if [ "$($c)" ]; then
+	echo "FAIL: unexpected success while running: '${c}'"
+	exit 1
+fi
+

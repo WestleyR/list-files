@@ -1,0 +1,40 @@
+# Created by: WestleyR
+# email: westleyr@nym.hush.com
+# Date: Aug 10, 2019
+# https://github.com/WestleyR/list-files
+# Version-1.0.0
+#
+# The Clear BSD License
+#
+# Copyright (c) 2019 WestleyR
+# All rights reserved.
+#
+# This software is licensed under a Clear BSD License.
+#
+
+set -e
+
+if [ ! $(command -v "lf") ]; then
+	echo "ERROR: 'lf' not found in PATH, you should install lf"
+	exit 1
+fi
+
+echo "Running all tests..."
+echo
+
+test_files=`ls tests/`
+
+for t in $test_files; do
+	if [ -f "tests/${t}" ]; then
+		echo -n "Running test: ${t} ... "
+		sh "tests/${t}"
+		echo "\033[0;32mDONE\033[0m"
+	fi
+done
+
+echo
+echo "All tests passed!"
+
+#
+# End run-tests
+#

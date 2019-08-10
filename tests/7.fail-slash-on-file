@@ -1,0 +1,10 @@
+
+set -e
+
+c="lf tests/testdata/file1/"
+
+if [ "$($c)" ]; then
+	echo "FAIL: unexpected success while running: '${c}'"
+	exit 1
+fi
+
