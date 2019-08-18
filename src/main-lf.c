@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Jul 28, 2019
+// date: Aug 18, 2019
 // version-1.0.1
 //
 // The Clear BSD License
@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <grp.h>
+#include <getopt.h>
 
 #ifndef WITHOUT_NAME_GROUP_OUTPUT
 #include <pwd.h>
@@ -33,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-8, Jul 28, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-10, Aug 18, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -61,14 +62,12 @@ void help_menu() {
     printf("  %s [option] <path>\n", script_name);
     printf("\n");
     printf("Options:\n");
-    printf("  -a      list all files\n");
-    printf("  -p      list files with relative path\n");
-    printf("  -1, -m  only print file names (mr)\n");
-    printf("  -n      dont print with color\n");
-    printf("  -c      print with color\n");
-    printf("  -C      auto color (default)\n");
-    printf("  -h      print help menu\n");
-    printf("  -v      print version\n");
+    printf("  -a            list all files\n");
+    printf("  -p            list files with relative path\n");
+    printf("  -1, -m        only print file names (mr), color will be off\n");
+    printf("  -c, --color=  color output, options: on,off,auto\n");
+    printf("  -h            print help menu\n");
+    printf("  -v            print version\n");
     printf("\n");
     printf("Permisions:\n");
     printf("  - = file\n");
@@ -85,14 +84,19 @@ void version_print() {
     return;
 }
 
-char* readable_fs(double size, char *buf) {
+char* readable_fs(double bytes) {
     int i = 0;
-    const char* units[] = {"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+    char* buf;
+    float size = bytes;
+    buf = (char*) malloc(10);
+    const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
     while (size > 1024) {
         size /= 1024;
         i++;
     }
     sprintf(buf, "%.*f %s", i, size, units[i]);
+
     return(buf);
 }
 
@@ -121,7 +125,6 @@ int is_zip_file(const char* file) {
 int file_info(const char* file_path) {
     struct stat sb;
     struct stat info;
-    char buf[10];
     char full_file_path[256];
     char *print_name = NULL;
     full_file_path[0] = '\0';
@@ -161,7 +164,7 @@ int file_info(const char* file_path) {
     printf("  %*s", max_own_len, pw->pw_name);
     printf("  %*s ", max_grup_len, gr->gr_name);
 #endif
-    printf(" %-12s", readable_fs(info.st_size, buf));
+    printf(" %-12s", readable_fs(info.st_size));
 
 
     if (no_color_print == 0) {
@@ -360,7 +363,6 @@ int main(int argc, char** argv) {
     script_name = argv[0];
 
     char* file_path;
-    int arg_list = 0;
 
     // -a option
     int list_all = 0;
@@ -370,39 +372,72 @@ int main(int argc, char** argv) {
         no_color_print = 1;
     }
 
+    int opt = 0;
+
+    char* color_print;
+    color_print = (char*) malloc(4);
 
     file_path = "./";
     base_path = "";
 
-    for (int i=1; i < argc; i++) {
-        if (strcmp(argv[i], "-a") == 0) {
-            list_all = 1;
-        } else if ((strcmp(argv[i], "-1") == 0) || (strcmp(argv[i], "-m") == 0)) {
-            mr_list = 1;
-        } else if (strcmp(argv[i], "-p") == 0) {
-            rel_path = 1;
-        } else if (strcmp(argv[i], "-P") == 0) {
-            abs_path = 1;
-        } else if (strcmp(argv[i], "-n") == 0) {
-            no_color_print = 1;
-        } else if (strcmp(argv[i], "-c") == 0) {
-            no_color_print = 0;
-        } else if (strcmp(argv[i], "-C") == 0) {
-            // do nothing
-        } else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
-            help_menu();
-            return(0);
-        } else if ((strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0)) {
-            version_print();
-            return(0);
-        } else if ((strstr(argv[i], "--") != argv[i]) && (strstr(argv[i], "--") != argv[i])) {
-            file_path = argv[i];
-            prep_list(file_path, list_all);
-            arg_list = 1;
+    static struct option long_options[] = {
+        {"help", no_argument, 0, 'h'},
+        {"rel-path", no_argument, 0, 'p'},
+        {"mr", no_argument, 0, '1'},
+        {"mr", no_argument, 0, 'm'},
+        {"color", required_argument, 0, 'c'},
+        {"version", no_argument, 0, 'V'},
+        {NULL, 0, 0, 0}
+    };
+
+    while ((opt = getopt_long(argc, argv,"c:1mpVh", long_options, 0)) != -1) {
+        switch (opt) {
+             case '1':
+                 mr_list = 1;
+                 break;
+             case 'm':
+                 mr_list = 1;
+                 break;
+             case 'p':
+                 rel_path = 1;
+                 break;
+             case 'c':
+                 color_print = optarg;
+                 break;
+             case 'h':
+                 help_menu();
+                 return(0);
+                 break;
+             case 'V':
+                 version_print();
+                 return(0);
+                 break;
+             default:
+                 // Invalid option
+                 return(22);
         }
     }
 
-    if (arg_list == 0) {
+    // If the --color option is set
+    if (color_print[0] != '\0') {
+        if (strcmp(color_print, "auto") == 0) {
+            // Do nothing
+        } else if (strcmp(color_print, "on") == 0) {
+            no_color_print = 0;
+        } else if (strcmp(color_print, "off") == 0) {
+            no_color_print = 1;
+        } else {
+            fprintf(stderr, "%s: --color: %s: invalid argument\n", script_name, color_print);
+            return(22);
+        }
+    }
+
+    if (optind < argc) {
+        for (int i = optind; i < argc; i++) {
+            file_path = argv[i];
+            prep_list(file_path, list_all);
+        }
+    } else {
         prep_list(file_path, list_all);
     }
 
