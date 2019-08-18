@@ -3,7 +3,7 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf testdata" "lf tests/testdata" file1 0
-run-test "lf testdata with extra shash" "lf tests/testdata/" file1 0
-run-test "lf non-existent directory" "lf testdata/" "No such file or directory" 2
+run-test "lf testdata" "./lf tests/testdata" file1 0
+run-test "lf testdata with extra shash" "./lf tests/testdata/" file1 0
+run-test "lf non-existent directory" "./lf testdata/" "No such file or directory" 2
 

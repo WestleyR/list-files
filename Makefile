@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Aug 10, 2019
+# Date: Aug 18, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.4
+# Version-1.0.5
 #
 # The Clear BSD License
 #

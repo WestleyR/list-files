@@ -1,0 +1,9 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf -p dir" "./lf -p tests/testdata" "tests/testdata/file1" 0
+run-test "lf -p ./dir" "./lf -p ./tests/testdata" "./tests/testdata/file1" 0
+run-test "lf -p ./dir" "./lf -p $(pwd)/tests/testdata" "$(pwd)/tests/testdata/file1" 0
+
