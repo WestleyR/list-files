@@ -19,8 +19,6 @@ if [ ! $(command -v "lf") ]; then
 	exit 1
 fi
 
-#. ./tests-funcs
-
 echo "Running all tests..."
 echo
 
