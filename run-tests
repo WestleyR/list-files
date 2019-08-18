@@ -19,6 +19,8 @@ if [ ! $(command -v "lf") ]; then
 	exit 1
 fi
 
+#. ./tests-funcs
+
 echo "Running all tests..."
 echo
 
@@ -26,8 +28,8 @@ test_files=`ls tests/`
 
 for t in $test_files; do
 	if [ -f "tests/${t}" ]; then
-		echo -n "Running test: ${t} ... "
-		sh "tests/${t}"
+		echo "Running test: ${t} ... "
+		bash "tests/${t}"
 		echo "\033[0;32mDONE\033[0m"
 	fi
 done

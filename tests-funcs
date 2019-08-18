@@ -1,0 +1,46 @@
+# Created by: WestleyR
+# email: westleyr@nym.hush.com
+# Date: Aug 10, 2019
+# https://github.com/WestleyR/clint
+# version-1.0.3
+#
+# The Clear BSD License
+#
+# Copyright (c) 2019 WestleyR
+# All rights reserved.
+#
+# This software is licensed under a Clear BSD License.
+#
+
+# usage:
+# run-tests <command> <contains_out> <exit_code>
+
+run-test() {
+	echo "Running: $1 ..."
+
+	output=`$1`
+	if [ $? != $3 ]; then
+		echo "FAIL: expecting exit code ${3}, got $?"
+		echo "while running: ${1}"
+		exit 1
+	fi
+
+#	echo "STDOUT: $output"
+
+	if [ ! -n $2 ]; then
+		if [[ ! -n $(echo "$output" | grep "$2") ]]; then
+			echo "FAIL: expected outout to contain: $2, got: $output"
+			echo "while running: $1"
+			exit 1
+		fi
+	fi
+
+
+}
+
+
+
+
+#
+# End tests-funcs
+#
