@@ -34,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-10, Aug 18, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-12, Aug 18, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -198,17 +198,8 @@ int file_info(const char* file_path) {
                 printf("unable to fine link");
             }
             printf ("  %s  ->  %s\n", print_name, symlink_path);
-        } else if (S_ISDIR(info.st_mode)) {
-            printf("  %s\n", print_name);
-        } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
-            printf("  %s\n", print_name);
-        } else if (is_zip_file(full_file_path) == 0) {
-            printf("  %s\n", print_name);
-        } else if (access(full_file_path, R_OK) != 0) {
-            printf("  %s\n", print_name);
-        } else {
-            printf("  %s\n", print_name);
         }
+        printf("  %s\n", print_name);
     }
 
     return(0);
@@ -348,7 +339,9 @@ int prep_list(const char *file_path, int list_all) {
     }
 
 #ifndef WITHOUT_NAME_GROUP_OUTPUT
-    max_len_files(path, list_all);
+    if (mr_list != 1) {
+        max_len_files(path, list_all);
+    }
 #endif
 
     if (list_files(path, list_all) != 0) {
@@ -392,29 +385,29 @@ int main(int argc, char** argv) {
 
     while ((opt = getopt_long(argc, argv,"c:1mpVh", long_options, 0)) != -1) {
         switch (opt) {
-             case '1':
-                 mr_list = 1;
-                 break;
-             case 'm':
-                 mr_list = 1;
-                 break;
-             case 'p':
-                 rel_path = 1;
-                 break;
-             case 'c':
-                 color_print = optarg;
-                 break;
-             case 'h':
-                 help_menu();
-                 return(0);
-                 break;
-             case 'V':
-                 version_print();
-                 return(0);
-                 break;
-             default:
-                 // Invalid option
-                 return(22);
+            case '1':
+                mr_list = 1;
+                break;
+            case 'm':
+                mr_list = 1;
+                break;
+            case 'p':
+                rel_path = 1;
+                break;
+            case 'c':
+                color_print = optarg;
+                break;
+            case 'h':
+                help_menu();
+                return(0);
+                break;
+            case 'V':
+                version_print();
+                return(0);
+                break;
+            default:
+                // Invalid option
+                return(22);
         }
     }
 
