@@ -3,5 +3,9 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
+chmod 000 tests/testdata/file_no_perm
+
 run-test "lf no-perm-file" "./lf tests/testdata" "file_no_perm" "\--- ------" 0
+
+chmod 666 tests/testdata/file_no_perm
 
