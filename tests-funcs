@@ -13,32 +13,50 @@
 #
 
 # usage:
-# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+# run-test <test-name> <test-command> <expect-to-contain-output> <also-expect-to-contain> <expect-exit-code>
 #
 run-test() {
 	test_name=$1
 	test_cmd=$2
 	expect_contain_out=$3
-	expect_exit_code=$4
+	also_expect_contain_out=$4
+	expect_exit_code=$5
 
+	green='\033[0;32m'
+	red='\033[0;31m'
+	creset='\033[0m'
 
-	echo "Running: ${test_name} ..."
+	echo -n "Running: ${test_name} ... "
 
-	output=`$test_cmd 2>&1`
+	output=`/bin/sh -c "$test_cmd" 2>&1`
 	exit_code=$?
 	if [ $exit_code -ne $expect_exit_code ]; then
-		echo "FAIL: expecting exit code: ${expect_exit_code}, got ${exit_code}"
+		echo -e "${red}FAIL${creset} "
+		echo "expecting exit code: ${expect_exit_code}, got ${exit_code}"
 		echo "while running: ${test_cmd}"
+		echo "out: ${output}"
 		exit 1
 	fi
 
-	if [[ -n $2 ]]; then
-		if [[ ! -n $(echo "$output" | grep "$expect_contain_out") ]]; then
-			echo "FAIL: expected outout to contain: ${expect_contain_out}, got: ${output}"
+	line_output=`echo "$output" | grep "$expect_contain_out"`
+	if [[ -n $expect_contain_out ]]; then
+		if [[ ! -n $line_output ]]; then
+			echo -e "${red}FAIL${creset} "
+			echo "expected outout to contain: ${expect_contain_out}, got: ${output}"
 			echo "while running: ${test_cmd}"
 			exit 1
 		fi
 	fi
+	if [[ -n $also_expect_contain_out ]]; then
+		if [[ ! -n $(echo "$line_output" | grep "$also_expect_contain_out") ]]; then
+			echo -e "${red}FAIL${creset} "
+			echo "expected outout to contain: ${also_expect_contain_out}, got: ${line_output}"
+			echo "while running: ${test_cmd}"
+			exit 1
+		fi
+	fi
+
+	echo -e "${green}PASS${creset}"
 }
 
 #

@@ -1,0 +1,9 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf -a dir" "./lf -a tests/testdata" "rw-" ".fileh" 0
+run-test "lf -a dir" "./lf -a tests/testdata" "\-rw- r--r--" ".fileh" 0
+run-test "lf -a dir" "./lf -a tests/testdata" "\-rwx r-xr-x" ".filex" 0
+

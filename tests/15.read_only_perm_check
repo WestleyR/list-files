@@ -1,0 +1,7 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf read_only_file" "./lf tests/testdata" "file_r" "\-r-- r--r--" 0
+

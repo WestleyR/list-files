@@ -1,0 +1,9 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf -V" "./lf -V" "v1" "" 0
+
+run-test "lf --version" "./lf --version" "v1" "" 0
+

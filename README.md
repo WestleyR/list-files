@@ -9,11 +9,12 @@
 This is how to install `lf` from source:
 
 ```
-cd /tmp  # optional
+cd ~/github-repos  # optional
 
 git clone https://github.com/WestleyR/list-files.git
 cd lf/
 make
+make test # optional, it only takes a second
 sudo make install
 ```
 

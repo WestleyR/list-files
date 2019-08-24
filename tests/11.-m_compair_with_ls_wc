@@ -1,0 +1,14 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+# we -1 because ls outputs one extra line
+run-test "lf -m | wc, ls -l | wc" "./lf -m tests/testdata | wc -l" "$(echo $(ls -l tests/testdata | wc -l)-1 | bc)" "" 0
+
+run-test "lf -m /dev | wc, ls -l | wc" "./lf -m /dev | wc -l" "$(echo $(ls -l /dev | wc -l)-1 | bc)" "" 0
+
+run-test "lf -m /usr | wc, ls -l | wc" "./lf -m /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0
+
+# Try with color
+run-test "lf -m (color) /usr | wc, ls -l | wc" "./lf -m --color=on /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0

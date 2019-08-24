@@ -1,0 +1,7 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf file-bytes" "./lf tests/testdata" "larger_file" "11.72 MB" 0
+

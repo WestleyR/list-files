@@ -1,0 +1,7 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf no-perm-file" "./lf tests/testdata" "file_no_perm" "\--- ------" 0
+

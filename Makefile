@@ -53,7 +53,7 @@ without-ouner-group-names: $(MAIN)
 
 .PHONY:
 test: $(TARGET)
-	@sh ./run-tests
+	@bash ./run-tests
 
 .PHONY:
 install: $(TARGET)

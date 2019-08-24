@@ -34,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.1-beta-12, Aug 18, 2019"
+#define SCRIPT_VERSION "v1.0.1-beta-14, Aug 18, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -176,7 +176,7 @@ int file_info(const char* file_path) {
             } else {
                 printf("unable to fine link");
             }
-            printf ("  %s%s  %s->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
+            printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
         } else if (S_ISDIR(info.st_mode)) {
             printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
         } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
@@ -198,8 +198,9 @@ int file_info(const char* file_path) {
                 printf("unable to fine link");
             }
             printf ("  %s  ->  %s\n", print_name, symlink_path);
+        } else {
+            printf("  %s\n", print_name);
         }
-        printf("  %s\n", print_name);
     }
 
     return(0);
@@ -378,18 +379,22 @@ int main(int argc, char** argv) {
         {"rel-path", no_argument, 0, 'p'},
         {"mr", no_argument, 0, '1'},
         {"mr", no_argument, 0, 'm'},
+        {"all", no_argument, 0, 'a'},
         {"color", required_argument, 0, 'c'},
         {"version", no_argument, 0, 'V'},
         {NULL, 0, 0, 0}
     };
 
-    while ((opt = getopt_long(argc, argv,"c:1mpVh", long_options, 0)) != -1) {
+    while ((opt = getopt_long(argc, argv,"c:1mapVh", long_options, 0)) != -1) {
         switch (opt) {
             case '1':
                 mr_list = 1;
                 break;
             case 'm':
                 mr_list = 1;
+                break;
+            case 'a':
+                list_all = 1;
                 break;
             case 'p':
                 rel_path = 1;

@@ -1,0 +1,17 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf (unknown flag)" "./lf -x" "invalid option" "x" 22
+
+run-test "lf (unknown flag)" "./lf -q" "invalid option" "'q'" 22
+
+run-test "lf (unknown flag)" "./lf -unknown" "invalid option" "u" 22
+
+run-test "lf (unknown flag)" "./lf --unknown" "unrecognized option" "unknown" 22
+
+run-test "lf (unknown flag)" "./lf --unknown" "unrecognized option" "\--unknown" 22
+
+run-test "lf (unknown flag)" "./lf --foobar" "unrecognized option" "foobar" 22
+
