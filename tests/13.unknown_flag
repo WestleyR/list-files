@@ -5,7 +5,7 @@
 
 run-test "lf (unknown flag)" "./lf -x" "invalid option" "x" 22
 
-run-test "lf (unknown flag)" "./lf -q" "invalid option" "'q'" 22
+run-test "lf (unknown flag)" "./lf -q" "invalid option" "q" 22
 
 run-test "lf (unknown flag)" "./lf -unknown" "invalid option" "u" 22
 
