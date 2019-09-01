@@ -2,7 +2,7 @@
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
 // date: Sep 1, 2019
-// version-1.0.2
+// version-1.0.1
 //
 // The Clear BSD License
 //
@@ -34,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.0.2, Sep 1, 2019"
+#define SCRIPT_VERSION "v1.0.1, Sep 1, 2019"
 
 char *script_name;
 char *base_path = NULL;
