@@ -3,5 +3,8 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
+chmod 444 tests/testdata/file_r
+
 run-test "lf read_only_file" "./lf tests/testdata" "file_r" "\-r-- r--r--" 0
 
+chmod 666 tests/testdata/file_r
