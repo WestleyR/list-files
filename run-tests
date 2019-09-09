@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Aug 18, 2019
+# Date: Sep 7, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.0
+# Version-1.0.1
 #
 # The Clear BSD License
 #
@@ -11,11 +11,6 @@
 #
 # This software is licensed under a Clear BSD License.
 #
-
-if [ ! $(command -v "lf") ]; then
-	echo "ERROR: 'lf' not found in PATH, you should install lf"
-	exit 1
-fi
 
 echo "Running all tests..."
 echo
