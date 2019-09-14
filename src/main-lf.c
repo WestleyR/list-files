@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Sep 7, 2019
+// date: Sep 14, 2019
 // version-1.1.0
 //
 // The Clear BSD License
@@ -34,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.1.0-beta-1, Sep 7, 2019"
+#define SCRIPT_VERSION "v1.1.0-beta-3, Sep 14, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -44,6 +44,8 @@ char *base_path = NULL;
 int max_own_len = 0;
 int max_grup_len = 0;
 #endif
+
+int max_size = 0;
 
 // machine readable output
 int mr_list = 0;
@@ -166,7 +168,7 @@ int file_info(const char* file_path) {
 #endif
 
     char* file_bytes = readable_fs(info.st_size);
-    printf(" %-12s", file_bytes);
+    printf(" %-*s", max_size, file_bytes);
     free(file_bytes);
 
     if (no_color_print == 0) {
@@ -250,7 +252,7 @@ int max_len_files(const char* list_path, int list_all) {
     struct dirent *de;
     struct stat info;
 
-    char full_file_path[126];
+    char full_file_path[256];
     full_file_path[0] = '\0';
 
     struct max_list {
@@ -289,25 +291,58 @@ int max_len_files(const char* list_path, int list_all) {
             exit(20);
         }
 
-        for (int l = 0; l < 10; l++) {
-            if ((info.st_uid == ml[l].uid_num) && (info.st_gid == ml[l].pid_num)) {
-                match = 1;
-                break;
+        char* file_bytes = readable_fs(info.st_size);
+        int file_bytes_len = strlen(file_bytes);
+        if (file_bytes_len > max_size) max_size = file_bytes_len;
+
+        if (mindex >= 10) {
+            struct passwd *pw;
+            struct group *gr;
+
+            pw = getpwuid(info.st_uid);
+            gr = getgrgid(info.st_gid);
+    
+            int own = strlen(pw->pw_name);
+            if (own > max_own_len) {
+                max_own_len = own;
+            }
+    
+            int grup = strlen(gr->gr_name);
+            if (grup > max_grup_len) {
+                max_grup_len = grup;
+            }
+        } else {
+            for (int l = 0; l < 10; l++) {
+                if ((info.st_uid == ml[l].uid_num) && (info.st_gid == ml[l].pid_num)) {
+                    match = 1;
+                    break;
+                }
+            }
+
+            if (match != 1) {
+                ml[mindex].uid_num = (int)info.st_uid;
+                ml[mindex].max_uid = (int)strlen(getpwuid(info.st_uid)->pw_name);
+
+                ml[mindex].pid_num = (int)info.st_gid;
+                ml[mindex].max_pid = (int)strlen(getgrgid(info.st_gid)->gr_name);
+
+                ml[mindex].end = 1;
+                mindex++;
+            }
+
+            match = 0;
+
+            if (mindex >= 10) {
+                for (int i = 0; i < mindex; i++) {
+                    if (ml[i].end == 0) break;
+                    if (ml[i].max_uid > max_own_len) max_own_len = ml[i].max_uid;
+                    if (ml[i].max_pid > max_grup_len) max_grup_len = ml[i].max_pid;
+                    i++;
+                    //if (i > 10) break;
+                }
             }
         }
 
-        if (match != 1) {
-            ml[mindex].uid_num = (int)info.st_uid;
-            ml[mindex].max_uid = (int)strlen(getpwuid(info.st_uid)->pw_name);
-
-            ml[mindex].pid_num = (int)info.st_gid;
-            ml[mindex].max_pid = (int)strlen(getgrgid(info.st_gid)->gr_name);
-
-            ml[mindex].end = 1;
-            mindex++;
-        }
-
-        match = 0;
         full_file_path[0] = '\0';
     }
     closedir(dr);
@@ -318,17 +353,28 @@ int max_len_files(const char* list_path, int list_all) {
     ml[mindex].max_pid = 0;
     ml[mindex].end = 0;
 
+    if (mindex < 10) {
     int i = 0;
     while (1) {
         if (ml[i].end == 0) break;
         if (ml[i].max_uid > max_own_len) max_own_len = ml[i].max_uid;
         if (ml[i].max_pid > max_grup_len) max_grup_len = ml[i].max_pid;
         i++;
-        if (i > 10) break;
+        //if (i > 10) break;
+    }
     }
 
+    ml[0].uid_num = '\0';
+    ml[0].max_uid = '\0';
+    ml[0].pid_num = '\0';
+    ml[0].max_pid = '\0';
+    ml[0].end = '\0';
+
+    //    struct max_list ml[0] = {};
+    //    ml[0] = (const struct max_list){};
+
     if ((max_own_len > 20) || (max_grup_len > 20)) {
-        printf("INTERNAL ERROR; recovering");
+        printf("INTERNAL ERROR; recovering\n");
         max_own_len = 8;
         max_grup_len = 8;
     }
@@ -357,7 +403,7 @@ int prep_list(const char *file_path, int list_all) {
     char* path = strdup(file_path);
 
     if (stat(path, &s) != 0) {
-        fprintf(stderr, "%s: No such file or directory\n", path);
+        fprintf(stderr, "%s: %s: No such file or directory\n", script_name, path);
         exit(2);
     }
 

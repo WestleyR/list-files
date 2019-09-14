@@ -3,6 +3,11 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
+if ! require_cmd "bc"; then
+    echo "bc is require for this test; skipping"
+    exit 1
+fi
+
 # we -1 because ls outputs one extra line
 run-test "lf | wc, ls -l | wc" "./lf tests/testdata | wc -l" "$(echo $(ls -l tests/testdata | wc -l)-1 | bc)" "" 0
 

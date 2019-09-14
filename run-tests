@@ -12,6 +12,12 @@
 # This software is licensed under a Clear BSD License.
 #
 
+# Check and insure 'bc' is installed, if not, the tests that
+# need bc will skip
+if ! command -v "bc"; then
+	echo "WARNING: 'bc' not found in PATH, bc is needed for some tests"
+fi
+
 echo "Running all tests..."
 echo
 
@@ -34,7 +40,7 @@ for t in $test_files; do
 done
 
 echo
-echo "All tests ran with ${tests_failed_num} test(s) failed, of ${all_tests_num}"
+echo "All tests ran with ${tests_failed_num} test(s) failed (or skipped), of ${all_tests_num}"
 
 #
 # End run-tests
