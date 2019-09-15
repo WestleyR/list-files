@@ -3,6 +3,7 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
+# check to see if bc is installed, if not, then skip this test.
 if ! require_cmd "bc"; then
     echo "bc is require for this test; skipping"
     exit 1

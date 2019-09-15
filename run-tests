@@ -1,6 +1,6 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Sep 7, 2019
+# Date: Sep 15, 2019
 # https://github.com/WestleyR/list-files
 # Version-1.0.1
 #
@@ -41,6 +41,11 @@ done
 
 echo
 echo "All tests ran with ${tests_failed_num} test(s) failed (or skipped), of ${all_tests_num}"
+
+if [[ $tests_failed_num -ge 1 ]]; then
+    echo "FAILED TO RUN ALL TESTS"
+    exit 1
+fi
 
 #
 # End run-tests

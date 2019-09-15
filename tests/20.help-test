@@ -1,0 +1,15 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf help" "./lf --help" "lf \[option\] <path>" "" 0
+
+run-test "lf --help" "./lf --help" "Usage:" "" 0
+run-test "lf --help" "./lf --help" "Options:" "" 0
+run-test "lf --help" "./lf --help" "Permisions:" "" 0
+
+run-test "lf -h" "./lf -h" "Usage:" "" 0
+run-test "lf -h" "./lf -h" "Options:" "" 0
+run-test "lf -h" "./lf -h" "Permisions:" "" 0
+

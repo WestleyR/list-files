@@ -61,7 +61,7 @@ echo -e "${green}PASS${creset}"
 
 require_cmd() {
     if ! command -v "$1"; then
-        echo "WARNING: '$1' not found in PATH; skipping test"
+        echo -e "${red}WARNING:${creset} '$1' not found in PATH; skipping test"
         exit 1
     fi
 }
