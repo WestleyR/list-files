@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Sep 15, 2019
+// date: Sep 21, 2019
 // version-1.1.0
 //
 // The Clear BSD License
@@ -34,7 +34,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.1.0-beta-4, Sep 15, 2019"
+#define SCRIPT_VERSION "v1.1.0-beta-5, Sep 21, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -338,7 +338,6 @@ int max_len_files(const char* list_path, int list_all) {
                     if (ml[i].end == 0) break;
                     if (ml[i].max_uid > max_own_len) max_own_len = ml[i].max_uid;
                     if (ml[i].max_pid > max_grup_len) max_grup_len = ml[i].max_pid;
-                    i++;
                     //if (i > 10) break;
                 }
             }
