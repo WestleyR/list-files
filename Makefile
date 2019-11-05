@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Aug 18, 2019
+# Date: Nov 9, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.5
+# Version-1.0.6
 #
 # The Clear BSD License
 #
@@ -16,7 +16,7 @@ CC = gcc
 CFLAGS = -Wall
 TARGET = lf
 
-PREFIX = /usr/local/bin
+PREFIX = /usr/local
 
 MAIN = src/main-lf.c
 
@@ -57,7 +57,8 @@ test: $(TARGET)
 
 .PHONY:
 install: $(TARGET)
-	cp -f $(TARGET) $(PREFIX)
+	mkdir -p $(PREFIX)/bin
+	cp -f $(TARGET) $(PREFIX)/bin
 
 .PHONY:
 clean:
