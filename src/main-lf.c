@@ -38,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.0-beta-1, Nov 16, 2019"
+#define SCRIPT_VERSION "v1.2.0-beta, Nov 16, 2019"
 
 char *script_name;
 char *base_path = NULL;
