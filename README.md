@@ -1,5 +1,7 @@
 # List File(s) And Directory(s)
 
+![](https://github.com/WestleyR/list-files/workflows/list-files%20CI/badge.svg)
+
 `lf` is a **simple**, and **fast** file/directory lister with color hightlighting, file permision and file links!
 
 <br>
