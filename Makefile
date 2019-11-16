@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Nov 9, 2019
+# Date: Nov 16, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.6
+# Version-1.0.8
 #
 # The Clear BSD License
 #
@@ -19,6 +19,10 @@ TARGET = lf
 PREFIX = /usr/local
 
 MAIN = src/main-lf.c
+
+COMMIT = "$(shell git log -1 --oneline --no-color || echo "ERROR: unable to get commit hash" >&2 ; echo "unknown")"
+
+CFLAGS += -DCOMMIT_HASH=\"$(COMMIT)\"
 
 .PHONY:
 all: $(TARGET)
@@ -42,7 +46,7 @@ options:
 .PHONY:
 $(TARGET): $(MAIN)
 	$(CC) $(CFLAGS) -o $(TARGET) $(MAIN)
-
+	
 .PHONY:
 static: $(MAIN)
 	$(CC) $(CFLAGS) -D WITHOUT_NAME_GROUP_OUTPUT -static -o $(TARGET) $(MAIN)

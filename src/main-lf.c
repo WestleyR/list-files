@@ -1,8 +1,8 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Nov 9, 2019
-// version-1.1.0
+// date: Nov 16, 2019
+// version-1.2.0
 //
 // The Clear BSD License
 //
@@ -25,6 +25,10 @@
 #include <pwd.h>
 #endif
 
+#ifndef COMMIT_HASH
+#define COMMIT_HASH "unknown"
+#endif
+
 #define BOLDRED "\033[1m\033[31m"     // bold red
 #define BOLDGREEN "\033[1m\033[32m"   // bold green
 #define BOLDYELLOW "\033[1m\033[33m"  // bold yellow
@@ -34,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.1.0, Nov 9, 2019"
+#define SCRIPT_VERSION "v1.2.0-beta-1, Nov 16, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -64,12 +68,13 @@ void help_menu() {
     printf("  %s [option] <path>\n", script_name);
     printf("\n");
     printf("Options:\n");
-    printf("  -a            list all files\n");
-    printf("  -p            list files with relative path\n");
-    printf("  -1, -m        only print file names (mr), color will be off\n");
-    printf("  -c, --color=  color output, options: on,off,auto\n");
-    printf("  -h            print help menu\n");
-    printf("  -v            print version\n");
+    printf("  -a             list all files\n");
+    printf("  -p             list files with relative path\n");
+    printf("  -1, -m         only print file names (mr), color will be off\n");
+    printf("  -c, --color=   color output, options: on,off,auto\n");
+    printf("  -h, --help     print help menu\n");
+    printf("  -C, --commit   print the github commit\n");
+    printf("  -V, --version  print version\n");
     printf("\n");
     printf("Permisions:\n");
     printf("  - = file, if its the first option,\n");
@@ -84,6 +89,11 @@ void help_menu() {
 
 void version_print() {
     printf("%s\n", SCRIPT_VERSION);
+    return;
+}
+
+void version_commit() {
+    printf("%s\n", COMMIT_HASH);
     return;
 }
 
@@ -473,10 +483,11 @@ int main(int argc, char** argv) {
         {"all", no_argument, 0, 'a'},
         {"color", required_argument, 0, 'c'},
         {"version", no_argument, 0, 'V'},
+        {"commit", no_argument, 0, 'C'},
         {NULL, 0, 0, 0}
     };
 
-    while ((opt = getopt_long(argc, argv,"c:1mapVh", long_options, 0)) != -1) {
+    while ((opt = getopt_long(argc, argv,"c:1mapVhC", long_options, 0)) != -1) {
         switch (opt) {
             case '1':
                 mr_list = 1;
@@ -499,6 +510,10 @@ int main(int argc, char** argv) {
                 break;
             case 'V':
                 version_print();
+                return(0);
+                break;
+            case 'C':
+                version_commit();
                 return(0);
                 break;
             default:

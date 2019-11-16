@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Sep 15, 2019
+# Date: Nov 16, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.1
+# Version-1.0.2
 #
 # The Clear BSD License
 #
@@ -14,10 +14,17 @@
 
 # Check and insure 'bc' is installed, if not, the tests that
 # need bc will skip
-if ! command -v "bc"; then
+if ! command -v "bc" > /dev/null ; then
 	echo "WARNING: 'bc' not found in PATH, bc is needed for some tests"
 fi
 
+echo "Testing lf version:"
+echo
+
+./lf --version
+./lf --commit
+
+echo
 echo "Running all tests..."
 echo
 
