@@ -20,7 +20,7 @@ PREFIX = /usr/local
 
 MAIN = src/main-lf.c
 
-COMMIT = "$(shell git log -1 --oneline --no-color || echo "ERROR: unable to get commit hash" >&2 ; echo "unknown")"
+COMMIT = "$(shell git log -1 --oneline --decorate=short --no-color || echo "ERROR: unable to get commit hash" >&2 ; echo "unknown")"
 
 CFLAGS += -DCOMMIT_HASH=\"$(COMMIT)\"
 
