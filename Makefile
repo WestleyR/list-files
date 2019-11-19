@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Nov 16, 2019
+# Date: Nov 18, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.8
+# Version-1.0.10
 #
 # The Clear BSD License
 #
@@ -24,6 +24,10 @@ COMMIT = "$(shell git log -1 --oneline --decorate=short --no-color || echo "ERRO
 
 CFLAGS += -DCOMMIT_HASH=\"$(COMMIT)\"
 
+ifeq ($(DEBUG), true)
+	CFLAGS += -DDEBUG
+endif
+
 .PHONY:
 all: $(TARGET)
 
@@ -36,6 +40,7 @@ options:
 	@echo " [no-option], all           compile the project"
 	@echo " static                     compile the static project"
 	@echo " without-owner-group-names  dont print the user/group names,"
+	@echo " DEBUG=true                 compile target as debug"
 	@echo "                            instead print the uid/gid."
 	@echo " install                    install the binary to the PREFIX,"
 	@echo "                            (dafault '/usr/local/bin')"

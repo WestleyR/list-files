@@ -38,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.1-beta-1, Nov 18, 2019"
+#define SCRIPT_VERSION "v1.2.1-beta-2, Nov 18, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -137,12 +137,6 @@ int is_zip_file(const char* file) {
 }
 
 int find_link(char* symlink, const char* name) {
-    //char symlink[256];
-    //symlink[0] = '\0';
-    //char* symlink;
-    //symlink = (char*) malloc(125 * sizeof(char*));
-    //    symlink = (char*) malloc(126);
-
     symlink[0] = '\0';
 
     char link_buff[126];
@@ -156,7 +150,6 @@ int find_link(char* symlink, const char* name) {
     }
 
     strcpy(symlink, link_buff);
-
     symlink[len] = '\0';
 
     return(0);
@@ -342,7 +335,7 @@ int max_len_files(const char* list_path, int list_all) {
         int file_bytes_len = strlen(file_bytes);
         if (file_bytes_len > max_size) max_size = file_bytes_len;
 
-        if (mindex < 10) {
+        if (mindex >= 9) {
             struct passwd *pw;
             struct group *gr;
 
@@ -367,6 +360,9 @@ int max_len_files(const char* list_path, int list_all) {
             }
 
             if (match != 1) {
+#ifdef DEBUG
+                printf("Caching: %s : %s\n", getpwuid(info.st_uid)->pw_name, getgrgid(info.st_gid)->gr_name);
+#endif
                 ml[mindex].uid_num = (int)info.st_uid;
                 ml[mindex].max_uid = (int)strlen(getpwuid(info.st_uid)->pw_name);
 
@@ -384,7 +380,7 @@ int max_len_files(const char* list_path, int list_all) {
                     if (ml[i].end == 0) break;
                     if (ml[i].max_uid > max_own_len) max_own_len = ml[i].max_uid;
                     if (ml[i].max_pid > max_grup_len) max_grup_len = ml[i].max_pid;
-                    //if (i > 10) break;
+                    if (i > 10) break;
                 }
             }
         }
