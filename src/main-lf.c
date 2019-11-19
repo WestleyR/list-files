@@ -2,7 +2,7 @@
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
 // date: Nov 16, 2019
-// version-1.2.0
+// version-1.2.1
 //
 // The Clear BSD License
 //
@@ -38,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.0-beta, Nov 16, 2019"
+#define SCRIPT_VERSION "v1.2.1-beta-1, Nov 18, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -68,13 +68,13 @@ void help_menu() {
     printf("  %s [option] <path>\n", script_name);
     printf("\n");
     printf("Options:\n");
-    printf("  -a             list all files\n");
-    printf("  -p             list files with relative path\n");
-    printf("  -1, -m         only print file names (mr), color will be off\n");
-    printf("  -c, --color=   color output, options: on,off,auto\n");
-    printf("  -h, --help     print help menu\n");
-    printf("  -C, --commit   print the github commit\n");
-    printf("  -V, --version  print version\n");
+    printf("  -a, --all       list all files\n");
+    printf("  -p, --rel-path  list files with relative path\n");
+    printf("  -1, -m, --mr    only print file names (mr), color will be off\n");
+    printf("  -c, --color=    color output, options: on,off,auto\n");
+    printf("  -h, --help      print help menu\n");
+    printf("  -C, --commit    print the github commit\n");
+    printf("  -V, --version   print version\n");
     printf("\n");
     printf("Permisions:\n");
     printf("  - = file, if its the first option,\n");
@@ -84,6 +84,7 @@ void help_menu() {
     printf("  w = writable\n");
     printf("  x = executable\n");
     printf("\n");
+    printf("Source code: https://github.com/WestleyR/list-files\n");
     return;
 }
 
@@ -135,13 +136,43 @@ int is_zip_file(const char* file) {
     return(-1);
 }
 
+int find_link(char* symlink, const char* name) {
+    //char symlink[256];
+    //symlink[0] = '\0';
+    //char* symlink;
+    //symlink = (char*) malloc(125 * sizeof(char*));
+    //    symlink = (char*) malloc(126);
+
+    symlink[0] = '\0';
+
+    char link_buff[126];
+    link_buff[0] = '\0';
+
+    ssize_t len = readlink(name, link_buff, sizeof(link_buff));
+    if (len == -1) {
+        perror("readlink");
+        fprintf(stderr, "Unable to find link for: %s\n", name);
+        return(-1);
+    }
+
+    strcpy(symlink, link_buff);
+
+    symlink[len] = '\0';
+
+    return(0);
+}
+
 int file_info(const char* file_path) {
     struct stat sb;
     struct stat info;
-    char full_file_path[256];
-    char *print_name = NULL;
-    full_file_path[0] = '\0';
-    strcat(full_file_path, base_path);
+
+    char *full_file_path;
+    full_file_path = (char*) malloc(256);
+
+    char *print_name;
+    print_name = (char*) malloc(256);
+
+    strcpy(full_file_path, base_path);
     strcat(full_file_path, file_path);
 
     if (rel_path != 0) {
@@ -184,14 +215,15 @@ int file_info(const char* file_path) {
 
     if (no_color_print == 0) {
         if (S_ISLNK(info.st_mode)) {
-            char symlink_path[126];
-            ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
-            if (len != -1) {
-                symlink_path[len] = '\0';
-            } else {
-                printf("unable to fine link");
+            char *link_path;
+            link_path = (char*) malloc(2 * sizeof(full_file_path));
+
+            int err = find_link(link_path, full_file_path);
+            if (err != 0) {
+                strcpy(link_path, "failed to get symlink");
             }
-            printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, symlink_path);
+            printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
+            free(link_path);
         } else if (S_ISDIR(info.st_mode)) {
             printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
         } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
@@ -205,18 +237,22 @@ int file_info(const char* file_path) {
         }
     } else {
         if (S_ISLNK(info.st_mode)) {
-            char symlink_path[126];
-            ssize_t len = readlink(full_file_path, symlink_path, sizeof(symlink_path));
-            if (len != -1) {
-                symlink_path[len] = '\0';
-            } else {
-                printf("unable to fine link");
+            char *link_path;
+            link_path = (char*) malloc(2 * sizeof(full_file_path));
+
+            int err = find_link(link_path, full_file_path);
+            if (err != 0) {
+                strcpy(link_path, "failed to get symlink");
             }
-            printf ("  %s  ->  %s\n", print_name, symlink_path);
+            printf("  %s  ->  %s\n", print_name, link_path);
+            free(link_path);
         } else {
             printf("  %s\n", print_name);
         }
     }
+
+    free(full_file_path);
+    free(print_name);
 
     return(0);
 }
@@ -263,8 +299,8 @@ int max_len_files(const char* list_path, int list_all) {
     struct dirent *de;
     struct stat info;
 
-    char full_file_path[256];
-    full_file_path[0] = '\0';
+    char *full_file_path;
+    full_file_path = (char*) malloc(256);
 
     struct max_list {
         int uid_num;
@@ -306,7 +342,7 @@ int max_len_files(const char* list_path, int list_all) {
         int file_bytes_len = strlen(file_bytes);
         if (file_bytes_len > max_size) max_size = file_bytes_len;
 
-        if (mindex >= 10) {
+        if (mindex < 10) {
             struct passwd *pw;
             struct group *gr;
 
@@ -354,6 +390,7 @@ int max_len_files(const char* list_path, int list_all) {
         }
 
         full_file_path[0] = '\0';
+        //full_file_path = NULL;
     }
     closedir(dr);
 
@@ -370,7 +407,7 @@ int max_len_files(const char* list_path, int list_all) {
             if (ml[i].max_uid > max_own_len) max_own_len = ml[i].max_uid;
             if (ml[i].max_pid > max_grup_len) max_grup_len = ml[i].max_pid;
             i++;
-            //if (i > 10) break;
+            if (i > 10) break;
         }
     }
 
@@ -388,6 +425,8 @@ int max_len_files(const char* list_path, int list_all) {
         max_own_len = 8;
         max_grup_len = 8;
     }
+
+    free(full_file_path);
 
     return(0);
 }
@@ -427,8 +466,10 @@ int prep_list(const char *file_path, int list_all) {
         }
         return(0);
     }
+
     add_slash(path);
     base_path = strdup(path);
+
 
     if (access(file_path, F_OK) != -1) {
         if (access(file_path, R_OK) == -1) {
@@ -470,7 +511,7 @@ int main(int argc, char** argv) {
     int opt = 0;
 
     char* color_print;
-    color_print = (char*) malloc(4);
+    color_print = (char*) malloc(10);
 
     file_path = "./";
     base_path = "";
@@ -544,6 +585,9 @@ int main(int argc, char** argv) {
     } else {
         prep_list(file_path, list_all);
     }
+
+    // TODO:
+    //free(color_print);
 
     return(0);
 }
