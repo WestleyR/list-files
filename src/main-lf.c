@@ -1,7 +1,7 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Nov 16, 2019
+// date: Nov 23, 2019
 // version-1.2.1
 //
 // The Clear BSD License
@@ -38,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.1-beta-2, Nov 18, 2019"
+#define SCRIPT_VERSION "v1.2.1-beta-4, Nov 23, 2019"
 
 char *script_name;
 char *base_path = NULL;
@@ -139,18 +139,19 @@ int is_zip_file(const char* file) {
 int find_link(char* symlink, const char* name) {
     symlink[0] = '\0';
 
-    char link_buff[126];
+    char link_buff[256];
     link_buff[0] = '\0';
 
     ssize_t len = readlink(name, link_buff, sizeof(link_buff));
     if (len == -1) {
-        perror("readlink");
+        //perror("readlink");
+        perror(name);
         fprintf(stderr, "Unable to find link for: %s\n", name);
         return(-1);
     }
 
     strcpy(symlink, link_buff);
-    symlink[len] = '\0';
+//    symlink[len] = '\0';
 
     return(0);
 }
@@ -169,7 +170,7 @@ int file_info(const char* file_path) {
     strcat(full_file_path, file_path);
 
     if (rel_path != 0) {
-        print_name = full_file_path;
+        print_name = strdup(full_file_path);
     } else {
         print_name = strdup(file_path);
     }
@@ -209,7 +210,7 @@ int file_info(const char* file_path) {
     if (no_color_print == 0) {
         if (S_ISLNK(info.st_mode)) {
             char *link_path;
-            link_path = (char*) malloc(2 * sizeof(full_file_path));
+            link_path = (char*) malloc(256);
 
             int err = find_link(link_path, full_file_path);
             if (err != 0) {
@@ -265,12 +266,13 @@ int list_files(const char* list_path, int list_all) {
 
         if (mr_list != 0) {
             if (rel_path != 0) {
-                char r_path[200];
+                char r_path[256];
                 r_path[0] = '\0';
-                strcat(r_path, list_path);
+                //strcat(r_path, list_path);
+                strcpy(r_path, list_path);
                 strcat(r_path, de->d_name);
                 printf("%s\n", r_path);
-                r_path[0] = '\0';
+                //r_path[0] = '\0';
             } else {
                 printf("%s\n", de->d_name);
             }

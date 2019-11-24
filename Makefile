@@ -1,8 +1,8 @@
 # Created by: WestleyR
 # email: westleyr@nym.hush.com
-# Date: Nov 18, 2019
+# Date: Nov 32, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.10
+# Version-1.0.11
 #
 # The Clear BSD License
 #
@@ -20,7 +20,7 @@ PREFIX = /usr/local
 
 MAIN = src/main-lf.c
 
-COMMIT = "$(shell git log -1 --oneline --decorate=short --no-color || echo "ERROR: unable to get commit hash" >&2)"
+COMMIT = "$(shell git log -1 --oneline --decorate=short --no-color || ( echo 'ERROR: unable to get commit hash' >&2 ; echo unknown ) )"
 
 CFLAGS += -DCOMMIT_HASH=\"$(COMMIT)\"
 
