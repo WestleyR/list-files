@@ -38,7 +38,7 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.2-beta-1, Nov 23, 2019"
+#define SCRIPT_VERSION "v1.2.2-beta-2, Nov 23, 2019"
 
 char *base_path = NULL;
 
@@ -101,7 +101,7 @@ char* readable_fs(double bytes) {
     int i = 0;
     char* buf;
     float size = bytes;
-    buf = (char*) malloc(10 * sizeof(char*));
+    buf = (char*) malloc(10 * sizeof(char));
     const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
 
     while (size > 1024) {
@@ -161,10 +161,10 @@ int file_info(const char* file_path) {
     struct stat info;
 
     char *full_file_path;
-    full_file_path = (char*) malloc(256 * sizeof(char*));
+    full_file_path = (char*) malloc(256 * sizeof(char));
 
     char *print_name;
-    print_name = (char*) malloc(256 * sizeof(char*));
+    print_name = (char*) malloc(256 * sizeof(char));
 
     strcpy(full_file_path, base_path);
     strcat(full_file_path, file_path);
@@ -210,7 +210,7 @@ int file_info(const char* file_path) {
     if (no_color_print == 0) {
         if (S_ISLNK(info.st_mode)) {
             char *link_path;
-            link_path = (char*) malloc(256 * sizeof(char*));
+            link_path = (char*) malloc(256 * sizeof(char));
 
             int err = find_link(link_path, full_file_path);
             if (err != 0) {
@@ -232,7 +232,7 @@ int file_info(const char* file_path) {
     } else {
         if (S_ISLNK(info.st_mode)) {
             char *link_path;
-            link_path = (char*) malloc(256 * sizeof(char*));
+            link_path = (char*) malloc(256 * sizeof(char));
 
             int err = find_link(link_path, full_file_path);
             if (err != 0) {
@@ -293,7 +293,7 @@ int max_len_files(const char* list_path, int list_all) {
     struct stat info;
 
     char *full_file_path;
-    full_file_path = (char*) malloc(256 * sizeof(char*));
+    full_file_path = (char*) malloc(256 * sizeof(char));
     if (full_file_path == NULL) {
         perror("malloc");
         return(1);
@@ -506,7 +506,7 @@ int main(int argc, char** argv) {
     int opt = 0;
 
     char* color_print;
-    color_print = (char*) malloc(5 * sizeof(char*));
+    color_print = (char*) malloc(5 * sizeof(char));
 
     base_path = "";
 
