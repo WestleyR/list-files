@@ -38,9 +38,8 @@
 #define BOLDWHITE "\033[1m\033[37m"   // bold white
 #define COLORRESET "\033[0m"          // reset
 
-#define SCRIPT_VERSION "v1.2.1-beta-4, Nov 23, 2019"
+#define SCRIPT_VERSION "v1.2.1-beta, Nov 23, 2019"
 
-char *script_name;
 char *base_path = NULL;
 
 #ifndef WITHOUT_NAME_GROUP_OUTPUT
@@ -63,7 +62,7 @@ int no_color_print = 0;
 // abs path
 int abs_path = 0;
 
-void help_menu() {
+void help_menu(const char* script_name) {
     printf("Usage:\n");
     printf("  %s [option] <path>\n", script_name);
     printf("\n");
@@ -136,22 +135,22 @@ int is_zip_file(const char* file) {
     return(-1);
 }
 
+// find_link will take a file name (const char* name), and find where that
+// file is linked to (if any). Returns non-zero if failed. symlink must be
+// a large enought buffer to hold the symlink path.
 int find_link(char* symlink, const char* name) {
-    symlink[0] = '\0';
-
     char link_buff[256];
     link_buff[0] = '\0';
 
     ssize_t len = readlink(name, link_buff, sizeof(link_buff));
     if (len == -1) {
-        //perror("readlink");
-        perror(name);
+        perror("readlink");
         fprintf(stderr, "Unable to find link for: %s\n", name);
         return(-1);
     }
 
+    symlink[0] = '\0';
     strcpy(symlink, link_buff);
-//    symlink[len] = '\0';
 
     return(0);
 }
@@ -232,7 +231,7 @@ int file_info(const char* file_path) {
     } else {
         if (S_ISLNK(info.st_mode)) {
             char *link_path;
-            link_path = (char*) malloc(2 * sizeof(full_file_path));
+            link_path = (char*) malloc(256);
 
             int err = find_link(link_path, full_file_path);
             if (err != 0) {
@@ -251,7 +250,7 @@ int file_info(const char* file_path) {
     return(0);
 }
 
-// Will list files in a directory
+// Will list files in a directory.
 int list_files(const char* list_path, int list_all) {
     DIR *dr;
     struct dirent *de;
@@ -268,11 +267,9 @@ int list_files(const char* list_path, int list_all) {
             if (rel_path != 0) {
                 char r_path[256];
                 r_path[0] = '\0';
-                //strcat(r_path, list_path);
                 strcpy(r_path, list_path);
                 strcat(r_path, de->d_name);
                 printf("%s\n", r_path);
-                //r_path[0] = '\0';
             } else {
                 printf("%s\n", de->d_name);
             }
@@ -388,14 +385,13 @@ int max_len_files(const char* list_path, int list_all) {
         }
 
         full_file_path[0] = '\0';
-        //full_file_path = NULL;
     }
     closedir(dr);
 
-    ml[mindex].uid_num = 0;
-    ml[mindex].max_uid = 0;
-    ml[mindex].pid_num = 0;
-    ml[mindex].max_pid = 0;
+    ml[mindex].uid_num = '\0';
+    ml[mindex].max_uid = '\0';
+    ml[mindex].pid_num = '\0';
+    ml[mindex].max_pid = '\0';
     ml[mindex].end = 0;
 
     if (mindex < 10) {
@@ -413,10 +409,7 @@ int max_len_files(const char* list_path, int list_all) {
     ml[0].max_uid = '\0';
     ml[0].pid_num = '\0';
     ml[0].max_pid = '\0';
-    ml[0].end = '\0';
-
-    //    struct max_list ml[0] = {};
-    //    ml[0] = (const struct max_list){};
+    ml[0].end = 0;
 
     if ((max_own_len > 20) || (max_grup_len > 20)) {
         printf("INTERNAL ERROR; recovering\n");
@@ -445,7 +438,7 @@ int add_slash(char* path) {
     return(0);
 }
 
-int prep_list(const char *file_path, int list_all) {
+int prep_list(const char* script_name, const char *file_path, int list_all) {
     struct stat s;
     char* path = strdup(file_path);
 
@@ -494,14 +487,11 @@ int prep_list(const char *file_path, int list_all) {
 }
 
 int main(int argc, char** argv) {
-    script_name = argv[0];
-
-    char* file_path;
-
     // -a option
     int list_all = 0;
 
-    // If piped or redirected
+    // If piped or redirected, dont use color unless
+    // overidded.
     if (isatty(STDOUT_FILENO) == 0) {
         no_color_print = 1;
     }
@@ -509,9 +499,8 @@ int main(int argc, char** argv) {
     int opt = 0;
 
     char* color_print;
-    color_print = (char*) malloc(10);
+    color_print = (char*) malloc(5 * sizeof(char*));
 
-    file_path = "./";
     base_path = "";
 
     static struct option long_options[] = {
@@ -541,10 +530,10 @@ int main(int argc, char** argv) {
                 rel_path = 1;
                 break;
             case 'c':
-                color_print = optarg;
+                strcpy(color_print, optarg);
                 break;
             case 'h':
-                help_menu();
+                help_menu(argv[0]);
                 return(0);
                 break;
             case 'V':
@@ -570,22 +559,20 @@ int main(int argc, char** argv) {
         } else if (strcmp(color_print, "off") == 0) {
             no_color_print = 1;
         } else {
-            fprintf(stderr, "%s: --color: %s: invalid argument\n", script_name, color_print);
+            fprintf(stderr, "%s: --color: %s: invalid argument\n", argv[0], color_print);
             return(22);
         }
     }
+    free(color_print);
 
     if (optind < argc) {
         for (int i = optind; i < argc; i++) {
-            file_path = argv[i];
-            prep_list(file_path, list_all);
+            prep_list(argv[0], argv[i], list_all);
         }
     } else {
-        prep_list(file_path, list_all);
+        prep_list(argv[0], "./", list_all);
     }
 
-    // TODO:
-    //free(color_print);
 
     return(0);
 }
