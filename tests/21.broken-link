@@ -1,0 +1,10 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+# TODO: add color check here
+run-test "lf broken symlink" "./lf tests/testdata" "broken-link  ->  non-existent-link" "" 0
+run-test "lf broken symlink" "./lf tests/testdata/broken-link" "broken-link  ->  non-existent-link" "" 0
+
+

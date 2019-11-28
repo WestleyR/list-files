@@ -2,7 +2,7 @@
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
 // date: Nov 23, 2019
-// version-1.2.2
+// version-1.3.0
 //
 // The Clear BSD License
 //
@@ -29,16 +29,17 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define BOLDRED "\033[1m\033[31m"     // bold red
-#define BOLDGREEN "\033[1m\033[32m"   // bold green
-#define BOLDYELLOW "\033[1m\033[33m"  // bold yellow
-#define BOLDBLUE "\033[1m\033[34m"    // bold blue
-#define BOLDMAGENTA "\033[1m\033[35m" // bold magenta
-#define BOLDCYAN "\033[1m\033[36m"    // bold cyan
-#define BOLDWHITE "\033[1m\033[37m"   // bold white
-#define COLORRESET "\033[0m"          // reset
+#define BBOLDRED "\033[40m\033[1m\033[31m" // bold red with black-ish backround
+#define BOLDRED "\033[1m\033[31m"          // bold red
+#define BOLDGREEN "\033[1m\033[32m"        // bold green
+#define BOLDYELLOW "\033[1m\033[33m"       // bold yellow
+#define BOLDBLUE "\033[1m\033[34m"         // bold blue
+#define BOLDMAGENTA "\033[1m\033[35m"      // bold magenta
+#define BOLDCYAN "\033[1m\033[36m"         // bold cyan
+#define BOLDWHITE "\033[1m\033[37m"        // bold white
+#define COLORRESET "\033[0m"               // reset
 
-#define SCRIPT_VERSION "v1.2.2, Nov 23, 2019"
+#define SCRIPT_VERSION "v1.3.0, Nov 24, 2019"
 
 char *base_path = NULL;
 
@@ -67,13 +68,13 @@ void help_menu(const char* script_name) {
     printf("  %s [option] <path>\n", script_name);
     printf("\n");
     printf("Options:\n");
-    printf("  -a, --all       list all files\n");
-    printf("  -p, --rel-path  list files with relative path\n");
-    printf("  -1, -m, --mr    only print file names (mr), color will be off\n");
-    printf("  -c, --color=    color output, options: on,off,auto\n");
-    printf("  -h, --help      print help menu\n");
-    printf("  -C, --commit    print the github commit\n");
-    printf("  -V, --version   print version\n");
+    printf("  -a, --all          list all files\n");
+    printf("  -p, --rel-path     list files with relative path\n");
+    printf("  -1, -m, --mr       only print file names (mr), color will be off\n");
+    printf("  -c, --color=       color output, options: on,off,auto\n");
+    printf("  -h, --help         print help menu\n");
+    printf("  -C, --commit       print the github commit\n");
+    printf("  -V, --version      print version\n");
     printf("\n");
     printf("Permisions:\n");
     printf("  - = file, if its the first option,\n");
@@ -216,7 +217,22 @@ int file_info(const char* file_path) {
             if (err != 0) {
                 strcpy(link_path, "failed to get symlink");
             }
-            printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
+            char full_link_path[strlen(base_path)+strlen(link_path)+1];
+            full_link_path[0] = '\0';
+
+            if (link_path[0] == '/') {
+                strcpy(full_link_path, link_path);
+            } else {
+              strcpy(full_link_path, base_path);
+              strcat(full_link_path, link_path);
+            }
+
+            if (access(full_link_path, F_OK) != 0) {
+                // If the link is broken
+                printf("  %s%s%s  ->  %s%s%s\n", BBOLDRED, print_name, COLORRESET, BBOLDRED, link_path, COLORRESET);
+            } else {
+                printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
+            }
             free(link_path);
         } else if (S_ISDIR(info.st_mode)) {
             printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
@@ -449,7 +465,7 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
     struct stat s;
     char* path = strdup(file_path);
 
-    if (stat(path, &s) != 0) {
+    if (lstat(path, &s) != 0) {
         fprintf(stderr, "%s: %s: No such file or directory\n", script_name, path);
         exit(2);
     }
@@ -467,7 +483,6 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
 
     add_slash(path);
     base_path = strdup(path);
-
 
     if (access(file_path, F_OK) != -1) {
         if (access(file_path, R_OK) == -1) {
@@ -522,7 +537,7 @@ int main(int argc, char** argv) {
         {NULL, 0, 0, 0}
     };
 
-    while ((opt = getopt_long(argc, argv,"c:1mapVhC", long_options, 0)) != -1) {
+    while ((opt = getopt_long(argc, argv,"c:1mabpVhC", long_options, 0)) != -1) {
         switch (opt) {
             case '1':
                 mr_list = 1;
