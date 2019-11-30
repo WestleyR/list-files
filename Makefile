@@ -2,7 +2,7 @@
 # email: westleyr@nym.hush.com
 # Date: Nov 23, 2019
 # https://github.com/WestleyR/list-files
-# Version-1.0.12
+# Version-2.0.0
 #
 # The Clear BSD License
 #
@@ -26,6 +26,14 @@ ifeq ($(DEBUG), true)
 	CFLAGS += -DDEBUG
 endif
 
+ifeq ($(STATIC), true)
+	CFLAGS += -static -DWITHOUT_NAME_GROUP_OUTPUT 
+endif
+
+ifeq ($(WITH_ID), true)
+	CFLAGS += -DWITHOUT_NAME_GROUP_OUTPUT 
+endif
+
 SRC = $(wildcard src/*.c)
 SRC += $(wildcard deps/*/*.c)
 
@@ -40,29 +48,21 @@ options:
 	@echo ""
 	@echo "$$ make [option]"
 	@echo ""
-	@echo " [no-option], all           compile the project"
-	@echo " static                     compile the static project"
-	@echo " without-owner-group-names  dont print the user/group names,"
-	@echo " DEBUG=true                 compile target as debug"
-	@echo "                            instead print the uid/gid."
-	@echo " install                    install the binary to the PREFIX,"
-	@echo "                            (dafault '/usr/local/bin')"
-	@echo " clean                      clean the binary"
-	@echo " uninstall                  uninstall the binary from PREFIX"
+	@echo " [no-option],  all compile the project"
+	@echo " STATIC=true   compile the static project"
+	@echo " WITH_ID=true  dont print the user/group names,"
+	@echo " DEBUG=true    compile target as debug"
+	@echo "               instead print the uid/gid."
+	@echo " install       install the binary to the PREFIX,"
+	@echo "               (dafault '/usr/local/bin')"
+	@echo " clean         clean the binary"
+	@echo " uninstall     uninstall the binary from PREFIX"
 	@echo ""
 
 .PHONY:
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
 	
-.PHONY:
-static: $(OBJS)
-	$(CC) $(CFLAGS) -DWITHOUT_NAME_GROUP_OUTPUT -static -o $(TARGET) $(MAIN)
-
-.PHONY:
-without-ouner-group-names: $(OBJS)
-	$(CC) $(CFLAGS) -DWITHOUT_NAME_GROUP_OUTPUT -o $(TARGET) $(MAIN)
-
 .PHONY:
 %.o: %.c
 	$(CC) $(DEP_FLAG) $(CFLAGS) $(LDFLAGS) -o $@ -c $<
