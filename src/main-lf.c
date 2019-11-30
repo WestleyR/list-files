@@ -1,8 +1,8 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Nov 23, 2019
-// version-1.3.0
+// date: Nov 29, 2019
+// version-1.4.0
 //
 // The Clear BSD License
 //
@@ -38,7 +38,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.3.0, Nov 24, 2019"
+#define SCRIPT_VERSION "v1.4.0, Nov 29, 2019"
 
 char *base_path = NULL;
 
