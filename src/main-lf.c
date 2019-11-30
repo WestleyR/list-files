@@ -25,19 +25,18 @@
 #include <pwd.h>
 #endif
 
+#include "color.h"
+#include "iszip.h"
+#include "readable-fs.h"
+#include "extcmp.h"
+#include "find_link.h"
+#include "add_slash.h"
+
+#include "c-utils/c-utils.h"
+
 #ifndef COMMIT_HASH
 #define COMMIT_HASH "unknown"
 #endif
-
-#define BBOLDRED "\033[40m\033[1m\033[31m" // bold red with black-ish backround
-#define BOLDRED "\033[1m\033[31m"          // bold red
-#define BOLDGREEN "\033[1m\033[32m"        // bold green
-#define BOLDYELLOW "\033[1m\033[33m"       // bold yellow
-#define BOLDBLUE "\033[1m\033[34m"         // bold blue
-#define BOLDMAGENTA "\033[1m\033[35m"      // bold magenta
-#define BOLDCYAN "\033[1m\033[36m"         // bold cyan
-#define BOLDWHITE "\033[1m\033[37m"        // bold white
-#define COLORRESET "\033[0m"               // reset
 
 #define SCRIPT_VERSION "v1.3.0, Nov 24, 2019"
 
@@ -96,65 +95,6 @@ void version_print() {
 void version_commit() {
     printf("%s\n", COMMIT_HASH);
     return;
-}
-
-char* readable_fs(double bytes) {
-    int i = 0;
-    char* buf;
-    float size = bytes;
-    buf = (char*) malloc(10 * sizeof(char));
-    const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-
-    while (size > 1024) {
-        size /= 1024;
-        i++;
-    }
-    sprintf(buf, "%.*f %s", i, size, units[i]);
-
-    return(buf);
-}
-
-int ends_ext(const char *string, const char* ext) {
-    string = strrchr(string, '.');
-
-    if (string != NULL) {
-        return(strcmp(string, ext));
-    }
-
-    return(-1);
-}
-
-int is_zip_file(const char* file) {
-    if (ends_ext(file, ".gz") == 0) {
-        return(0);
-    } else if (ends_ext(file, ".lz4") == 0) {
-        return(0);
-    } else if (ends_ext(file, ".zip") == 0) {
-        return(0);
-    }
-
-    return(-1);
-}
-
-// find_link will take a file name (const char* name), and find where that
-// file is linked to (if any). Returns non-zero if failed. symlink must be
-// a large enought buffer to hold the symlink path.
-int find_link(char* symlink, const char* name) {
-    char link_buff[256];
-    link_buff[0] = '\0';
-
-    ssize_t len = readlink(name, link_buff, sizeof(link_buff));
-    if (len == -1) {
-        perror("readlink");
-        fprintf(stderr, "Unable to find link for: %s\n", name);
-        return(-1);
-    }
-
-    symlink[0] = '\0';
-    strcpy(symlink, link_buff);
-    symlink[len] = '\0';
-
-    return(0);
 }
 
 int file_info(const char* file_path) {
@@ -238,7 +178,7 @@ int file_info(const char* file_path) {
             printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
         } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
             printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
-        } else if (is_zip_file(full_file_path) == 0) {
+        } else if (iszip(full_file_path) == 0) {
             printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
         } else if (access(full_file_path, R_OK) != 0) {
             printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
@@ -445,21 +385,6 @@ int max_len_files(const char* list_path, int list_all) {
     return(0);
 }
 #endif
-
-void add_char_to_string(char* s, char c) {
-    int len = strlen(s);
-    s[len] = c;
-    s[len+1] = '\0';
-}
-
-int add_slash(char* path) {
-    int len = strlen(path);
-    if (path[len-1] != '/') {
-        add_char_to_string(path, '/');
-    }
-
-    return(0);
-}
 
 int prep_list(const char* script_name, const char *file_path, int list_all) {
     struct stat s;
