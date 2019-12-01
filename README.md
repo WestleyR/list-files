@@ -70,3 +70,31 @@ drwx r-xr-x  westleyk  westleyk  4.0 KB   pre-compiled
 ```
 
 <br>
+
+## list-files-utils
+
+As of v1.4.1, list-files also offers a `list-files-utils` functions. You can
+use them in your own project by copying all but `main-list-files.c` from `src`
+to your own `src` or `deps` directory. Or if you are using `clib`, add this to
+your `clib.json` or `package.json`:
+
+```json
+"dependencies": {
+  "WestleyR/list-files": "v1.4.2"
+}
+```
+
+## License
+
+```
+The Clear BSD License
+
+Copyright (c) 2019 WestleyR
+All rights reserved.
+```
+
+See the [LICENSE file](https://github.com/WestleyR/list-files/blob/master/LICENSE)
+for more details.
+
+<br>
+
