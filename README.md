@@ -1,4 +1,4 @@
-# List File(s) And Directory(s)
+# List Files in a Directory
 
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20CI/badge.svg)
 
@@ -16,23 +16,22 @@ There are several ways to install lf, you can:
 ### Install lf from source:
 
 ```
-cd ~/github-repos  # optional
-
 git clone https://github.com/WestleyR/list-files.git
 cd lf/
 
 # checkout to a stable version (optional)
-git checkout v1.1.0
+git checkout v1.5.0
 
 make
 make test # optional, it only takes a second
 sudo make install
 ```
 
-You can also install to a specified prefix:
+You can also install to a specified prefix; like your home dir:
+_(default: `usr/local`)_
 
 ```
-$ make install PREFIX=/some/prefix
+$ make install PREFIX=${HOME}/.local
 ```
 
 <br>
@@ -51,7 +50,7 @@ Then, you can install like normal:
 $ brew install list-files
 ```
 
-brew also makes it easy to uninstall, and update lf.
+brew also makes it easy to uninstall, and update `lf`.
 
 
 ## Example:

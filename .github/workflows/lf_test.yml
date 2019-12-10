@@ -13,8 +13,8 @@ jobs:
       run: make
     - name: make test [default]
       run: make test
-    - name: make clean && make without-ouner-group-names
-      run: make cleanall && make WITH_ID=true
+    - name: make clean && make [without-ouner-group-names]
+      run: make cleanall && make WITHOUT_ID=true
     - name: make test [without-ouner-group-names]
       run: make test
 
