@@ -58,14 +58,17 @@ brew also makes it easy to uninstall, and update lf.
 
 ```bash
 $ ./lf 
--rwx r-xr-x  westleyk  westleyk  22.8 KB  lf
+-rwx r-xr-x  westleyk  westleyk  22.7 KB  lf
 -rw- r--r--  westleyk  westleyk  1.7 KB   tests-funcs
 -rw- r--r--  westleyk  westleyk  1.8 KB   Makefile
 drwx r-xr-x  westleyk  westleyk  4.0 KB   src
+-rw- r--r--  westleyk  westleyk  2.4 KB   checksum.ssum
+drwx r-xr-x  westleyk  westleyk  4.0 KB   deps
 drwx r-xr-x  westleyk  westleyk  4.0 KB   tests
 drwx r-xr-x  westleyk  westleyk  4.0 KB   pre-compiled
 -rw- r--r--  westleyk  westleyk  1.1 KB   run-tests
--rw- r--r--  westleyk  westleyk  1.5 KB   README.md
+-rw- r--r--  westleyk  westleyk  601 B    clib.json
+-rw- r--r--  westleyk  westleyk  2.0 KB   README.md
 -rw- r--r--  westleyk  westleyk  1.6 KB   LICENSE
 ```
 
@@ -80,9 +83,11 @@ your `clib.json` or `package.json`:
 
 ```json
 "dependencies": {
-  "WestleyR/list-files": "v1.4.2"
+  "WestleyR/list-files": "v1.5.0"
 }
 ```
+
+_**NOTE:** be sure to check the latest release._
 
 ## License
 
