@@ -20,7 +20,7 @@ git clone https://github.com/WestleyR/list-files.git
 cd lf/
 
 # checkout to a stable version (optional)
-git checkout v1.5.0
+git checkout v1.5.2
 
 make
 make test # optional, it only takes a second
@@ -82,7 +82,7 @@ your `clib.json` or `package.json`:
 
 ```json
 "dependencies": {
-  "WestleyR/list-files": "v1.5.0"
+  "WestleyR/list-files": "v1.5.2"
 }
 ```
 

@@ -1,4 +1,4 @@
-98237076 ./lf
+9cc35362 ./lf
 d5864fa4 ./tests-funcs
 a446e7ef ./Makefile
 1d34ef9f ./src/add_slash.c
@@ -10,7 +10,7 @@ a4a200f1 ./src/iszip.o
 9ddddf35 ./src/add_slash.h
 696769b6 ./src/add_slash.o
 96d9b47e ./src/extcmp.c
-45c5ad37 ./src/main-lf.o
+bc5a6129 ./src/main-lf.o
 6cf0f78a ./src/extcmp.o
 5cc4a5fa ./src/extcmp.h
 7f3273d3 ./src/main-lf.c
@@ -19,7 +19,6 @@ a4a200f1 ./src/iszip.o
 ec228f7d ./src/color.h
 29a1f82f ./src/find_link.o
 27bfa6fa ./src/readable-fs.c
-a5b43cf8 ./checksum.sha256sum
 b863aa26 ./deps/c-utils/c-utils.c
 04e33b8d ./deps/c-utils/c-utils.h
 e0601357 ./deps/c-utils/c-utils.o
@@ -29,7 +28,6 @@ c02f0934 ./deps/c-utils/package.json
 d781152a ./tests/11.-m_compair_with_ls_wc
 ddc92836 ./tests/9.compair_with_ls_wc
 abcffc7b ./tests/4.-a_option
-9bb3b173 ./tests/22.one-root-file
 c85f1a64 ./tests/21.broken-link
 bc3aa965 ./tests/12.version_flag
 40784a71 ./tests/testdata/.fileh
@@ -62,6 +60,6 @@ ac970207 ./tests/14.no_such_file_or_directory
 e53c8735 ./pre-compiled/dynamic/x86_64/lf
 1ff258b4 ./pre-compiled/dynamic/x86_64/README.md
 1a1a4c77 ./run-tests
-1f74036f ./clib.json
-7ecac48d ./README.md
+43c9d8df ./clib.json
+79af067d ./README.md
 858867e5 ./LICENSE
