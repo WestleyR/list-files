@@ -1,8 +1,8 @@
 // created by: WestleyR
 // email: westleyr@nym.hush.com
 // https://github.com/WestleyR/list-files
-// date: Dec 8, 2019
-// version-1.5.0
+// date: Dec 12, 2019
+// version-1.5.1
 //
 // The Clear BSD License
 //
@@ -38,7 +38,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.5.0, Dec 8, 2019"
+#define SCRIPT_VERSION "v1.5.1, Dec 12, 2019"
 
 char *base_path = NULL;
 
@@ -275,10 +275,10 @@ int max_len_files(const char* list_path, int list_all) {
 
   struct max_list ml[10];
 
-  ml[0].uid_num = 0;
-  ml[0].max_uid = 0;
-  ml[0].pid_num = 0;
-  ml[0].max_pid = 0;
+  ml[0].uid_num = -1;
+  ml[0].max_uid = -1;
+  ml[0].pid_num = -1;
+  ml[0].max_pid = -1;
   ml[0].end = 1;
 
   int mindex = 0;
@@ -327,7 +327,7 @@ int max_len_files(const char* list_path, int list_all) {
         max_grup_len = grup;
       }
     } else {
-      for (int l = 0; l < 10; l++) {
+      for (int l = 0; l < mindex; l++) {
         if ((info.st_uid == ml[l].uid_num) && (info.st_gid == ml[l].pid_num)) {
           match = 1;
           break;

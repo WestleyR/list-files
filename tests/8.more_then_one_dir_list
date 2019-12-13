@@ -3,5 +3,5 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf dir dir" "./lf tests/testdata tests/testdata | wc -l" "18" "" 0
+run-test "lf dir dir" "./lf tests/testdata tests/testdata | wc -l" "20" "" 0
 
