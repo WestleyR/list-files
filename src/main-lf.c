@@ -1,12 +1,16 @@
-// created by: WestleyR
-// email: westleyr@nym.hush.com
+// Created by: WestleyR
+// Email(s): westleyr@nym.hush.com
+// Last modifyed date: Jan 12, 2020
+// This file version-1.5.2
+//
+// This file is part of the list-files (lf) software:
 // https://github.com/WestleyR/list-files
-// date: Dec 12, 2019
-// version-1.5.2
+//
+// Which that software and this file is licensed under:
 //
 // The Clear BSD License
 //
-// Copyright (c) 2019 WestleyR
+// Copyright (c) 2019-2020 WestleyR
 // All rights reserved.
 //
 // This software is licensed under a Clear BSD License.
@@ -38,7 +42,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.5.2, Dec 12, 2019"
+#define SCRIPT_VERSION "v1.5.3-beta-1, Jan 12, 2020"
 
 char *base_path = NULL;
 
@@ -83,6 +87,8 @@ void help_menu(const char* script_name) {
   printf("  w = writable\n");
   printf("  x = executable\n");
   printf("\n");
+  printf("Copyright (c) 2019-2020 WestleyR, All rights reserved.\n");
+  printf("This software is licensed under a Clear BSD License.\n");
   printf("Source code: https://github.com/WestleyR/list-files\n");
   return;
 }
@@ -154,8 +160,14 @@ int file_info(const char* file_path) {
 #endif
 
   char* file_bytes = readable_fs(info.st_size);
-  printf(" %-*s", max_size, file_bytes);
-  free(file_bytes);
+  if (file_bytes != NULL) {
+    int file_bytes_len = strlen(file_bytes);
+    if (file_bytes_len > max_size) max_size = file_bytes_len;
+    printf(" %-*s", max_size, file_bytes);
+    free(file_bytes);
+  } else {
+    printf(" %-*s", 8, "unknown");
+  }
 
   if (no_color_print == 0) {
     if (S_ISLNK(info.st_mode)) {
@@ -250,7 +262,6 @@ int list_files(const char* list_path, int list_all) {
   return(0);
 }
 
-#ifndef WITHOUT_NAME_GROUP_OUTPUT
 // Will loop files in a directory, and get the max lenth for all the permamiters
 int max_len_files(const char* list_path, int list_all) {
   DIR *dr;
@@ -265,6 +276,7 @@ int max_len_files(const char* list_path, int list_all) {
 
   full_file_path[0] = '\0';
 
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
   struct max_list {
     int uid_num;
     int max_uid;
@@ -283,6 +295,7 @@ int max_len_files(const char* list_path, int list_all) {
 
   int mindex = 0;
   int match = 0;
+#endif
 
   dr = opendir(list_path);
   while ((de = readdir(dr)) != NULL) {
@@ -309,7 +322,7 @@ int max_len_files(const char* list_path, int list_all) {
       free(file_bytes);
     }
 
-
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
     if (mindex >= 9) {
       struct passwd *pw;
       struct group *gr;
@@ -341,7 +354,7 @@ int max_len_files(const char* list_path, int list_all) {
 
         struct passwd *pw;
         struct group *gr;
-  
+
         pw = getpwuid(info.st_uid);
         if (pw != NULL) {
           ml[mindex].uid_num = (int)info.st_uid;
@@ -359,7 +372,7 @@ int max_len_files(const char* list_path, int list_all) {
           ml[mindex].uid_num = (int)info.st_uid;
           ml[mindex].max_uid = 4;
         }
- 
+
         ml[mindex].end = 1;
         mindex++;
       }
@@ -375,11 +388,14 @@ int max_len_files(const char* list_path, int list_all) {
         }
       }
     }
+#endif
 
     full_file_path[0] = '\0';
   }
   closedir(dr);
 
+
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
   ml[mindex].uid_num = 0;
   ml[mindex].max_uid = 0;
   ml[mindex].pid_num = 0;
@@ -408,12 +424,12 @@ int max_len_files(const char* list_path, int list_all) {
     max_own_len = 8;
     max_grup_len = 8;
   }
+#endif
 
   free(full_file_path);
 
   return(0);
 }
-#endif
 
 int prep_list(const char* script_name, const char *file_path, int list_all) {
   struct stat s;
@@ -448,11 +464,9 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
     exit(1);
   }
 
-#ifndef WITHOUT_NAME_GROUP_OUTPUT
   if (mr_list != 1) {
     max_len_files(path, list_all);
   }
-#endif
 
   if (list_files(path, list_all) != 0) {
     printf("There was a problome listing files\n");
