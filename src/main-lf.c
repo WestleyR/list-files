@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email(s): westleyr@nym.hush.com
-// Last modifyed date: Jan 12, 2020
-// This file version-1.5.2
+// Last modifyed date: Mar 1, 2020
+// This file version-1.5.3
 //
 // This file is part of the list-files (lf) software:
 // https://github.com/WestleyR/list-files
@@ -42,7 +42,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.5.3-beta-1, Jan 12, 2020"
+#define SCRIPT_VERSION "v1.5.3, Mar 1, 2020"
 
 char *base_path = NULL;
 
