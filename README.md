@@ -20,7 +20,7 @@ git clone https://github.com/WestleyR/list-files.git
 cd lf/
 
 # checkout to a stable version (optional)
-git checkout v1.5.2
+git checkout v1.5.3
 
 make
 make test # optional, it only takes a second
@@ -33,6 +33,9 @@ _(default: `usr/local`)_
 ```
 $ make install PREFIX=${HOME}/.local
 ```
+
+_**NOTE:** Check for the latest release on the
+[release page](https://github.com/WestleyR/list-files/releases)_
 
 <br>
 
@@ -82,7 +85,7 @@ your `clib.json` or `package.json`:
 
 ```json
 "dependencies": {
-  "WestleyR/list-files": "v1.5.2"
+  "WestleyR/list-files": "v1.5.3"
 }
 ```
 
@@ -93,7 +96,7 @@ _**NOTE:** be sure to check the latest release._
 ```
 The Clear BSD License
 
-Copyright (c) 2019 WestleyR
+Copyright (c) 2019-2020 WestleyR
 All rights reserved.
 ```
 
