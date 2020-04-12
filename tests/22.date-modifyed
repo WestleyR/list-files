@@ -1,0 +1,18 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <also contains> <expect-exit-code>
+
+run-test "lf date modifyed" "./lf tests/testdata" "2020-04-07" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file1" "2020-04-07" "" 0
+
+run-test "lf date modifyed" "./lf tests/testdata/" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file2" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/link_to" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/link_from" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/broken-link" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/root-file" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file_r" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/filex" "2019-12-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file_no_perm" "2019-12-12" "" 0
+

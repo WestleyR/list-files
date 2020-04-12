@@ -2,7 +2,8 @@
 
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20CI/badge.svg)
 
-`lf` is a **simple**, and **fast** file/directory lister with color hightlighting, file permision and file links!
+`lf` is a **simple**, and **fast** file/directory lister with color
+hightlighting, file permision and file links!
 
 <br>
 
@@ -13,13 +14,28 @@ There are several ways to install lf, you can:
  - [clone the repo and build from source](#install-lf-from-source)
  - [install via brew](#install-lf-via-brew)
 
-### Install lf from source:
+### Install from source:
+
+First, download the source code:
+
+Using git:
 
 ```
 git clone https://github.com/WestleyR/list-files.git
+```
+
+Or downloading the tarball:
+
+```
+wget https://github.com/WestleyR/list-files/archive/master.tar.gz
+```
+
+Then checkout, and compile the source code:
+
+```
 cd lf/
 
-# checkout to a stable version (optional)
+# Checkout to a stable version *only if you downloaded with git* (optional)
 git checkout v1.5.3
 
 make
@@ -39,7 +55,7 @@ _**NOTE:** Check for the latest release on the
 
 <br>
 
-### Install lf via brew:
+### Install via brew:
 
 First, you will need to add my tap:
 
@@ -53,8 +69,11 @@ Then, you can install like normal:
 $ brew install list-files
 ```
 
-brew also makes it easy to uninstall, and update `lf`.
+### Install via [gpack](https://github.com/WestleyR/gpack) (beta)
 
+```
+$ gpack install WestleyR/list-files
+```
 
 ## Example:
 
@@ -67,7 +86,6 @@ drwx r-xr-x  westleyk  westleyk  4.0 KB   src
 -rw- r--r--  westleyk  westleyk  2.4 KB   checksum.ssum
 drwx r-xr-x  westleyk  westleyk  4.0 KB   deps
 drwx r-xr-x  westleyk  westleyk  4.0 KB   tests
-drwx r-xr-x  westleyk  westleyk  4.0 KB   pre-compiled
 -rw- r--r--  westleyk  westleyk  1.1 KB   run-tests
 -rw- r--r--  westleyk  westleyk  601 B    clib.json
 -rw- r--r--  westleyk  westleyk  2.0 KB   README.md

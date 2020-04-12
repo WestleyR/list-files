@@ -1,12 +1,9 @@
 // Created by: WestleyR
-// Email(s): westleyr@nym.hush.com
-// Last modifyed date: Mar 1, 2020
-// This file version-1.5.3
+// Email: westleyr@nym.hush.com
+// Url: https://github.com/WestleyR/list-files
+// Last modified date: 2020-04-11
 //
-// This file is part of the list-files (lf) software:
-// https://github.com/WestleyR/list-files
-//
-// Which that software and this file is licensed under:
+// This file is licensed under the terms of
 //
 // The Clear BSD License
 //
@@ -42,7 +39,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.5.3, Mar 1, 2020"
+#define SCRIPT_VERSION "v1.6.0-beta-1, Apr 6, 2020"
 
 char *base_path = NULL;
 
@@ -103,6 +100,31 @@ void version_commit() {
   return;
 }
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+char* get_filedate(struct stat finfo) {
+  char* ret;
+  ret = (char*) malloc(20 * sizeof(char));
+  if (ret == NULL) {
+    perror("malloc");
+    return(NULL);
+  }
+
+  struct tm * p = localtime(&finfo.st_mtime);
+  
+  // For year-month-day
+  strftime(ret, 1000, "%Y-%m-%d", p);
+
+  // For day-month-year
+  //strftime(ret, 1000, "%d-%m-%Y", p);
+
+  return(ret);
+}
+
 int file_info(const char* file_path) {
   struct stat sb;
   struct stat info;
@@ -158,6 +180,14 @@ int file_info(const char* file_path) {
     printf("  %-*s ", max_grup_len, gr->gr_name);
   }
 #endif
+
+  char* file_date = get_filedate(info);
+  if (file_date == NULL) {
+    printf(" %s ", "0000-00-00");
+  } else {
+    printf(" %s ", file_date);
+    free(file_date);
+  }
 
   char* file_bytes = readable_fs(info.st_size);
   if (file_bytes != NULL) {
