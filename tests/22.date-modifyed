@@ -3,19 +3,18 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <also contains> <expect-exit-code>
 
-# Not testing date here since it can very from system to system depending on
-# date/time zone.
+# Can only test 202, of 2020-01-01, since the date is reset after download.
 
-run-test "lf date modifyed" "./lf tests/testdata" "2020-04" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file1" "2020-04" "" 0
+run-test "lf date modifyed" "./lf tests/testdata" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file1" "202" "" 0
 
-run-test "lf date modifyed" "./lf tests/testdata/" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file2" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/link_to" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/link_from" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/broken-link" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/root-file" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file_r" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/filex" "2019-12" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file_no_perm" "2019-12" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file2" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/link_to" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/link_from" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/broken-link" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/root-file" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file_r" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/filex" "202" "" 0
+run-test "lf date modifyed" "./lf tests/testdata/file_no_perm" "202" "" 0
 
