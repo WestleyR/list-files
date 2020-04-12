@@ -9,7 +9,7 @@ ff08d1c0 ./package.sh
 12d7a5ca ./src/add_slash.h
 11e6f86f ./src/extcmp.c
 b0644ed1 ./src/extcmp.h
-5fda8d85 ./src/main-lf.c
+d732ad00 ./src/main-lf.c
 c8f0e55d ./src/find_link.c
 dc14613d ./src/color.h
 8b8fa2c5 ./src/readable-fs.c
@@ -22,6 +22,7 @@ dde90291 ./deps/checksum.sha256sum
 842b15cb ./deps/checksum.ssum20
 6559e7dd ./pkg/list-files/1.6.0-beta-1/bin/lf
 abd5b9b6 ./pkg/lf-v1.6.0-beta-1-x86_64_linux.tar.gz
+05105aec ./re-checksum
 d8ab0a38 ./tests/15.read_only_perm_check
 ffef9d5f ./tests/2.fail-slash-on-file
 2ce72dd0 ./tests/11.-m_compair_with_ls_wc

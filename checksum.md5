@@ -9,7 +9,7 @@ b90f200691198838c6267b3b66bc978a  ./src/iszip.h
 364ac599085a2e8948983f5d4877ba13  ./src/add_slash.h
 8fcd9d3cf481635b1189ae9733727117  ./src/extcmp.c
 8a497ac1530bc75876e573768ccc3a97  ./src/extcmp.h
-f5a238b87fdedae64183582d59369850  ./src/main-lf.c
+cbfc4b6512061d56de2d3649a6a31f24  ./src/main-lf.c
 91b251109975327775569e7fbe3cbd37  ./src/find_link.c
 02cdb4d5a4fb81bad5fb24fa1bd9a4e3  ./src/color.h
 75cf6bc3ca2cbd843fcfe9e3c792a2e2  ./src/readable-fs.c
@@ -22,6 +22,7 @@ d03c10a8f3c691e9fa6d8df4a52d8270  ./deps/c-utils/package.json
 da3aa2e8d4a2d5dc93e294fe3246baf3  ./deps/checksum.ssum20
 b73d316e556902727795b1aee5c667dd  ./pkg/list-files/1.6.0-beta-1/bin/lf
 bf00c0a65a6ea1679669f2ea4ae88d28  ./pkg/lf-v1.6.0-beta-1-x86_64_linux.tar.gz
+21adb28fdc5f955ff982128e7dcbdc1d  ./re-checksum
 929d7ad1e8f3cd01651dca756c34f6d6  ./tests/15.read_only_perm_check
 7e92c9fc920f72f0f834d56227f557b6  ./tests/2.fail-slash-on-file
 98a21cd824c76a9a7e8b2d1b72fd66ef  ./tests/11.-m_compair_with_ls_wc

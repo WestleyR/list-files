@@ -1,0 +1,9 @@
+set -ex
+
+make cleanall
+
+find -type f | grep -v git | grep -v ^./checksum | xargs ssum > checksum.ssum20
+find -type f | grep -v git | grep -v ^./checksum | xargs sha256sum > checksum.sha256
+find -type f | grep -v git | grep -v ^./checksum | xargs sha1sum > checksum.sha1
+find -type f | grep -v git | grep -v ^./checksum | xargs md5sum > checksum.md5
+

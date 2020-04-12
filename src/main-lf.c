@@ -39,7 +39,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.6.0-beta-1, Apr 6, 2020"
+#define SCRIPT_VERSION "v1.6.0-beta-2, Apr 11, 2020"
 
 char *base_path = NULL;
 
