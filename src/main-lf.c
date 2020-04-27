@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email: westleyr@nym.hush.com
 // Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-04-11
+// Last modified date: 2020-04-26
 //
 // This file is licensed under the terms of
 //
@@ -39,7 +39,7 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.6.0-beta-2, Apr 11, 2020"
+#define SCRIPT_VERSION "v1.6.0-beta-4, Apr 26, 2020"
 
 char *base_path = NULL;
 

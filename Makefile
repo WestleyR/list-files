@@ -1,7 +1,7 @@
 # Created by: WestleyR
 # Email: westleyr@nym.hush.com
 # Url: https://github.com/WestleyR/list-files
-# Last modified date: 2020-04-11
+# Last modified date: 2020-04-26
 #
 # This file is licensed under the terms of
 #
@@ -84,6 +84,7 @@ clean:
 .PHONY:
 cleanall:
 	 rm -f $(TARGET) $(OBJS)
+	 rm -rf ./pkg
 
 .PHONY:
 uninstall: $(PREFIX)/$(TARGET)
