@@ -19,9 +19,11 @@ TARGET = lf
 
 PREFIX = /usr/local
 
+MODDED = $(shell if command -v git > /dev/null ; then (git diff --exit-code --quiet && echo \"[No changes]\") || echo \"[With uncommited changes]\" ; else echo \"[unknown]\" ; fi)
 COMMIT = "$(shell git log -1 --oneline --decorate=short --no-color || ( echo 'ERROR: unable to get commit hash' >&2 ; echo unknown ) )"
 
 CFLAGS += -DCOMMIT_HASH=\"$(COMMIT)\"
+CFLAGS += -DUNCOMMITED_CHANGES=\"$(MODDED)\"
 
 ifeq ($(DEBUG), true)
 	CFLAGS += -DDEBUG
@@ -62,6 +64,7 @@ options:
 
 .PHONY:
 $(TARGET): $(OBJS)
+	@echo $(MODDED)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
 	
 .PHONY:

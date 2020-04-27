@@ -39,7 +39,11 @@
 #define COMMIT_HASH "unknown"
 #endif
 
-#define SCRIPT_VERSION "v1.6.0-beta-4, Apr 26, 2020"
+#ifndef UNCOMMITED_CHANGES
+#define UNCOMMITED_CHANGES "[unknown]"
+#endif
+
+#define SCRIPT_VERSION "v1.6.0-beta-6, Apr 26, 2020"
 
 char *base_path = NULL;
 
@@ -96,7 +100,7 @@ void version_print() {
 }
 
 void version_commit() {
-  printf("%s\n", COMMIT_HASH);
+  printf("%s %s\n", UNCOMMITED_CHANGES, COMMIT_HASH);
   return;
 }
 
