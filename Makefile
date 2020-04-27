@@ -64,7 +64,6 @@ options:
 
 .PHONY:
 $(TARGET): $(OBJS)
-	@echo $(MODDED)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
 	
 .PHONY:
