@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email: westleyr@nym.hush.com
 // Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-04-26
+// Last modified date: 2020-05-17
 //
 // This file is licensed under the terms of
 //
@@ -43,7 +43,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.6.0-beta-6, Apr 26, 2020"
+#define SCRIPT_VERSION "v1.6.0, May 17, 2020"
 
 char *base_path = NULL;
 
@@ -68,14 +68,20 @@ int no_color_print = 0;
 int abs_path = 0;
 
 void help_menu(const char* script_name) {
+  printf("Copyright (c) 2019-2020 WestleyR, All rights reserved.\n");
+  printf("This software is licensed under a Clear BSD License.\n");
+  printf("\n");
+  printf("Description:\n");
+  printf("  List files in a directory and print it to stdout.\n");
+  printf("\n");
   printf("Usage:\n");
-  printf("  %s [option] <path>\n", script_name);
+  printf("  %s [option] <path>...\n", script_name);
   printf("\n");
   printf("Options:\n");
   printf("  -a, --all          list all files\n");
   printf("  -p, --rel-path     list files with relative path\n");
   printf("  -1, -m, --mr       only print file names (mr), color will be off\n");
-  printf("  -c, --color=       color output, options: on,off,auto\n");
+  printf("  -c, --color=       color output, options: on, off, auto\n");
   printf("  -h, --help         print help menu\n");
   printf("  -C, --commit       print the github commit\n");
   printf("  -V, --version      print version\n");
@@ -88,8 +94,6 @@ void help_menu(const char* script_name) {
   printf("  w = writable\n");
   printf("  x = executable\n");
   printf("\n");
-  printf("Copyright (c) 2019-2020 WestleyR, All rights reserved.\n");
-  printf("This software is licensed under a Clear BSD License.\n");
   printf("Source code: https://github.com/WestleyR/list-files\n");
   return;
 }

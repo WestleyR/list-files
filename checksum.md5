@@ -1,5 +1,5 @@
 652e19ebb4effbbf7b20959a939746f1  ./tests-funcs
-a689ee78bd37df1fbb4cce182898577c  ./Makefile
+bb33be1617b1bbfb7894323aaaec399d  ./Makefile
 63b0cc261918fbf05a8ee3772b75183f  ./package.sh
 fb88c4c30f9cb98266967ec654ee193d  ./src/add_slash.c
 6273cfd0d6e1778edb2fb619b524bd88  ./src/find_link.h
@@ -9,19 +9,17 @@ b90f200691198838c6267b3b66bc978a  ./src/iszip.h
 364ac599085a2e8948983f5d4877ba13  ./src/add_slash.h
 8fcd9d3cf481635b1189ae9733727117  ./src/extcmp.c
 8a497ac1530bc75876e573768ccc3a97  ./src/extcmp.h
-cbfc4b6512061d56de2d3649a6a31f24  ./src/main-lf.c
+bfd0485f364ef4b0b526b47c9d8e317f  ./src/main-lf.c
 91b251109975327775569e7fbe3cbd37  ./src/find_link.c
 02cdb4d5a4fb81bad5fb24fa1bd9a4e3  ./src/color.h
 75cf6bc3ca2cbd843fcfe9e3c792a2e2  ./src/readable-fs.c
-b5fa05620c18ead31d222fed08fac526  ./CHANGELOG.md
+e7344a2c75e7a8b5c5f8e33f3c2f7f3a  ./CHANGELOG.md
 eeeb003846e7829235497b1f9e5aaf07  ./deps/c-utils/c-utils.c
 23684caa089e0e2557f3488c6c70d630  ./deps/c-utils/c-utils.h
 d03c10a8f3c691e9fa6d8df4a52d8270  ./deps/c-utils/package.json
 8617d7cf7e7738649fcb5be2f37d2493  ./deps/checksum.sha256sum
 26e2656447113689dfb241a64478dc3e  ./deps/checksum.md5sum
 da3aa2e8d4a2d5dc93e294fe3246baf3  ./deps/checksum.ssum20
-b73d316e556902727795b1aee5c667dd  ./pkg/list-files/1.6.0-beta-1/bin/lf
-bf00c0a65a6ea1679669f2ea4ae88d28  ./pkg/lf-v1.6.0-beta-1-x86_64_linux.tar.gz
 21adb28fdc5f955ff982128e7dcbdc1d  ./re-checksum
 929d7ad1e8f3cd01651dca756c34f6d6  ./tests/15.read_only_perm_check
 7e92c9fc920f72f0f834d56227f557b6  ./tests/2.fail-slash-on-file
@@ -31,7 +29,7 @@ f548c9a74c629023e7506177e1fb7533  ./tests/9.compair_with_ls_wc
 5eff34bfccdd043222c69be077a4dfab  ./tests/21.broken-link
 eac0d546501e505175b7669c177d4826  ./tests/12.version_flag
 3618634fc7650e537697fd7f542002c0  ./tests/testdata/.fileh
-3618634fc7650e537697fd7f542002c0  ./tests/testdata/file1
+44e3090cfea312cdf694d67ccc5707cb  ./tests/testdata/file1
 d41d8cd98f00b204e9800998ecf8427e  ./tests/testdata/root-file
 3e47b75000b0924b6c9ba5759a7cf15d  ./tests/testdata/file_r
 3618634fc7650e537697fd7f542002c0  ./tests/testdata/filex
@@ -53,7 +51,7 @@ d4894ffa5221b680c20012c8d9e26504  ./tests/8.more_then_one_dir_list
 68dc9465c844f6d65bff915400e4f3c1  ./tests/1.lf-basic
 ac527d744f5593d848bda9bdc1d58bc6  ./tests/16.no_perm_file_check
 888d31c46920b48d42c173a138425b87  ./tests/10.-p_compair_with_ls_wc
-46fb99c547aa1a161e3c8ccc03d52ba5  ./tests/22.date-modifyed
+ac292c6131de25d38efbbae95620f34e  ./tests/22.date-modifyed
 967434097c33d9c3d896a460c3852b17  ./tests/14.no_such_file_or_directory
 914b489e7da719b05f41104bbe7a0f20  ./run-tests
 9b13b265d6aedc150900873070b8b65e  ./clib.json

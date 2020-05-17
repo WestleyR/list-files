@@ -1,34 +1,17 @@
 # Changelog
 
-Changelog release template:
-
-```
-## v1.0.0 - Apr 6, 2020
-
-### ADDED
- - New flag
-
-### CHANGED
- - File name from foo to bar
- - Fixed issue with command
-
-### REMOVED
- - Outdated flag
- - Outdated file
-
-```
-
 _**NOTES:**_
  1. Versions containing "alpha", "a", "beta", "b", or "rc" are pre-releases, and
 subject to change.
 
-## v1.6.0.a1 - Apr 11, 2020
+## v1.6.0 - May 17, 2020
 
 ### ADDED
  - Print the last modified date on files/directories
 
 ### CHANGED
  - Fixed checksum files to not include object/binary files
+ - Updated help menu; added Description
 
 ### REMOVED
  - Outdated `pre-compiled` directory

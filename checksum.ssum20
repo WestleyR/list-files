@@ -1,5 +1,5 @@
 7e21a665 ./tests-funcs
-7e2af263 ./Makefile
+e4c8be10 ./Makefile
 ff08d1c0 ./package.sh
 7d4ab75d ./src/add_slash.c
 8005770a ./src/find_link.h
@@ -9,19 +9,17 @@ ff08d1c0 ./package.sh
 12d7a5ca ./src/add_slash.h
 11e6f86f ./src/extcmp.c
 b0644ed1 ./src/extcmp.h
-d732ad00 ./src/main-lf.c
+cfe178ea ./src/main-lf.c
 c8f0e55d ./src/find_link.c
 dc14613d ./src/color.h
 8b8fa2c5 ./src/readable-fs.c
-ecbf0afd ./CHANGELOG.md
+b46a153e ./CHANGELOG.md
 c58baecd ./deps/c-utils/c-utils.c
 77c1aa60 ./deps/c-utils/c-utils.h
 3d23e987 ./deps/c-utils/package.json
 dde90291 ./deps/checksum.sha256sum
 3d910f41 ./deps/checksum.md5sum
 842b15cb ./deps/checksum.ssum20
-6559e7dd ./pkg/list-files/1.6.0-beta-1/bin/lf
-abd5b9b6 ./pkg/lf-v1.6.0-beta-1-x86_64_linux.tar.gz
 05105aec ./re-checksum
 d8ab0a38 ./tests/15.read_only_perm_check
 ffef9d5f ./tests/2.fail-slash-on-file
@@ -31,7 +29,7 @@ bce4f693 ./tests/9.compair_with_ls_wc
 bb1ad6aa ./tests/21.broken-link
 07032458 ./tests/12.version_flag
 40784a71 ./tests/testdata/.fileh
-40784a71 ./tests/testdata/file1
+4460d429 ./tests/testdata/file1
 00000000 ./tests/testdata/root-file
 b3df8f37 ./tests/testdata/file_r
 40784a71 ./tests/testdata/filex
@@ -53,7 +51,7 @@ b75bd101 ./tests/13.unknown_flag
 19528c9e ./tests/1.lf-basic
 78c12d37 ./tests/16.no_perm_file_check
 262e60ee ./tests/10.-p_compair_with_ls_wc
-596ac567 ./tests/22.date-modifyed
+1ef1c307 ./tests/22.date-modifyed
 8489ff7d ./tests/14.no_such_file_or_directory
 f17a0113 ./run-tests
 ea5bb802 ./clib.json
