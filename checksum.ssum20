@@ -55,5 +55,5 @@ b75bd101 ./tests/13.unknown_flag
 8489ff7d ./tests/14.no_such_file_or_directory
 f17a0113 ./run-tests
 ea5bb802 ./clib.json
-dd33ff43 ./README.md
+e035f6fc ./README.md
 0fcd69c1 ./LICENSE

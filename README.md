@@ -5,8 +5,6 @@
 `lf` is a **simple**, and **fast** file/directory lister with color
 hightlighting, file permision and file links!
 
-<br>
-
 ## Install
 
 There are several ways to install `lf`, you can:
@@ -75,8 +73,6 @@ $ make install PREFIX=${HOME}/.local
 
 _**NOTE:** Check for the latest release on the
 [release page](https://github.com/WestleyR/list-files/releases)_
-
-<br>
 
 ### Install via brew
 
