@@ -13,7 +13,7 @@ bfd0485f364ef4b0b526b47c9d8e317f  ./src/main-lf.c
 91b251109975327775569e7fbe3cbd37  ./src/find_link.c
 02cdb4d5a4fb81bad5fb24fa1bd9a4e3  ./src/color.h
 75cf6bc3ca2cbd843fcfe9e3c792a2e2  ./src/readable-fs.c
-e7344a2c75e7a8b5c5f8e33f3c2f7f3a  ./CHANGELOG.md
+349956b2c39229d1a25ee97880f45590  ./CHANGELOG.md
 eeeb003846e7829235497b1f9e5aaf07  ./deps/c-utils/c-utils.c
 23684caa089e0e2557f3488c6c70d630  ./deps/c-utils/c-utils.h
 d03c10a8f3c691e9fa6d8df4a52d8270  ./deps/c-utils/package.json
@@ -55,5 +55,5 @@ ac292c6131de25d38efbbae95620f34e  ./tests/22.date-modifyed
 967434097c33d9c3d896a460c3852b17  ./tests/14.no_such_file_or_directory
 914b489e7da719b05f41104bbe7a0f20  ./run-tests
 9b13b265d6aedc150900873070b8b65e  ./clib.json
-5433ae6e96ba7dfc2039ce3cc0dc4338  ./README.md
+42754672b0982fd4ae6613ddaf3e1592  ./README.md
 25691701744f4e8c8de974029f96f37c  ./LICENSE

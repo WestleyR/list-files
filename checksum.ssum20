@@ -13,7 +13,7 @@ cfe178ea ./src/main-lf.c
 c8f0e55d ./src/find_link.c
 dc14613d ./src/color.h
 8b8fa2c5 ./src/readable-fs.c
-b46a153e ./CHANGELOG.md
+76c7bde3 ./CHANGELOG.md
 c58baecd ./deps/c-utils/c-utils.c
 77c1aa60 ./deps/c-utils/c-utils.h
 3d23e987 ./deps/c-utils/package.json
@@ -55,5 +55,5 @@ b75bd101 ./tests/13.unknown_flag
 8489ff7d ./tests/14.no_such_file_or_directory
 f17a0113 ./run-tests
 ea5bb802 ./clib.json
-3d71de02 ./README.md
+dd33ff43 ./README.md
 0fcd69c1 ./LICENSE

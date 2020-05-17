@@ -12,6 +12,8 @@ subject to change.
 ### CHANGED
  - Fixed checksum files to not include object/binary files
  - Updated help menu; added Description
+ - Updated gpack install section in README.md
+ - Fixed source install section in README.md
 
 ### REMOVED
  - Outdated `pre-compiled` directory

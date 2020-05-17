@@ -7,40 +7,63 @@ hightlighting, file permision and file links!
 
 <br>
 
-## Install:
+## Install
 
-There are several ways to install lf, you can:
+There are several ways to install `lf`, you can:
 
- - [clone the repo and build from source](#install-lf-from-source)
- - [install via brew](#install-lf-via-brew)
+ - [Use a package manger (gpack)](#install-via-gpack)
+ - [Clone the repo and build from source](#install-from-source)
+ - [Install via brew](#install-via-brew)
 
-### Install from source:
+### Install via gpack
+
+First, download and install [gpack](https://github.com/WestleyR/gpack). Then
+you can install by:
+
+```
+$ gpack install WestleyR/list-files
+```
+
+Or update by:
+
+```
+$ gpack update && gpack upgrade
+```
+
+### Install from source
 
 First, download the source code:
 
 Using git:
 
 ```
-git clone https://github.com/WestleyR/list-files.git
+$ git clone https://github.com/WestleyR/list-files.git
 ```
 
 Or downloading the tarball:
 
 ```
-wget https://github.com/WestleyR/list-files/archive/master.tar.gz
+# From master:
+$ wget https://github.com/WestleyR/list-files/archive/master.tar.gz
+
+# Or from a release:
+$ wget https://github.com/WestleyR/list-files/archive/v1.6.0.tar.gz
+
+# Then untar the file
+$ tar -xzf master.tar.gz && mv list-files-master list-files
 ```
 
 Then checkout, and compile the source code:
 
 ```
-cd lf/
+$ cd list-files/
 
 # Checkout to a stable version *only if you downloaded with git* (optional)
-git checkout v1.5.3
+$ git checkout v1.6.0
 
-make
-make test # optional, it only takes a second
-sudo make install
+$ make
+$ make test # optional, it only takes a second
+$ sudo make install
 ```
 
 You can also install to a specified prefix; like your home dir:
@@ -55,7 +78,7 @@ _**NOTE:** Check for the latest release on the
 
 <br>
 
-### Install via brew:
+### Install via brew
 
 First, you will need to add my tap:
 
@@ -67,12 +90,6 @@ Then, you can install like normal:
 
 ```
 $ brew install list-files
-```
-
-### Install via [gpack](https://github.com/WestleyR/gpack) (beta)
-
-```
-$ gpack install WestleyR/list-files
 ```
 
 ## Example:
