@@ -2,7 +2,7 @@
 # Created by: WestleyR
 # Email: westleyr@nym.hush.com
 # Url: https://github.com/WestleyR/list-files
-# Last modified date: 2020-04-11
+# Last modified date: 2020-05-17
 #
 # This file is licensed under the terms of
 #
@@ -67,14 +67,13 @@ package_version=`./lf -V | cut -dv -f2 | rev | cut -d, -f3 | rev`
 mkdir -p ./pkg/list-files/${package_version}/bin
 cp -f ./lf ./pkg/list-files/${package_version}/bin
 
-tar -czf ./pkg/lf-v${package_version}-${package_arch}.tar.gz ./pkg/list-files
+cd ./pkg
+tar -czf ./lf-v${package_version}-${package_arch}.tar.gz ./list-files
 
 echo ""
 echo "Tarball v${package_version} is ready: ./pkg/lf-v${package_version}-${package_arch}.tar.gz"
 echo ""
 echo "Checksums:"
-
-cd ./pkg
 
 if type sha256sum > /dev/null; then
   echo -n "sha256: "
