@@ -2,7 +2,7 @@
 ec710fdf821175af26d9ce6ede9e1dde6d608b4f  ./LICENSE
 9af4257661f7e0f4edeff2c2b360713d2f7f9211  ./CHANGELOG.md
 22ec4730fd135e0d94c9f3aa411217b7b91271ac  ./Makefile
-cdd641fa6598d6e23339e483a4ff2441669090ea  ./clib.json
+542428ef9996dce883812d54561629bbce69cc3b  ./clib.json
 44e96b8194086d804744acba2293ac0020d81b63  ./tests/testdata/filex
 44e96b8194086d804744acba2293ac0020d81b63  ./tests/testdata/file2
 5076da0d88e10583b73e275885998a790bf47537  ./tests/testdata/file_no_perm
@@ -35,7 +35,7 @@ ca128f42c8ea9653364160831032797361603940  ./tests/16.no_perm_file_check
 900ccb5346a2f4ec1cd8ac35c60fff8730bc3172  ./tests/21.broken-link
 70345d9dddcc0a7bb7d162783a5cafe3d3755402  ./tests/6.force_color
 593f6f616a81bd019b22f429dce3e42041bc198a  ./tests/3.dash-p-option
-194da0dd773deb4598a186dbaa95226eb6228f8c  ./README.md
+81a3e47cf785fe05bf50d4a7b1578f8665cc7c3f  ./README.md
 2703e40d825bfe206f3985fdd19b63578405ebf7  ./package.sh
 7b195784dd07d94c62a20c4bb633bd03ec1727ee  ./re-checksum
 a939fbac2a3cfd90ebb3ca115cd1242f5cdf8c4e  ./deps/checksum.ssum20
@@ -51,7 +51,7 @@ decfa33d38a4931c8b7830c0ad559f41ad421cc9  ./deps/c-utils/c-utils.c
 20887f5fd68cdfc5b2d36414496843ecba54f358  ./src/iszip.h
 f59e83be8231505e3f8d9c34fcc9c9eca557a08a  ./src/find_link.c
 e122dcce4c39aa2bb155748773b8bbf4b4bbef60  ./src/color.h
-3253bb5a2aa95d81b9d52734656faacb9b8c1612  ./src/main-lf.c
+20525fac945e43874d93d3cf1ace5ea854d4dbbc  ./src/main-lf.c
 9de43d66630b239f559811a7c220e7d3e5cf13fb  ./src/add_slash.c
 510149471f793a01c24331c36b9ec2ec739170b1  ./src/extcmp.h
 f269c091f1935eea501787cee7d82d2c8ca4e3a3  ./src/find_link.h

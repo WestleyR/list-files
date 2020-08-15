@@ -2,7 +2,7 @@
 0fcd69c1 ./LICENSE
 5378afb8 ./CHANGELOG.md
 e4c8be10 ./Makefile
-3c5b0d9c ./clib.json
+4a9bf0a9 ./clib.json
 40784a71 ./tests/testdata/filex
 40784a71 ./tests/testdata/file2
 86e6c94a ./tests/testdata/file_no_perm
@@ -35,7 +35,7 @@ c593379f ./tests/7.pipe_to_wc
 bb1ad6aa ./tests/21.broken-link
 46b6d07b ./tests/6.force_color
 50aae2ea ./tests/3.dash-p-option
-3dfa8ffd ./README.md
+54b25a54 ./README.md
 9c4fdf88 ./package.sh
 05105aec ./re-checksum
 842b15cb ./deps/checksum.ssum20
@@ -51,7 +51,7 @@ f17a0113 ./run-tests
 322e2991 ./src/iszip.h
 c8f0e55d ./src/find_link.c
 dc14613d ./src/color.h
-c1aa8c3b ./src/main-lf.c
+a2db81c6 ./src/main-lf.c
 7d4ab75d ./src/add_slash.c
 b0644ed1 ./src/extcmp.h
 8005770a ./src/find_link.h

@@ -44,7 +44,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.6.1.a1, Aug 14, 2020"
+#define SCRIPT_VERSION "v1.6.2, Aug 14, 2020"
 
 char *base_path;
 
