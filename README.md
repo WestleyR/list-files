@@ -45,7 +45,7 @@ Or downloading the tarball:
 $ wget https://github.com/WestleyR/list-files/archive/master.tar.gz
 
 # Or from a release:
-$ wget https://github.com/WestleyR/list-files/archive/v1.6.0.tar.gz
+$ wget https://github.com/WestleyR/list-files/archive/v1.6.1.tar.gz
 
 # Then untar the file
 $ tar -xzf master.tar.gz && mv list-files-master list-files
@@ -57,7 +57,7 @@ Then checkout, and compile the source code:
 $ cd list-files/
 
 # Checkout to a stable version *only if you downloaded with git* (optional)
-$ git checkout v1.6.0
+$ git checkout v1.6.1
 
 $ make
 $ make test # optional, it only takes a second
@@ -116,7 +116,7 @@ your `clib.json` or `package.json`:
 
 ```json
 "dependencies": {
-  "WestleyR/list-files": "v1.5.3"
+  "WestleyR/list-files": "v1.6.1"
 }
 ```
 
@@ -124,15 +124,8 @@ _**NOTE:** be sure to check the latest release._
 
 ## License
 
-```
-The Clear BSD License
-
-Copyright (c) 2019-2020 WestleyR
-All rights reserved.
-```
-
-See the [LICENSE file](https://github.com/WestleyR/list-files/blob/master/LICENSE)
-for more details.
+This project if licensed under the terms of The Clear BSD License. See the
+[LICENSE file](https://github.com/WestleyR/list-files/blob/master/LICENSE) for more details.
 
 <br>
 
