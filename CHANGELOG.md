@@ -6,7 +6,12 @@ _**NOTES:**_
  1. Versions containing "alpha", "a", "beta", "b", or "rc" are pre-releases, and
 subject to change.
 
-## v1.6.1.a1 - Aug 14, 2020
+## v1.6.2 - Aug 14, 2020
+
+### FIXED
+ - Fixed main version; removed from alpha (opps!)
+
+## v1.6.1 - Aug 14, 2020
 
 ### FIXED
  - Fixed malloc issue, which caused crashing when listing on a directory
