@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email: westleyr@nym.hush.com
 // Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-05-17
+// Last modified date: 2020-08-14
 //
 // This file is licensed under the terms of
 //
@@ -21,6 +21,7 @@
 #include <grp.h>
 #include <getopt.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #ifndef WITHOUT_NAME_GROUP_OUTPUT
 #include <pwd.h>
@@ -43,9 +44,9 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.6.0, May 17, 2020"
+#define SCRIPT_VERSION "v1.6.1.a1, Aug 14, 2020"
 
-char *base_path = NULL;
+char *base_path;
 
 #ifndef WITHOUT_NAME_GROUP_OUTPUT
 // For auto ajusting formatting
@@ -108,14 +109,12 @@ void version_commit() {
   return;
 }
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
 char* get_filedate(struct stat finfo) {
-  char* ret;
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
+ char* ret;
   ret = (char*) malloc(20 * sizeof(char));
   if (ret == NULL) {
     perror("malloc");
@@ -134,7 +133,11 @@ char* get_filedate(struct stat finfo) {
 }
 
 int file_info(const char* file_path) {
-  struct stat sb;
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
+ struct stat sb;
   struct stat info;
 
   char *full_file_path;
@@ -268,7 +271,11 @@ int file_info(const char* file_path) {
 
 // Will list files in a directory.
 int list_files(const char* list_path, int list_all) {
-  DIR *dr;
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
+ DIR *dr;
   struct dirent *de;
 
   dr = opendir(list_path);
@@ -300,8 +307,12 @@ int list_files(const char* list_path, int list_all) {
   return(0);
 }
 
-// Will loop files in a directory, and get the max lenth for all the permamiters
+// max_len_files will loop files in a directory, and get the max lenth for all the permamiters.
 int max_len_files(const char* list_path, int list_all) {
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
   DIR *dr;
   struct dirent *de;
 
@@ -335,7 +346,15 @@ int max_len_files(const char* list_path, int list_all) {
   int match = 0;
 #endif
 
+#ifdef DEBUG
+  printf("%s(): Opening: %s\n", __func__, list_path);
+#endif
   dr = opendir(list_path);
+  if (dr == NULL) {
+    fprintf(stderr, "%s(): failed to open: %s\n", __func__, list_path);
+    return -1;
+  }
+
   while ((de = readdir(dr)) != NULL) {
     if (list_all == 0) {
       if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
@@ -470,6 +489,10 @@ int max_len_files(const char* list_path, int list_all) {
 }
 
 int prep_list(const char* script_name, const char *file_path, int list_all) {
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
   struct stat s;
   char* path = strdup(file_path);
 
@@ -479,6 +502,7 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
   }
 
   if (S_ISDIR(s.st_mode) == 0) {
+    // Path argument is a file
     if (mr_list != 0) {
       printf("%s\n", path);
       return(0);
@@ -488,9 +512,17 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
     }
     return(0);
   }
+  // If got to here, its a directory
 
   add_slash(path);
   base_path = strdup(path);
+//  base_path = path;
+//  strcpy(base_path, "./");
+  //strcat(base_path, path);
+
+#ifdef DEBUG
+  printf("%s(): opening filepath: %s\n", __func__, file_path);
+#endif
 
   if (access(file_path, F_OK) != -1) {
     if (access(file_path, R_OK) == -1) {
@@ -514,7 +546,14 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
   return(0);
 }
 
+//*****
+// Main
+//*****
 int main(int argc, char** argv) {
+#ifdef DEBUG
+  printf("DEBUG: functioncall: %s()\n", __func__);
+#endif
+
   // -a option
   int list_all = 0;
 
@@ -529,7 +568,12 @@ int main(int argc, char** argv) {
   char* color_print;
   color_print = (char*) malloc(5 * sizeof(char));
 
-  base_path = "";
+  // Alloc the base_path TODO: this should be passed via function arguments
+  base_path = (char*) malloc(256 * sizeof(char));
+  if (base_path == NULL) {
+    fprintf(stderr, "%s(): Error: malloc failed for size of: %lu\n", __func__, 256 * sizeof(char));
+    return 1;
+  }
 
   static struct option long_options[] = {
     {"help", no_argument, 0, 'h'},
