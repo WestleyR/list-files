@@ -2,7 +2,7 @@
 25691701744f4e8c8de974029f96f37c  ./LICENSE
 72f53c373d17ea7dc2644e362dd6f12f  ./CHANGELOG.md
 bb33be1617b1bbfb7894323aaaec399d  ./Makefile
-9b13b265d6aedc150900873070b8b65e  ./clib.json
+bc06f3c133411f4f24d9168ee658e250  ./clib.json
 3618634fc7650e537697fd7f542002c0  ./tests/testdata/filex
 3618634fc7650e537697fd7f542002c0  ./tests/testdata/file2
 337a3f5869a66fc0369792c71f3a4256  ./tests/testdata/file_no_perm

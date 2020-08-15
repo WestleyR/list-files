@@ -2,7 +2,7 @@
 ec710fdf821175af26d9ce6ede9e1dde6d608b4f  ./LICENSE
 9af4257661f7e0f4edeff2c2b360713d2f7f9211  ./CHANGELOG.md
 22ec4730fd135e0d94c9f3aa411217b7b91271ac  ./Makefile
-8a1582a8d83bee0b5f0c2b3b7b9528dbd4f08cd2  ./clib.json
+cdd641fa6598d6e23339e483a4ff2441669090ea  ./clib.json
 44e96b8194086d804744acba2293ac0020d81b63  ./tests/testdata/filex
 44e96b8194086d804744acba2293ac0020d81b63  ./tests/testdata/file2
 5076da0d88e10583b73e275885998a790bf47537  ./tests/testdata/file_no_perm
