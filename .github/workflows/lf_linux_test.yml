@@ -17,3 +17,11 @@ jobs:
       run: make cleanall && make WITHOUT_ID=true
     - name: make test [without-ouner-group-names]
       run: make test
+    # TODO: not creating binary package, only want to do this for a release
+    #- name: creating package [Linux]
+    #  run: ./package.sh 1
+    #- name: uploading package binary
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: linux_binary
+    #    path: ./pkg/lf-v*

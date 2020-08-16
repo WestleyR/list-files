@@ -1,6 +1,7 @@
 name: list-files macos CI
 
-on: [push]
+# TODO: only run on pull request, otherwise it runs too often
+on: [pull_request]
 
 jobs:
   build:
@@ -17,11 +18,13 @@ jobs:
       run: make cleanall && make WITHOUT_ID=true
     - name: make test [without-ouner-group-names]
       run: make test
-    - name: creating package [macOS]
-      run: ./package.sh 2
-    - name: uploading package binary
-      uses: actions/upload-artifact@v2
-      with:
-        name: macos_binary
-        path: ./pkg/lf-v*
+    # TODO: not creating binary right now, since it is not codesigned and whatnot
+	# need to build for macOS local
+    #- name: creating package [macOS]
+    #  run: ./package.sh 2
+    #- name: uploading package binary
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: macos_binary
+    #    path: ./pkg/lf-v*
 
