@@ -3,6 +3,7 @@ name: list-files CI
 on: [push]
 
 jobs:
+  test:
     linux:
       runs-on: ubuntu-latest
         steps:
