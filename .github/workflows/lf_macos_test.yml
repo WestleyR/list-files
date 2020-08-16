@@ -19,7 +19,7 @@ jobs:
     - name: make test [without-ouner-group-names]
       run: make test
     # TODO: not creating binary right now, since it is not codesigned and whatnot
-	# need to build for macOS local
+    # need to build for macOS local
     #- name: creating package [macOS]
     #  run: ./package.sh 2
     #- name: uploading package binary
