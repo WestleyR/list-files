@@ -18,7 +18,7 @@ jobs:
     - name: make test [without-ouner-group-names]
       run: make test
     - name: creating package [macOS]
-      run: ./package.sh
+      run: ./package.sh 2
     - name: uploading package binary
       uses: actions/upload-artifact@v2
       with:
