@@ -3,8 +3,21 @@ name: list-files CI
 on: [push]
 
 jobs:
-  test:
-    runs-on: ['ubuntu-latest', 'macos-latest']
+  testUbuntuLatest:
+    runs-on: ubuntu-latest
+       steps:
+        - uses: actions/checkout@v1
+        - name: make [default]
+          run: make
+        - name: make test [default]
+          run: make test
+        - name: make clean && make [without-ouner-group-names]
+          run: make cleanall && make WITHOUT_ID=true
+        - name: make test [without-ouner-group-names]
+          run: make test
+ testMacOSLatest:
+    runs-on: macos-latest
+    needs: testUbuntuLatest
       steps:
         - uses: actions/checkout@v1
         - name: make [default]
@@ -15,4 +28,3 @@ jobs:
           run: make cleanall && make WITHOUT_ID=true
         - name: make test [without-ouner-group-names]
           run: make test
-
