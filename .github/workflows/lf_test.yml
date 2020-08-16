@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   testUbuntuLatest:
+    name: test
     runs-on: ubuntu-latest
        steps:
         - uses: actions/checkout@v1
@@ -18,6 +19,7 @@ jobs:
  testMacOSLatest:
     runs-on: macos-latest
     needs: testUbuntuLatest
+    name: test
       steps:
         - uses: actions/checkout@v1
         - name: make [default]
