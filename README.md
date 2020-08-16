@@ -1,6 +1,6 @@
 # List Files in a Directory
 
-![](https://github.com/WestleyR/list-files/workflows/list-files%20CI/badge.svg)
+![](https://github.com/WestleyR/list-files/workflows/list-files%20Linux%20CI/badge.svg)
 
 `lf` is a **simple**, and **fast** file/directory lister with color
 hightlighting, file permision and file links!
