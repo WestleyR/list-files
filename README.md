@@ -92,17 +92,18 @@ $ brew install list-files
 
 ```bash
 $ ./lf 
--rwx r-xr-x  westleyk  westleyk  22.7 KB  lf
--rw- r--r--  westleyk  westleyk  1.7 KB   tests-funcs
--rw- r--r--  westleyk  westleyk  1.8 KB   Makefile
-drwx r-xr-x  westleyk  westleyk  4.0 KB   src
--rw- r--r--  westleyk  westleyk  2.4 KB   checksum.ssum
-drwx r-xr-x  westleyk  westleyk  4.0 KB   deps
-drwx r-xr-x  westleyk  westleyk  4.0 KB   tests
--rw- r--r--  westleyk  westleyk  1.1 KB   run-tests
--rw- r--r--  westleyk  westleyk  601 B    clib.json
--rw- r--r--  westleyk  westleyk  2.0 KB   README.md
--rw- r--r--  westleyk  westleyk  1.6 KB   LICENSE
+-rw- r--r--  westleyrose  staff  2020-05-04  1.7 KB   tests-funcs
+-rw- r--r--  westleyrose  staff  2020-05-04  1.6 KB   LICENSE
+-rw- r--r--  westleyrose  staff  2020-08-14  2.5 KB   CHANGELOG.md
+-rw- r--r--  westleyrose  staff  2020-05-04  2.1 KB   Makefile
+-rw- r--r--  westleyrose  staff  2020-08-14  601 B    clib.json
+drwx r-xr-x  westleyrose  staff  2020-07-30  800 B    tests
+-rw- r--r--  westleyrose  staff  2020-08-16  2.9 KB   README.md
+-rwx r-xr-x  westleyrose  staff  2020-08-14  1.8 KB   package.sh
+drwx r-xr-x  westleyrose  staff  2020-05-04  192 B    deps
+-rwx r-xr-x  westleyrose  staff  2020-08-14  23.0 KB  lf
+-rw- r--r--  westleyrose  staff  2020-05-04  1.1 KB   run-tests
+drwx r-xr-x  westleyrose  staff  2020-08-14  640 B    src
 ```
 
 <br>
@@ -124,7 +125,7 @@ _**NOTE:** be sure to check the latest release._
 
 ## License
 
-This project if licensed under the terms of The Clear BSD License. See the
+This project is licensed under the terms of The Clear BSD License. See the
 [LICENSE file](https://github.com/WestleyR/list-files/blob/master/LICENSE) for more details.
 
 <br>
