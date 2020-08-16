@@ -2,7 +2,7 @@
 # Created by: WestleyR
 # Email: westleyr@nym.hush.com
 # Url: https://github.com/WestleyR/list-files
-# Last modified date: 2020-05-17
+# Last modified date: 2020-08-16
 #
 # This file is licensed under the terms of
 #
@@ -31,13 +31,17 @@
 
 set -e
 
-
 echo "  1. x86_64_linux"
 echo "  2. macos"
 echo "  3. armv6l"
 echo "  4. armv7l"
 echo -n "Select your arch: "
-read user_in
+
+if [ -z "$1" ]; then
+  read user_in
+else
+  user_in="$1"
+fi
 
 case $user_in in
   1)

@@ -17,3 +17,11 @@ jobs:
       run: make cleanall && make WITHOUT_ID=true
     - name: make test [without-ouner-group-names]
       run: make test
+    - name: creating package [macOS]
+      run: ./package.sh
+    - name: uploading package binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos_binary
+        path: ./pkg/lf-v*
+
