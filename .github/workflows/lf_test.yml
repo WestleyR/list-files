@@ -4,17 +4,28 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v1
-    - name: make [default]
-      run: make
-    - name: make test [default]
-      run: make test
-    - name: make clean && make [without-ouner-group-names]
-      run: make cleanall && make WITHOUT_ID=true
-    - name: make test [without-ouner-group-names]
-      run: make test
+    linux:
+      runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v1
+          - name: make [default]
+            run: make
+          - name: make test [default]
+            run: make test
+          - name: make clean && make [without-ouner-group-names]
+            run: make cleanall && make WITHOUT_ID=true
+          - name: make test [without-ouner-group-names]
+            run: make test
+    macos:
+      runs-on: macOS-latest
+        steps:
+          - uses: actions/checkout@v1
+          - name: make [default]
+            run: make
+          - name: make test [default]
+            run: make test
+          - name: make clean && make [without-ouner-group-names]
+            run: make cleanall && make WITHOUT_ID=true
+          - name: make test [without-ouner-group-names]
+            run: make test
 
