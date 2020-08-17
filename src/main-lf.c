@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email: westleyr@nym.hush.com
 // Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-08-14
+// Last modified date: 2020-08-16
 //
 // This file is licensed under the terms of
 //
@@ -44,7 +44,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.6.2, Aug 14, 2020"
+#define SCRIPT_VERSION "v1.6.3.a1, Aug 16, 2020"
 
 char *base_path;
 
@@ -571,7 +571,7 @@ int main(int argc, char** argv) {
   // Alloc the base_path TODO: this should be passed via function arguments
   base_path = (char*) malloc(256 * sizeof(char));
   if (base_path == NULL) {
-    fprintf(stderr, "%s(): Error: malloc failed for size of: %lu\n", __func__, 256 * sizeof(char));
+    fprintf(stderr, "%s(): Error: malloc failed for size of: %lu\n", __func__, (unsigned long)256 * sizeof(char));
     return 1;
   }
 
