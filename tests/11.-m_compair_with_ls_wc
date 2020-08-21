@@ -10,12 +10,12 @@ if ! require_cmd "bc"; then
 fi
 
 # we -1 because ls outputs one extra line
-run-test "lf -m | wc, ls -l | wc" "./lf -m tests/testdata | wc -l" "$(echo $(ls -l tests/testdata | wc -l)-1 | bc)" "" 0
+run-test "lf -m | wc, ls -l | wc" "LF_MR_AUTO_OUTPUT=1 ./lf  -m tests/testdata | wc -l" "$(echo $(ls -l tests/testdata | wc -l)-1 | bc)" "" 0
 
-run-test "lf -m /dev | wc, ls -l | wc" "./lf -m /dev | wc -l" "$(echo $(ls -l /dev | wc -l)-1 | bc)" "" 0
+run-test "lf -m /dev | wc, ls -l | wc" "LF_MR_AUTO_OUTPUT=1 ./lf  -m /dev | wc -l" "$(echo $(ls -l /dev | wc -l)-1 | bc)" "" 0
 
-run-test "lf -m /usr | wc, ls -l | wc" "./lf -m /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0
+run-test "lf -m /usr | wc, ls -l | wc" "LF_MR_AUTO_OUTPUT=1 ./lf  -m /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0
 
 # Try with color
-run-test "lf -m (color) /usr | wc, ls -l | wc" "./lf -m --color=on /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0
+run-test "lf -m (color) /usr | wc, ls -l | wc" "LF_MR_AUTO_OUTPUT=1 ./lf  -m --color=on /usr | wc -l" "$(echo $(ls -l /usr | wc -l)-1 | bc)" "" 0
 

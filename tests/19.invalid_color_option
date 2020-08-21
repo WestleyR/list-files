@@ -3,11 +3,11 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf --color=valid" "./lf --color=on tests/testdata" "rw- " "file1" 0
-run-test "lf --color=valid" "./lf --color=off tests/testdata" "rw- " "file1" 0
-run-test "lf --color=valid" "./lf --color=auto tests/testdata" "rw- " "file1" 0
-run-test "lf --color=valid" "./lf --color= tests/testdata" "rw- " "file1" 0
+run-test "lf --color=valid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=on tests/testdata" "rw- " "file1" 0
+run-test "lf --color=valid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=off tests/testdata" "rw- " "file1" 0
+run-test "lf --color=valid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=auto tests/testdata" "rw- " "file1" 0
+run-test "lf --color=valid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color= tests/testdata" "rw- " "file1" 0
 
-run-test "lf --color=invalid" "./lf --color=null tests/testdata" "lf: --color: null: invalid argument" "" 22
-run-test "lf --color=invalid" "./lf --color=NULL tests/testdata" "lf: --color: NULL: invalid argument" "" 22
-run-test "lf --color=invalid" "./lf --color=nil tests/testdata" "lf: --color: nil: invalid argument" "" 22
+run-test "lf --color=invalid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=null tests/testdata" "lf: --color: null: invalid argument" "" 22
+run-test "lf --color=invalid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=NULL tests/testdata" "lf: --color: NULL: invalid argument" "" 22
+run-test "lf --color=invalid" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=nil tests/testdata" "lf: --color: nil: invalid argument" "" 22

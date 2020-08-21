@@ -5,6 +5,6 @@
 
 chmod 444 tests/testdata/file_r
 
-run-test "lf read_only_file" "./lf tests/testdata" "file_r" "\-r-- r--r--" 0
+run-test "lf read_only_file" "LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata" "file_r" "\-r-- r--r--" 0
 
 chmod 666 tests/testdata/file_r

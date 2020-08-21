@@ -4,5 +4,5 @@
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
 # TODO: this will only check if its printing the right color, will still succeed if the color is not printing
-run-test "lf --color=on" "./lf --color=on tests/testdata" "\[1m\[32mfilex\[0m" "" 0
+run-test "lf --color=on" "LF_MR_AUTO_OUTPUT=1 ./lf  --color=on tests/testdata" "\[1m\[32mfilex\[0m" "" 0
 

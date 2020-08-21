@@ -3,28 +3,28 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf (non-exsistent-file)" "./lf foo" "foo: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf foo" "lf: foo: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf foo/" "lf: foo/: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -m foo" "foo: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -1 foo" "foo: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -p foo" "foo: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -a foo" "foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  foo" "foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  foo" "lf: foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  foo/" "lf: foo/: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -m foo" "foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -1 foo" "foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -p foo" "foo: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -a foo" "foo: No such file or directory" "" 2
 
-run-test "lf (non-exsistent-file)" "./lf tests/testdata foobar" "foobar: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -m tests/testdata foobar" "foobar: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -p tests/testdata foobar" "foobar: No such file or directory" "" 2
-run-test "lf (non-exsistent-file)" "./lf -a tests/testdata foobar" "foobar: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata foobar" "foobar: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -m tests/testdata foobar" "foobar: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -p tests/testdata foobar" "foobar: No such file or directory" "" 2
+run-test "lf (non-exsistent-file)" "LF_MR_AUTO_OUTPUT=1 ./lf  -a tests/testdata foobar" "foobar: No such file or directory" "" 2
 
-run-test "lf -a (non-exsistent-file) file" "./lf -a tests/testdata foobar" "file1" "rw- " 2
-run-test "lf -a (non-exsistent-file) file" "./lf -a foobar tests/testdata" "foobar: No such file or directory" "" 2
+run-test "lf -a (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -a tests/testdata foobar" "file1" "rw- " 2
+run-test "lf -a (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -a foobar tests/testdata" "foobar: No such file or directory" "" 2
 
-run-test "lf -p (non-exsistent-file) file" "./lf -p tests/testdata foobar" "file1" "rw- " 2
-run-test "lf -p (non-exsistent-file) file" "./lf -p foobar tests/testdata" "foobar: No such file or directory" "" 2
+run-test "lf -p (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -p tests/testdata foobar" "file1" "rw- " 2
+run-test "lf -p (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -p foobar tests/testdata" "foobar: No such file or directory" "" 2
 
-run-test "lf -m (non-exsistent-file) file" "./lf -m tests/testdata foobar" "file1" "" 2
-run-test "lf -m (non-exsistent-file) file" "./lf -m foobar tests/testdata" "foobar: No such file or directory" "" 2
+run-test "lf -m (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -m tests/testdata foobar" "file1" "" 2
+run-test "lf -m (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -m foobar tests/testdata" "foobar: No such file or directory" "" 2
 
-run-test "lf -mpa (non-exsistent-file) file" "./lf -mpa tests/testdata foobar" "tests/testdata/.fileh" "" 2
-run-test "lf -mpa (non-exsistent-file) file" "./lf -mpa foobar tests/testdata" "foobar: No such file or directory" "" 2
+run-test "lf -mpa (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -mpa tests/testdata foobar" "tests/testdata/.fileh" "" 2
+run-test "lf -mpa (non-exsistent-file) file" "LF_MR_AUTO_OUTPUT=1 ./lf  -mpa foobar tests/testdata" "foobar: No such file or directory" "" 2
 

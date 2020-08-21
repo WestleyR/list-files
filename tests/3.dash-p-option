@@ -3,7 +3,7 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf -p dir" "./lf -p tests/testdata" "tests/testdata/file1" "" 0
-run-test "lf -p ./dir" "./lf -p ./tests/testdata" "./tests/testdata/file1" "" 0
-run-test "lf -p \$(pwd)/dir" "./lf -p $(pwd)/tests/testdata" "$(pwd)/tests/testdata/file1" "" 0
+run-test "lf -p dir" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf   -p tests/testdata" "tests/testdata/file1" "" 0
+run-test "lf -p ./dir" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf   -p ./tests/testdata" "./tests/testdata/file1" "" 0
+run-test "lf -p \$(pwd)/dir" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf   -p $(pwd)/tests/testdata" "$(pwd)/tests/testdata/file1" "" 0
 

@@ -3,5 +3,5 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf linked-file" "./lf tests/testdata" "link_from" "link_to" 0
+run-test "lf linked-file" "LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata" "link_from" "link_to" 0
 

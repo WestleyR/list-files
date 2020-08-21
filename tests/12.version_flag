@@ -4,7 +4,7 @@
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
 # use ', 20' as in ', 2019'
-run-test "lf -V" "./lf -V" "v1" ", 20" 0
+run-test "lf -V" "LF_MR_AUTO_OUTPUT=1 ./lf  -V" "v1" ", 20" 0
 
-run-test "lf --version" "./lf --version" "v1" ", 20" 0
+run-test "lf --version" "LF_MR_AUTO_OUTPUT=1 ./lf  --version" "v1" ", 20" 0
 

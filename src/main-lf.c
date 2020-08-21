@@ -1,7 +1,7 @@
 // Created by: WestleyR
 // Email: westleyr@nym.hush.com
 // Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-08-16
+// Last modified date: 2020-08-20
 //
 // This file is licensed under the terms of
 //
@@ -44,7 +44,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.6.3.a1, Aug 16, 2020"
+#define SCRIPT_VERSION "v1.7.0.a1, Aug 20, 2020"
 
 char *base_path;
 
@@ -58,6 +58,7 @@ int max_size = 0;
 
 // machine readable output
 int mr_list = 0;
+int auto_mr_list = 0;
 
 // reletave path
 int rel_path = 0;
@@ -70,7 +71,9 @@ int abs_path = 0;
 
 void help_menu(const char* script_name) {
   printf("Copyright (c) 2019-2020 WestleyR, All rights reserved.\n");
-  printf("This software is licensed under a Clear BSD License.\n");
+  printf("This software is licensed under the terms of\n");
+  printf("The Clear BSD License.\n");
+  printf("Source code: https://github.com/WestleyR/list-files\n");
   printf("\n");
   printf("Description:\n");
   printf("  List files in a directory and print it to stdout.\n");
@@ -82,10 +85,18 @@ void help_menu(const char* script_name) {
   printf("  -a, --all          list all files\n");
   printf("  -p, --rel-path     list files with relative path\n");
   printf("  -1, -m, --mr       only print file names (mr), color will be off\n");
+  printf("  -r, --hr           always output human-readable (overides mr)\n");
   printf("  -c, --color=       color output, options: on, off, auto\n");
   printf("  -h, --help         print help menu\n");
   printf("  -C, --commit       print the github commit\n");
   printf("  -V, --version      print version\n");
+  printf("\n");
+  printf("Env vars:\n");
+  printf("  LF_MR_AUTO_OUTPUT=[0,1]  enables the auto machine-readable\n");
+  printf("                           output. (default: 0)\n");
+  printf("                           0,* = enable auto mr output.\n");
+  printf("                           1 = disable auto mr output (use human-readable output\n");
+  printf("                           unless otherwise specifyed).\n");
   printf("\n");
   printf("Permisions:\n");
   printf("  - = file, if its the first option,\n");
@@ -94,8 +105,6 @@ void help_menu(const char* script_name) {
   printf("  r = readable\n");
   printf("  w = writable\n");
   printf("  x = executable\n");
-  printf("\n");
-  printf("Source code: https://github.com/WestleyR/list-files\n");
   return;
 }
 
@@ -516,9 +525,6 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
 
   add_slash(path);
   base_path = strdup(path);
-//  base_path = path;
-//  strcpy(base_path, "./");
-  //strcat(base_path, path);
 
 #ifdef DEBUG
   printf("%s(): opening filepath: %s\n", __func__, file_path);
@@ -580,6 +586,7 @@ int main(int argc, char** argv) {
     {"rel-path", no_argument, 0, 'p'},
     {"mr", no_argument, 0, '1'},
     {"mr", no_argument, 0, 'm'},
+    {"hr", no_argument, 0, 'r'},
     {"all", no_argument, 0, 'a'},
     {"color", required_argument, 0, 'c'},
     {"version", no_argument, 0, 'V'},
@@ -587,7 +594,7 @@ int main(int argc, char** argv) {
     {NULL, 0, 0, 0}
   };
 
-  while ((opt = getopt_long(argc, argv,"c:1mabpVhC", long_options, 0)) != -1) {
+  while ((opt = getopt_long(argc, argv,"c:1mrabpVhC", long_options, 0)) != -1) {
     switch (opt) {
       case '1':
         mr_list = 1;
@@ -600,6 +607,10 @@ int main(int argc, char** argv) {
         break;
       case 'p':
         rel_path = 1;
+        break;
+      case 'r':
+        // If human-readable output, then disable mr output
+        mr_list = 0;
         break;
       case 'c':
         strcpy(color_print, optarg);
@@ -619,6 +630,24 @@ int main(int argc, char** argv) {
       default:
         // Invalid option
         return(22);
+    }
+  }
+
+  // Check if LF_MR_AUTO_OUTPUT is set, and see what its set to
+  char* auto_mr_output = getenv("LF_MR_AUTO_OUTPUT");
+  if (auto_mr_output != NULL) {
+    if (auto_mr_output[0] == '0') {
+      if (no_color_print == 1) {
+        mr_list = 1;
+      }
+    } else if (auto_mr_output[0] == '1') {
+      // default
+    } else {
+      fprintf(stderr, "%s: Invalid option for LF_MR_AUTO_OUTPUT: %s\n", argv[0], auto_mr_output);
+    }
+  } else {
+    if (no_color_print == 1) {
+      mr_list = 1;
     }
   }
 

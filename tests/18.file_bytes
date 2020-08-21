@@ -3,5 +3,5 @@
 
 # run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
 
-run-test "lf file-bytes" "./lf tests/testdata" "larger_file" "11.72 MB" 0
+run-test "lf file-bytes" "LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata" "larger_file" "11.72 MB" 0
 

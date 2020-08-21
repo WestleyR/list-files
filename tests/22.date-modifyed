@@ -5,16 +5,16 @@
 
 # Can only test 202, of 2020-01-01, since the date is reset after download.
 
-run-test "lf date modifyed" "./lf tests/testdata" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file1" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/file1" "202" "" 0
 
-run-test "lf date modifyed" "./lf tests/testdata/" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file2" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/link_to" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/link_from" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/broken-link" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/root-file" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file_r" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/filex" "202" "" 0
-run-test "lf date modifyed" "./lf tests/testdata/file_no_perm" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/file2" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/link_to" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/link_from" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/broken-link" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/root-file" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/file_r" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/filex" "202" "" 0
+run-test "lf date modifyed" "LF_MR_AUTO_OUTPUT=1 LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata/file_no_perm" "202" "" 0
 

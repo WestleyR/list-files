@@ -6,16 +6,25 @@ _**NOTES:**_
  1. Versions containing "alpha", "a", "beta", "b", or "rc" are pre-releases, and
 subject to change.
 
+
+## v1.7.0.a1 - Aug 20, 2020
+
+### CHANGED
+ - Piping, or redirecting the output of `lf` will enable machine-readable output (`-1`, `-m`)
+
+
 ## v1.6.2 - Aug 14, 2020
 
 ### FIXED
  - Fixed main version; removed from alpha (opps!)
+
 
 ## v1.6.1 - Aug 14, 2020
 
 ### FIXED
  - Fixed malloc issue, which caused crashing when listing on a directory
  - Cleaned include libraries, removed duplicates, and unnecessary includes
+
 
 ## v1.6.0 - May 17, 2020
 

@@ -1,0 +1,8 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <also contains> <expect-exit-code>
+
+run-test "lf auto-mr-output -> piped" "LF_MR_AUTO_OUTPUT=0 ./lf  tests/testdata" "^file1$" "" 0
+run-test "lf auto-mr-output -> piped" "./lf  tests/testdata" "^file1$" "" 0
+

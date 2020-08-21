@@ -5,7 +5,7 @@
 
 chmod 000 tests/testdata/file_no_perm
 
-run-test "lf no-perm-file" "./lf tests/testdata" "file_no_perm" "\--- ------" 0
+run-test "lf no-perm-file" "LF_MR_AUTO_OUTPUT=1 ./lf  tests/testdata" "file_no_perm" "\--- ------" 0
 
 chmod 666 tests/testdata/file_no_perm
 
