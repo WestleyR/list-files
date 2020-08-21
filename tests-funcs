@@ -1,7 +1,7 @@
 # Created by: WestleyR
 # Email: westleyr@nym.hush.com
 # Url: https://github.com/WestleyR/list-files
-# Last modified date: 2020-04-06
+# Last modified date: 2020-08-20
 #
 # This file is licensed under the terms of
 #
@@ -27,7 +27,7 @@ green='\033[0;32m'
 red='\033[0;31m'
 creset='\033[0m'
 
-echo -n "Running: ${test_name} ... "
+echo -n "  Running: ${test_name} ... "
 
 output=`/bin/sh -c "$test_cmd" 2>&1`
 exit_code=$?
