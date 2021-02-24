@@ -1,6 +1,9 @@
 name: list-files linux CI
 
-on: [push]
+#on: [push]
+# TODO: code is being rewritten. Re-enable when ready
+on: [pull_request]
+
 
 jobs:
   build:
