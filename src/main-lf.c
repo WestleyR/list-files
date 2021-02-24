@@ -1,16 +1,14 @@
-// Created by: WestleyR
-// Email: westleyr@nym.hush.com
-// Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-08-20
 //
-// This file is licensed under the terms of
+//  main-lf.c
+//  lf - list files and directories
 //
-// The Clear BSD License
+// Created by WestleyR on 2019-02-22
+// Source code: https://github.com/WestleyR/lf
 //
-// Copyright (c) 2019-2020 WestleyR
-// All rights reserved.
-//
-// This software is licensed under a Clear BSD License.
+// Copyright (c) 2019-2021 WestleyR. All rights reserved.
+// This software is licensed under a BSD 3-Clause Clear License.
+// Consult the LICENSE file that came with this software regarding
+// your rights to distribute this software.
 //
 
 #include <stdlib.h>
@@ -27,14 +25,16 @@
 #include <pwd.h>
 #endif
 
-#include "color.h"
-#include "iszip.h"
-#include "readable-fs.h"
-#include "extcmp.h"
-#include "find_link.h"
-#include "add_slash.h"
+#include "files.h"
+#include "bool.h"
 
-#include "c-utils/c-utils.h"
+//#include "color.h"
+//#include "iszip.h"
+//#include "readable-fs.h"
+//#include "extcmp.h"
+//#include "find_link.h"
+//#include "add_slash.h"
+//#include "c-utils/c-utils.h"
 
 #ifndef COMMIT_HASH
 #define COMMIT_HASH "unknown"
@@ -44,7 +44,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "v1.7.0.a1, Aug 20, 2020"
+#define SCRIPT_VERSION "1.7.0"
 
 char *base_path;
 
@@ -70,7 +70,7 @@ int no_color_print = 0;
 int abs_path = 0;
 
 void help_menu(const char* script_name) {
-  printf("Copyright (c) 2019-2020 WestleyR, All rights reserved.\n");
+  printf("Copyright (c) 2019-2021 WestleyR, All rights reserved.\n");
   printf("This software is licensed under the terms of\n");
   printf("The Clear BSD License.\n");
   printf("Source code: https://github.com/WestleyR/list-files\n");
@@ -117,6 +117,8 @@ void version_commit() {
   printf("%s %s\n", UNCOMMITED_CHANGES, COMMIT_HASH);
   return;
 }
+
+/*
 
 char* get_filedate(struct stat finfo) {
 #ifdef DEBUG
@@ -237,6 +239,9 @@ int file_info(const char* file_path) {
         strcpy(full_link_path, base_path);
         strcat(full_link_path, link_path);
       }
+
+      printf("FULL_LINK_PATH: %s\n", full_link_path);
+      printf("BASEPATH: %s\n", base_path);
 
       if (access(full_link_path, F_OK) != 0) {
         // If the link is broken
@@ -552,6 +557,8 @@ int prep_list(const char* script_name, const char *file_path, int list_all) {
   return(0);
 }
 
+*/
+
 //*****
 // Main
 //*****
@@ -666,13 +673,27 @@ int main(int argc, char** argv) {
   }
   free(color_print);
 
+  lf_files* ctx = lf_new();
+
   if (optind < argc) {
     for (int i = optind; i < argc; i++) {
-      prep_list(argv[0], argv[i], list_all);
+      lf_set_path(ctx, argv[i]);
+//      prep_list(argv[0], argv[i], list_all);
+      lf_set_path(ctx, argv[i]);
     }
+    for (int i = optind; i < argc; i++) {
+      lf_get_max_size_from_path(ctx);
+      // print the output
+      //lf_print(ctx);
+    }
+ 
   } else {
-    prep_list(argv[0], "./", list_all);
+      lf_set_path(ctx, "./");
+      lf_get_max_size_from_path(ctx);
+//    prep_list(argv[0], "./", list_all);
   }
+
+  lf_destroy(ctx);
 
 
   return(0);

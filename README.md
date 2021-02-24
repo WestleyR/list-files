@@ -1,10 +1,12 @@
 # List Files in a Directory
 
+**Code rewriting is progress. Code currently does not work, please see the latest release for a stable version.**
+
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20linux%20CI/badge.svg)
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20macos%20CI/badge.svg)
 
 `lf` is a **simple**, and **fast** file/directory lister with color
-hightlighting, file permision and file links!
+highlighting, file permission and file links!
 
 ## Install
 
