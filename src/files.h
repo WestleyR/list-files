@@ -33,8 +33,10 @@ typedef struct lf_files lf_files;
 lf_files* lf_new();
 int lf_destroy(lf_files* ctx);
 
-int lf_set_path(lf_files* ctx, const char* path);
+int lf_add_path(lf_files* ctx, const char* path);
+
 int lf_get_max_size_from_path(lf_files* ctx);
+int lf_print(lf_files* ctx);
 
 
 // etc funcs

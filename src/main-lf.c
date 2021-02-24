@@ -677,9 +677,8 @@ int main(int argc, char** argv) {
 
   if (optind < argc) {
     for (int i = optind; i < argc; i++) {
-      lf_set_path(ctx, argv[i]);
 //      prep_list(argv[0], argv[i], list_all);
-      lf_set_path(ctx, argv[i]);
+      lf_add_path(ctx, argv[i]);
     }
     for (int i = optind; i < argc; i++) {
       lf_get_max_size_from_path(ctx);
@@ -688,9 +687,9 @@ int main(int argc, char** argv) {
     }
  
   } else {
-      lf_set_path(ctx, "./");
+      lf_add_path(ctx, "./");
       lf_get_max_size_from_path(ctx);
-//    prep_list(argv[0], "./", list_all);
+      lf_print(ctx);
   }
 
   lf_destroy(ctx);
