@@ -60,8 +60,6 @@ int lf_destroy(lf_files* ctx) {
 }
 
 int lf_add_path(lf_files* ctx, const char* path) {
-  printf("DEBUG: setting path to: %s\n", path);
-
   ctx->paths[ctx->path_count] = (char*) malloc(strlen(path) + 2);
   strcpy(ctx->paths[ctx->path_count], path);
   ctx->path_count++;
@@ -74,8 +72,6 @@ int lf_get_max_size_from_path(lf_files* ctx) {
   if (ctx->paths == NULL) return -1;
 
   for (int icount = 0; icount < ctx->path_count; icount++) {
-    printf("DEBUG: getting max len for path: %s\n", ctx->paths[icount]);
-  
     char *full_file_path = NULL;
   
     struct max_list {
@@ -154,8 +150,6 @@ int lf_get_max_size_from_path(lf_files* ctx) {
         }
   
         if (!match) {
-          printf("Caching: %s : %s\n", getpwuid(info.st_uid)->pw_name, getgrgid(info.st_gid)->gr_name);
-  
           struct passwd *pw;
           struct group *gr;
   
@@ -229,10 +223,6 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     free(full_file_path);
   }
 
-  printf("DEBUG: max size: %d\n", ctx->max_size);
-  printf("DEBUG: max own len: %d\n", ctx->max_own_len);
-  printf("DEBUG: max grp len: %d\n", ctx->max_grup_len);
-
   return 0;
 }
 
@@ -251,11 +241,6 @@ char* get_filedate(struct stat finfo) {
 
   return ret;
 }
-
-// find_link will take a file name (const char* name), and find where that
-// file is linked to (if any). Returns non-zero if failed. symlink must be
-// a large enought buffer to hold the symlink path.
-// TODO: use readlink function from my whereis command
 
 char* find_link(const char* path) {
   char* symlink_path = NULL;
@@ -276,6 +261,24 @@ char* find_link(const char* path) {
   symlink_path[link_len] = '\0';
 
   return symlink_path;
+}
+
+bool iszip(const char* filename) {
+  char* ext = strrchr(filename, '.');
+
+  if (ext != NULL) {
+    if (strcmp(ext, ".gz") == 0) {
+      return true;
+    } else if (strcmp(ext, ".lz4") == 0) {
+      return true;
+    } else if (strcmp(ext, ".tgz") == 0) {
+      return true;
+    } else if (strcmp(ext, ".zip") == 0) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
@@ -377,8 +380,8 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
       printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
     } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
       printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
-//    } else if (iszip(full_file_path) == 0) {
-//      printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
+    } else if (iszip(full_file_path)) {
+      printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
     } else if (access(full_file_path, R_OK) != 0) {
       printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
     } else {
@@ -395,15 +398,12 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
   }
 
   free(full_file_path);
-//  free(print_name);
 
   return 0;
 }
 
 int lf_print(lf_files* ctx) {
   for (int i = 0; i < ctx->path_count; i++) {
-    printf("LISTING: %s\n", ctx->paths[i]);
-
     DIR* dr = opendir(ctx->paths[i]);
     struct dirent *de;
     while ((de = readdir(dr)) != NULL) {
