@@ -67,11 +67,213 @@ int lf_add_path(lf_files* ctx, const char* path) {
   return 0;
 }
 
+int max_print_len_for_file(const char* file, int* owner_len, int* grup_len, int* size_len) {
+
+
+}
+
 int lf_get_max_size_from_path(lf_files* ctx) {
   if (ctx == NULL) return -1;
   if (ctx->paths == NULL) return -1;
 
+  struct max_list {
+    int uid_num;
+    int max_uid;
+    int pid_num;
+    int max_pid;
+    int end;
+  };
+  
+  // Cache up to 10 diffrant users/groups
+  struct max_list ml[10];
+  
+  ml[0].uid_num = -1;
+  ml[0].max_uid = -1;
+  ml[0].pid_num = -1;
+  ml[0].max_pid = -1;
+  ml[0].end = 1;
+  
+  int mindex = 0;
+
   for (int icount = 0; icount < ctx->path_count; icount++) {
+
+    printf("Getting max len for: %s\n", ctx->paths[icount]);
+
+    struct stat info;
+    if (lstat(ctx->paths[icount], &info) != 0) {
+      printf("TODO: FILE DOES NOT EXIST: %s\n", ctx->paths[icount]);
+      continue;
+    }
+
+    if (!S_ISDIR(info.st_mode)) {
+      // Is a normal file
+
+      if (mindex >= 9) {
+        struct passwd *pw;
+        struct group *gr;
+  
+        pw = getpwuid(info.st_uid);
+        gr = getgrgid(info.st_gid);
+  
+        int own = strlen(pw->pw_name);
+        if (own > ctx->max_own_len) {
+          ctx->max_own_len = own;
+        }
+  
+        int grup = strlen(gr->gr_name);
+        if (grup > ctx->max_grup_len) {
+          ctx->max_grup_len = grup;
+        }
+      } else {
+        bool match = false;
+        for (int l = 0; l < mindex; l++) {
+          if ((info.st_uid == ml[l].uid_num) && (info.st_gid == ml[l].pid_num)) {
+            match = true;
+            break;
+          }
+        }
+  
+        if (!match) {
+          struct passwd *pw;
+          struct group *gr;
+  
+          pw = getpwuid(info.st_uid);
+          if (pw != NULL) {
+            ml[mindex].uid_num = (int)info.st_uid;
+            ml[mindex].max_uid = (int)strlen(pw->pw_name);
+          } else {
+            ml[mindex].uid_num = (int)info.st_uid;
+            ml[mindex].max_uid = 4;
+          }
+  
+          gr = getgrgid(info.st_gid);
+          if (pw != NULL) {
+            ml[mindex].pid_num = (int)info.st_gid;
+            ml[mindex].max_pid = (int)strlen(gr->gr_name);
+          } else {
+            ml[mindex].uid_num = (int)info.st_uid;
+            ml[mindex].max_uid = 4;
+          }
+  
+          ml[mindex].end = 1;
+          mindex++;
+        }
+  
+        match = 0;
+  
+        if (mindex >= 10) {
+          for (int i = 0; i < mindex; i++) {
+            if (ml[i].end == 0) break;
+            if (ml[i].max_uid > ctx->max_own_len) ctx->max_own_len = ml[i].max_uid;
+            if (ml[i].max_pid > ctx->max_grup_len) ctx->max_grup_len = ml[i].max_pid;
+            if (i > 10) break;
+          }
+        }
+      }
+    } else {
+      // Is a directory
+      DIR *dr = opendir(ctx->paths[icount]);
+      if (dr == NULL) {
+        fprintf(stderr, "%s(): failed to open: %s\n", __func__, ctx->paths[icount]);
+        return -1;
+      }
+    
+      struct dirent *de;
+      while ((de = readdir(dr)) != NULL) {
+        if (ctx->list_all) {
+          if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+            continue;
+          }
+        }
+    
+        char* full_file_path = NULL;
+        catpath(&full_file_path, ctx->paths[icount]);
+        catpath(&full_file_path, de->d_name);
+    
+        struct stat info;
+        if (lstat(full_file_path, &info) != 0) {
+          perror("lstat");
+          printf("error: unable to open stat on: %s\n", full_file_path);
+          exit(20);
+        }
+
+        free(full_file_path);
+    
+        char* file_bytes = human_readable_bytes(info.st_size);
+        if (file_bytes != NULL) {
+          int file_bytes_len = strlen(file_bytes);
+          if (file_bytes_len > ctx->max_size) ctx->max_size = file_bytes_len;
+          free(file_bytes);
+        }
+    
+        if (mindex >= 9) {
+          struct passwd *pw;
+          struct group *gr;
+    
+          pw = getpwuid(info.st_uid);
+          gr = getgrgid(info.st_gid);
+    
+          int own = strlen(pw->pw_name);
+          if (own > ctx->max_own_len) {
+            ctx->max_own_len = own;
+          }
+    
+          int grup = strlen(gr->gr_name);
+          if (grup > ctx->max_grup_len) {
+            ctx->max_grup_len = grup;
+          }
+        } else {
+          bool match = false;
+          for (int l = 0; l < mindex; l++) {
+            if ((info.st_uid == ml[l].uid_num) && (info.st_gid == ml[l].pid_num)) {
+              match = true;
+              break;
+            }
+          }
+    
+          if (!match) {
+            struct passwd *pw;
+            struct group *gr;
+    
+            pw = getpwuid(info.st_uid);
+            if (pw != NULL) {
+              ml[mindex].uid_num = (int)info.st_uid;
+              ml[mindex].max_uid = (int)strlen(pw->pw_name);
+            } else {
+              ml[mindex].uid_num = (int)info.st_uid;
+              ml[mindex].max_uid = 4;
+            }
+    
+            gr = getgrgid(info.st_gid);
+            if (pw != NULL) {
+              ml[mindex].pid_num = (int)info.st_gid;
+              ml[mindex].max_pid = (int)strlen(gr->gr_name);
+            } else {
+              ml[mindex].uid_num = (int)info.st_uid;
+              ml[mindex].max_uid = 4;
+            }
+    
+            ml[mindex].end = 1;
+            mindex++;
+          }
+    
+          match = 0;
+    
+          if (mindex >= 10) {
+            for (int i = 0; i < mindex; i++) {
+              if (ml[i].end == 0) break;
+              if (ml[i].max_uid > ctx->max_own_len) ctx->max_own_len = ml[i].max_uid;
+              if (ml[i].max_pid > ctx->max_grup_len) ctx->max_grup_len = ml[i].max_pid;
+              if (i > 10) break;
+            }
+          }
+        }
+      }
+        closedir(dr);
+    }
+ 
+
+  /*
     char *full_file_path = NULL;
   
     struct max_list {
@@ -92,7 +294,21 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     ml[0].end = 1;
   
     int mindex = 0;
-  
+
+    struct stat info;
+    if (lstat(ctx->paths[icount], &info) != 0) {
+      printf("TODO: FILE DOES NOT EXIST: %s\n", ctx->paths[icount]);
+      continue;
+    }
+
+    if (!S_ISDIR(info.st_mode)) {
+      // Is a normal file
+
+      printf("FILE IS A FILE\n");
+
+    }
+
+
     DIR *dr = opendir(ctx->paths[icount]);
     if (dr == NULL) {
       fprintf(stderr, "%s(): failed to open: %s\n", __func__, ctx->paths[icount]);
@@ -221,7 +437,38 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     }
   
     free(full_file_path);
+    */
   }
+
+  ml[mindex].uid_num = 0;
+  ml[mindex].max_uid = 0;
+  ml[mindex].pid_num = 0;
+  ml[mindex].max_pid = 0;
+  ml[mindex].end = 0;
+
+  if (mindex < 10) {
+    int i = 0;
+    while (1) {
+      if (ml[i].end == 0) break;
+      if (ml[i].max_uid > ctx->max_own_len) ctx->max_own_len = ml[i].max_uid;
+      if (ml[i].max_pid > ctx->max_grup_len) ctx->max_grup_len = ml[i].max_pid;
+      i++;
+      if (i > 10) break;
+    }
+  }
+
+  ml[0].uid_num = 0;
+  ml[0].max_uid = 0;
+  ml[0].pid_num = 0;
+  ml[0].max_pid = 0;
+  ml[0].end = 0;
+
+  if ((ctx->max_own_len > 20) || (ctx->max_grup_len > 20)) {
+    printf("INTERNAL ERROR; recovering\n");
+    ctx->max_own_len = 8;
+    ctx->max_grup_len = 8;
+  }
+ 
 
   return 0;
 }
@@ -281,7 +528,7 @@ bool iszip(const char* filename) {
   return false;
 }
 
-int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
+int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bool is_file) {
   struct stat sb;
   struct stat info;
 
@@ -297,7 +544,9 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
     //print_name = strdup(filename);
   }
 
-  catpath(&full_file_path, filepath);
+  if (!is_file) {
+    catpath(&full_file_path, filepath);
+  }
   catpath(&full_file_path, filename);
 
   if (lstat(full_file_path, &info) != 0) {
@@ -404,32 +653,58 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
 
 int lf_print(lf_files* ctx) {
   for (int i = 0; i < ctx->path_count; i++) {
-    DIR* dr = opendir(ctx->paths[i]);
-    struct dirent *de;
-    while ((de = readdir(dr)) != NULL) {
-      if (ctx->list_all == 0) {
-        if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
-          continue;
-        }
-      }
-  
-      if (ctx->mr_output) {
+    struct stat info;
+    if (lstat(ctx->paths[i], &info) != 0) {
+      printf("TODO2222: FILE DOES NOT EXIST: %s\n", ctx->paths[i]);
+      continue;
+    }
+
+    if (!S_ISDIR(info.st_mode)) {
+      // Is a normal file
+       if (ctx->mr_output) {
         if (ctx->rel_path) {
           char r_path[256];
           r_path[0] = '\0';
           strcpy(r_path, ctx->paths[i]);
-          strcat(r_path, de->d_name);
+          strcat(r_path, ctx->paths[i]);
           printf("%s\n", r_path);
         } else {
-          printf("%s\n", de->d_name);
+          printf("%s\n", ctx->paths[i]);
         }
       } else {
-        if (list_file_info(ctx, ctx->paths[i], de->d_name) != 0) {
-          printf("ERROR: while listing file: %s\n", de->d_name);
+        if (list_file_info(ctx, ctx->paths[i], ctx->paths[i], true) != 0) {
+          printf("ERROR: while listing file: %s\n", ctx->paths[i]);
         }
       }
+    } else {
+      // Is a directory
+      DIR* dr = opendir(ctx->paths[i]);
+      struct dirent *de;
+      while ((de = readdir(dr)) != NULL) {
+        if (ctx->list_all == 0) {
+          if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+            continue;
+          }
+        }
+    
+        if (ctx->mr_output) {
+          if (ctx->rel_path) {
+            char r_path[256];
+            r_path[0] = '\0';
+            strcpy(r_path, ctx->paths[i]);
+            strcat(r_path, de->d_name);
+            printf("%s\n", r_path);
+          } else {
+            printf("%s\n", de->d_name);
+          }
+        } else {
+          if (list_file_info(ctx, ctx->paths[i], de->d_name, false) != 0) {
+            printf("ERROR: while listing file: %s\n", de->d_name);
+          }
+        }
+      }
+      closedir(dr);
     }
-    closedir(dr);
   }
 
   return 0;
