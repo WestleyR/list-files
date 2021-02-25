@@ -24,9 +24,11 @@
 #include <pwd.h>
 #include <grp.h>
 #include <uuid/uuid.h>
+#include <time.h>
 
 #include "bool.h"
 #include "catpath.h"
+#include "color.h"
 
 typedef struct lf_files lf_files;
 

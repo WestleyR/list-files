@@ -25,6 +25,10 @@ struct lf_files {
   bool mr_output;
   bool auto_mr_output;
 
+  bool rel_path;
+
+  bool print_color;
+
   bool list_all;
 };
 
@@ -38,6 +42,7 @@ lf_files* lf_new() {
   ctx->max_grup_len = 0;
   ctx->mr_output = false;
   ctx->auto_mr_output = true;
+  ctx->print_color = true;
 
   return ctx;
 }
@@ -231,9 +236,209 @@ int lf_get_max_size_from_path(lf_files* ctx) {
   return 0;
 }
 
+char* get_filedate(struct stat finfo) {
+  char* ret;
+  ret = (char*) malloc(20 * sizeof(char));
+  if (ret == NULL) {
+    perror("malloc");
+    return NULL;
+  }
+
+  struct tm* p = localtime(&finfo.st_mtime);
+
+  // For year-month-day
+  strftime(ret, 1000, "%Y-%m-%d", p);
+
+  return ret;
+}
+
+// find_link will take a file name (const char* name), and find where that
+// file is linked to (if any). Returns non-zero if failed. symlink must be
+// a large enought buffer to hold the symlink path.
+// TODO: use readlink function from my whereis command
+int find_link(char* symlink, const char* name) {
+  char link_buff[256];
+  link_buff[0] = '\0';
+
+  ssize_t len = readlink(name, link_buff, sizeof(link_buff));
+  if (len == -1) {
+    perror("readlink");
+    fprintf(stderr, "Unable to find link for: %s\n", name);
+    return -1;
+  }
+
+  symlink[0] = '\0';
+  strcpy(symlink, link_buff);
+  symlink[len] = '\0';
+
+  return 0;
+}
+
+int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
+  struct stat sb;
+  struct stat info;
+
+  char *full_file_path = NULL;
+
+  char *print_name;
+  print_name = (char*) malloc(256 * sizeof(char));
+
+  if (ctx->rel_path) {
+    print_name = strdup(filepath);
+  } else {
+    print_name = strdup(filename);
+  }
+
+  catpath(&full_file_path, filepath);
+  catpath(&full_file_path, filename);
+
+  if (lstat(full_file_path, &info) != 0) {
+    perror("lstat");
+    printf("error: unable to open stat on: %s\n", filepath);
+    exit(20);
+  }
+
+  // TODO: use 'l' for links
+  printf((S_ISDIR(info.st_mode)) ? "d" : "-");
+  printf((info.st_mode & S_IRUSR) ? "r" : "-");
+  printf((info.st_mode & S_IWUSR) ? "w" : "-");
+  printf((info.st_mode & S_IXUSR) ? "x" : "-");
+  printf((info.st_mode & S_IRGRP) ? " r" : " -");
+  printf((info.st_mode & S_IWGRP) ? "w" : "-");
+  printf((info.st_mode & S_IXGRP) ? "x" : "-");
+  printf((info.st_mode & S_IROTH) ? "r" : "-");
+  printf((info.st_mode & S_IWOTH) ? "w" : "-");
+  printf((info.st_mode & S_IXOTH) ? "x" : "-");
+
+#ifdef WITHOUT_NAME_GROUP_OUTPUT
+  printf("  %4d", info.st_uid);
+  printf("  %4d ", info.st_gid);
+#else
+  struct passwd *pw = getpwuid(info.st_uid);
+  if (pw == NULL) {
+    printf("  %*d", ctx->max_own_len, info.st_uid);
+  } else {
+    printf("  %*s", ctx->max_own_len, pw->pw_name);
+  }
+
+  struct group *gr = getgrgid(info.st_gid);
+  if (gr == NULL) {
+    printf("  %-*d ", ctx->max_grup_len, info.st_gid);
+  } else {
+    printf("  %-*s ", ctx->max_grup_len, gr->gr_name);
+  }
+#endif
+
+  char* file_date = get_filedate(info);
+  if (file_date == NULL) {
+    printf(" %s ", "0000-00-00");
+  } else {
+    printf(" %s ", file_date);
+    free(file_date);
+  }
+
+  char* file_bytes = human_readable_bytes(info.st_size);
+  if (file_bytes != NULL) {
+    int file_bytes_len = strlen(file_bytes);
+    if (file_bytes_len > ctx->max_size) ctx->max_size = file_bytes_len;
+    printf(" %-*s", ctx->max_size, file_bytes);
+    free(file_bytes);
+  } else {
+    printf(" %-*s", 8, "unknown");
+  }
+
+  if (ctx->print_color) {
+    if (S_ISLNK(info.st_mode)) {
+      char *link_path;
+      link_path = (char*) malloc(256 * sizeof(char));
+
+      int err = find_link(link_path, filepath);
+      if (err != 0) {
+        strcpy(link_path, "failed to get symlink");
+      }
+      char* full_link_path = NULL;
+
+      if (link_path[0] == '/') {
+        catpath(&full_link_path, link_path);
+      } else {
+        catpath(&full_link_path, filepath);
+        catpath(&full_link_path, link_path);
+      }
+
+      printf("FULL_LINK_PATH: %s\n", full_link_path);
+      printf("BASEPATH: %s\n", filepath);
+
+      if (access(full_link_path, F_OK) != 0) {
+        // If the link is broken
+        printf("  %s%s%s  ->  %s%s%s\n", BBOLDRED, print_name, COLORRESET, BBOLDRED, link_path, COLORRESET);
+      } else {
+        printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
+      }
+      free(link_path);
+    } else if (S_ISDIR(info.st_mode)) {
+      printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
+    } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
+      printf("  %s%s%s\n", BOLDGREEN, print_name, COLORRESET);
+//    } else if (iszip(full_file_path) == 0) {
+//      printf("  %s%s%s\n", BOLDRED, print_name, COLORRESET);
+    } else if (access(full_file_path, R_OK) != 0) {
+      printf("  %s%s%s\n", BOLDMAGENTA, print_name, COLORRESET);
+    } else {
+      printf("  %s\n", print_name);
+    }
+  } else {
+    if (S_ISLNK(info.st_mode)) {
+      char *link_path;
+      link_path = (char*) malloc(256 * sizeof(char));
+
+      int err = find_link(link_path, full_file_path);
+      if (err != 0) {
+        strcpy(link_path, "failed to get symlink");
+      }
+      printf("  %s  ->  %s\n", print_name, link_path);
+      free(link_path);
+    } else {
+      printf("  %s\n", print_name);
+    }
+  }
+
+  free(full_file_path);
+  free(print_name);
+
+  return 0;
+}
+
 int lf_print(lf_files* ctx) {
+  for (int i = 0; i < ctx->path_count; i++) {
+    printf("LISTING: %s\n", ctx->paths[i]);
 
-
+    DIR* dr = opendir(ctx->paths[i]);
+    struct dirent *de;
+    while ((de = readdir(dr)) != NULL) {
+      if (ctx->list_all == 0) {
+        if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+          continue;
+        }
+      }
+  
+      if (ctx->mr_output) {
+        if (ctx->rel_path) {
+          char r_path[256];
+          r_path[0] = '\0';
+          strcpy(r_path, ctx->paths[i]);
+          strcat(r_path, de->d_name);
+          printf("%s\n", r_path);
+        } else {
+          printf("%s\n", de->d_name);
+        }
+      } else {
+        if (list_file_info(ctx, ctx->paths[i], de->d_name) != 0) {
+          printf("ERROR: while listing file: %s\n", de->d_name);
+        }
+      }
+    }
+    closedir(dr);
+  }
 
   return 0;
 }
