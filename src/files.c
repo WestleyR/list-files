@@ -256,22 +256,26 @@ char* get_filedate(struct stat finfo) {
 // file is linked to (if any). Returns non-zero if failed. symlink must be
 // a large enought buffer to hold the symlink path.
 // TODO: use readlink function from my whereis command
-int find_link(char* symlink, const char* name) {
-  char link_buff[256];
-  link_buff[0] = '\0';
 
-  ssize_t len = readlink(name, link_buff, sizeof(link_buff));
-  if (len == -1) {
-    perror("readlink");
-    fprintf(stderr, "Unable to find link for: %s\n", name);
-    return -1;
+char* find_link(const char* path) {
+  char* symlink_path = NULL;
+  size_t link_len;
+  size_t init_size = 80;
+
+  // Make sure to only malloc enought, and not too much
+  while (true) {
+    free(symlink_path);
+    symlink_path = (char*) malloc(init_size);
+    link_len = readlink(path, symlink_path, init_size);
+
+    if (link_len < init_size) {
+      break;
+    }
+    init_size += 100;
   }
+  symlink_path[link_len] = '\0';
 
-  symlink[0] = '\0';
-  strcpy(symlink, link_buff);
-  symlink[len] = '\0';
-
-  return 0;
+  return symlink_path;
 }
 
 int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
@@ -280,13 +284,14 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
 
   char *full_file_path = NULL;
 
-  char *print_name;
-  print_name = (char*) malloc(256 * sizeof(char));
+  const char *print_name;
 
   if (ctx->rel_path) {
-    print_name = strdup(filepath);
+    print_name = filepath;
+    //print_name = strdup(filepath);
   } else {
-    print_name = strdup(filename);
+    print_name = filename;
+    //print_name = strdup(filename);
   }
 
   catpath(&full_file_path, filepath);
@@ -349,13 +354,8 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
 
   if (ctx->print_color) {
     if (S_ISLNK(info.st_mode)) {
-      char *link_path;
-      link_path = (char*) malloc(256 * sizeof(char));
+      char* link_path = find_link(full_file_path);
 
-      int err = find_link(link_path, filepath);
-      if (err != 0) {
-        strcpy(link_path, "failed to get symlink");
-      }
       char* full_link_path = NULL;
 
       if (link_path[0] == '/') {
@@ -364,9 +364,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
         catpath(&full_link_path, filepath);
         catpath(&full_link_path, link_path);
       }
-
-      printf("FULL_LINK_PATH: %s\n", full_link_path);
-      printf("BASEPATH: %s\n", filepath);
+      free(link_path);
 
       if (access(full_link_path, F_OK) != 0) {
         // If the link is broken
@@ -374,7 +372,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
       } else {
         printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
       }
-      free(link_path);
+      free(full_link_path);
     } else if (S_ISDIR(info.st_mode)) {
       printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
     } else if (stat(full_file_path, &sb) == 0 && sb.st_mode & S_IXUSR) {
@@ -388,13 +386,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
     }
   } else {
     if (S_ISLNK(info.st_mode)) {
-      char *link_path;
-      link_path = (char*) malloc(256 * sizeof(char));
-
-      int err = find_link(link_path, full_file_path);
-      if (err != 0) {
-        strcpy(link_path, "failed to get symlink");
-      }
+      char* link_path = find_link(full_file_path);
       printf("  %s  ->  %s\n", print_name, link_path);
       free(link_path);
     } else {
@@ -403,7 +395,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename) {
   }
 
   free(full_file_path);
-  free(print_name);
+//  free(print_name);
 
   return 0;
 }

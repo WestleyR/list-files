@@ -680,18 +680,13 @@ int main(int argc, char** argv) {
 //      prep_list(argv[0], argv[i], list_all);
       lf_add_path(ctx, argv[i]);
     }
-    for (int i = optind; i < argc; i++) {
-      lf_get_max_size_from_path(ctx);
-      // print the output
-      //lf_print(ctx);
-    }
  
   } else {
       lf_add_path(ctx, "./");
-      lf_get_max_size_from_path(ctx);
-      lf_print(ctx);
   }
 
+  lf_get_max_size_from_path(ctx);
+  lf_print(ctx);
   lf_destroy(ctx);
 
 
