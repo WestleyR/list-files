@@ -613,7 +613,17 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
       if (link_path[0] == '/') {
         catpath(&full_link_path, link_path);
       } else {
-        catpath(&full_link_path, filepath);
+
+//        struct stat path_stat;
+//        stat(filepath, &path_stat);
+//        if (S_ISREG(path_stat.st_mode)) {
+        if (is_file) {
+          char* path_base = dirname((char*)filepath);
+          catpath(&full_link_path, path_base);
+        } else {
+          catpath(&full_link_path, filepath);
+        }
+
         catpath(&full_link_path, link_path);
       }
       free(link_path);

@@ -25,6 +25,7 @@
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
+#include <libgen.h>
 
 #include "bool.h"
 #include "catpath.h"
