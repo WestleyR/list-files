@@ -93,7 +93,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
   for (int icount = 0; icount < ctx->path_count; icount++) {
     struct stat info;
     if (lstat(ctx->paths[icount], &info) != 0) {
-      printf("TODO: FILE DOES NOT EXIST: %s\n", ctx->paths[icount]);
+      // File does not exist
       continue;
     }
 
@@ -484,10 +484,12 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
 }
 
 int lf_print(lf_files* ctx) {
+  int rc = 0;
   for (int i = 0; i < ctx->path_count; i++) {
     struct stat info;
     if (lstat(ctx->paths[i], &info) != 0) {
-      printf("TODO2222: FILE DOES NOT EXIST: %s\n", ctx->paths[i]);
+      fprintf(stderr, "%s: No such file or directory.\n", ctx->paths[i]);
+      rc = 2;
       continue;
     }
 
@@ -539,7 +541,7 @@ int lf_print(lf_files* ctx) {
     }
   }
 
-  return 0;
+  return rc;
 }
 
 char* human_readable_bytes(double bytes) {

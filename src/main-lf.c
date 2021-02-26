@@ -677,20 +677,17 @@ int main(int argc, char** argv) {
 
   if (optind < argc) {
     for (int i = optind; i < argc; i++) {
-//      prep_list(argv[0], argv[i], list_all);
       lf_add_path(ctx, argv[i]);
     }
- 
   } else {
       lf_add_path(ctx, "./");
   }
 
   lf_get_max_size_from_path(ctx);
-  lf_print(ctx);
+  int rc = lf_print(ctx);
   lf_destroy(ctx);
 
-
-  return(0);
+  return rc;
 }
 
 // vim: tabstop=2 shiftwidth=2 expandtab autoindent softtabstop=0
