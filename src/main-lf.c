@@ -36,7 +36,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define SCRIPT_VERSION "1.7.0"
+#define LF_CLI_VERSION "v1.7.0.a1"
 
 void help_menu(const char* script_name) {
   printf("Copyright (c) 2019-2021 WestleyR, All rights reserved.\n");
@@ -78,7 +78,7 @@ void help_menu(const char* script_name) {
 }
 
 void version_print() {
-  printf("%s\n", SCRIPT_VERSION);
+  printf("%s\n", LF_CLI_VERSION);
   return;
 }
 
@@ -102,17 +102,17 @@ int main(int argc, char** argv) {
   bool rel_path = false;
   
   // no color option
-  bool no_color_print = false;
+  bool color_print = true;
   
   // If piped or redirected, dont use color unless
   // overidded.
   if (isatty(STDOUT_FILENO) == 0) {
-    no_color_print = true;
+    color_print = false;
   }
 
   int opt = 0;
 
-  char* color_print = (char*) malloc(5 * sizeof(char));
+  char* color_opt = (char*) malloc(5 * sizeof(char));
 
   static struct option long_options[] = {
     {"help", no_argument, 0, 'h'},
@@ -130,39 +130,39 @@ int main(int argc, char** argv) {
   while ((opt = getopt_long(argc, argv,"c:1mrabpVhC", long_options, 0)) != -1) {
     switch (opt) {
       case '1':
-        mr_list = 1;
+        mr_list = true;
         break;
       case 'm':
-        mr_list = 1;
+        mr_list = true;
         break;
       case 'a':
-        list_all = 1;
+        list_all = true;
         break;
       case 'p':
-        rel_path = 1;
+        rel_path = true;
         break;
       case 'r':
         // If human-readable output, then disable mr output
         mr_list = 0;
         break;
       case 'c':
-        strcpy(color_print, optarg);
+        strcpy(color_opt, optarg);
         break;
       case 'h':
         help_menu(argv[0]);
-        return(0);
+        return 0;
         break;
       case 'V':
         version_print();
-        return(0);
+        return 0;
         break;
       case 'C':
         version_commit();
-        return(0);
+        return 0;
         break;
       default:
         // Invalid option
-        return(22);
+        return 22;
     }
   }
 
@@ -170,8 +170,8 @@ int main(int argc, char** argv) {
   char* auto_mr_output = getenv("LF_MR_AUTO_OUTPUT");
   if (auto_mr_output != NULL) {
     if (auto_mr_output[0] == '0') {
-      if (no_color_print == 1) {
-        mr_list = 1;
+      if (color_print == false) {
+        mr_list = true;
       }
     } else if (auto_mr_output[0] == '1') {
       // default
@@ -179,25 +179,25 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s: Invalid option for LF_MR_AUTO_OUTPUT: %s\n", argv[0], auto_mr_output);
     }
   } else {
-    if (no_color_print == 1) {
-      mr_list = 1;
+    if (color_print == false) {
+      mr_list = true;
     }
   }
 
   // If the --color option is set
-  if (color_print[0] != '\0') {
-    if (strcmp(color_print, "auto") == 0) {
+  if (color_opt[0] != '\0') {
+    if (strcmp(color_opt, "auto") == 0) {
       // Do nothing
-    } else if (strcmp(color_print, "on") == 0) {
-      no_color_print = 0;
-    } else if (strcmp(color_print, "off") == 0) {
-      no_color_print = 1;
+    } else if (strcmp(color_opt, "on") == 0) {
+      color_print = true;
+    } else if (strcmp(color_opt, "off") == 0) {
+      color_print = false;
     } else {
-      fprintf(stderr, "%s: --color: %s: invalid argument\n", argv[0], color_print);
-      return(22);
+      fprintf(stderr, "%s: --color: %s: invalid argument\n", argv[0], color_opt);
+      return 22;
     }
   }
-  free(color_print);
+  free(color_opt);
 
   lf_files* ctx = lf_new();
 
@@ -213,6 +213,7 @@ int main(int argc, char** argv) {
   lf_set_print_all(ctx, list_all);
   lf_set_print_rel_path(ctx, rel_path);
   lf_set_print_mr_output(ctx, mr_list);
+  lf_set_print_color(ctx, color_print);
 
   lf_get_max_size_from_path(ctx);
   int rc = lf_print(ctx);

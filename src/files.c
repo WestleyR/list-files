@@ -83,6 +83,11 @@ int lf_set_print_mr_output(lf_files* ctx, bool mr_output) {
   return 0;
 }
 
+int lf_set_print_color(lf_files* ctx, bool print_color) {
+  ctx->print_color = print_color;
+  return 0;
+}
+
 int lf_get_max_size_from_path(lf_files* ctx) {
   if (ctx == NULL) return -1;
   if (ctx->paths == NULL) return -1;
