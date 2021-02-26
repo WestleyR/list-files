@@ -33,11 +33,19 @@
 
 typedef struct lf_files lf_files;
 
+// Creations/frees
 lf_files* lf_new();
 int lf_destroy(lf_files* ctx);
 
+// Add paths
 int lf_add_path(lf_files* ctx, const char* path);
 
+// Set the options
+int lf_set_print_all(lf_files* ctx, bool print_all);
+int lf_set_print_rel_path(lf_files* ctx, bool rel_path);
+int lf_set_print_mr_output(lf_files* ctx, bool mr_output);
+
+// Printing functions
 int lf_get_max_size_from_path(lf_files* ctx);
 int lf_print(lf_files* ctx);
 

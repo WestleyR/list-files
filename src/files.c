@@ -25,7 +25,7 @@ struct lf_files {
   bool mr_output;
   bool auto_mr_output;
 
-  bool rel_path;
+  bool rel_output;
 
   bool print_color;
 
@@ -41,6 +41,7 @@ lf_files* lf_new() {
   ctx->max_own_len = 0;
   ctx->max_grup_len = 0;
   ctx->mr_output = false;
+  ctx->rel_output = false;
   ctx->auto_mr_output = true;
   ctx->print_color = true;
 
@@ -64,6 +65,21 @@ int lf_add_path(lf_files* ctx, const char* path) {
   strcpy(ctx->paths[ctx->path_count], path);
   ctx->path_count++;
 
+  return 0;
+}
+
+int lf_set_print_all(lf_files* ctx, bool print_all) {
+  ctx->list_all = print_all;
+  return 0;
+}
+
+int lf_set_print_rel_path(lf_files* ctx, bool rel_path) {
+  ctx->rel_output = rel_path;
+  return 0;
+}
+
+int lf_set_print_mr_output(lf_files* ctx, bool mr_output) {
+  ctx->mr_output = mr_output;
   return 0;
 }
 
@@ -359,14 +375,13 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
 
   char *full_file_path = NULL;
 
-  const char *print_name;
+  char *print_name = NULL;
 
-  if (ctx->rel_path) {
-    print_name = filepath;
-    //print_name = strdup(filepath);
+  if (ctx->rel_output) {
+    catpath(&print_name, filepath);
+    catpath(&print_name, filename);
   } else {
-    print_name = filename;
-    //print_name = strdup(filename);
+    print_name = strdup(filename);
   }
 
   if (!is_file) {
@@ -479,6 +494,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
   }
 
   free(full_file_path);
+  free(print_name);
 
   return 0;
 }
@@ -496,7 +512,7 @@ int lf_print(lf_files* ctx) {
     if (!S_ISDIR(info.st_mode)) {
       // Is a normal file
        if (ctx->mr_output) {
-        if (ctx->rel_path) {
+        if (ctx->rel_output) {
           char r_path[256];
           r_path[0] = '\0';
           strcpy(r_path, ctx->paths[i]);
@@ -522,7 +538,7 @@ int lf_print(lf_files* ctx) {
         }
     
         if (ctx->mr_output) {
-          if (ctx->rel_path) {
+          if (ctx->rel_output) {
             char r_path[256];
             r_path[0] = '\0';
             strcpy(r_path, ctx->paths[i]);
