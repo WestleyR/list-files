@@ -614,9 +614,6 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
         catpath(&full_link_path, link_path);
       } else {
 
-//        struct stat path_stat;
-//        stat(filepath, &path_stat);
-//        if (S_ISREG(path_stat.st_mode)) {
         if (is_file) {
           char* path_base = dirname((char*)filepath);
           catpath(&full_link_path, path_base);
