@@ -1,7 +1,5 @@
 # List Files in a Directory
 
-**Code rewriting is progress. Code currently does not work, please see the latest release for a stable version.**
-
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20linux%20CI/badge.svg)
 ![](https://github.com/WestleyR/list-files/workflows/list-files%20macos%20CI/badge.svg)
 
@@ -14,7 +12,6 @@ There are several ways to install `lf`, you can:
 
  - [Use a package manger (gpack)](#install-via-gpack)
  - [Clone the repo and build from source](#install-from-source)
- - [Install via brew](#install-via-brew)
 
 ### Install via gpack
 
@@ -77,20 +74,6 @@ $ make install PREFIX=${HOME}/.local
 _**NOTE:** Check for the latest release on the
 [release page](https://github.com/WestleyR/list-files/releases)_
 
-### Install via brew
-
-First, you will need to add my tap:
-
-```
-$ brew tap WestleyR/core
-```
-
-Then, you can install like normal:
-
-```
-$ brew install list-files
-```
-
 ## Example:
 
 ```bash
@@ -108,23 +91,6 @@ drwx r-xr-x  westleyrose  staff  2020-05-04  192 B    deps
 -rw- r--r--  westleyrose  staff  2020-05-04  1.1 KB   run-tests
 drwx r-xr-x  westleyrose  staff  2020-08-14  640 B    src
 ```
-
-<br>
-
-## list-files-utils
-
-As of v1.4.1, list-files also offers a `list-files-utils` functions. You can
-use them in your own project by copying all but `main-list-files.c` from `src`
-to your own `src` or `deps` directory. Or if you are using `clib`, add this to
-your `clib.json` or `package.json`:
-
-```json
-"dependencies": {
-  "WestleyR/list-files": "v1.6.2"
-}
-```
-
-_**NOTE:** be sure to check the latest release._
 
 ## License
 

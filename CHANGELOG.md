@@ -7,9 +7,10 @@ _**NOTES:**_
 subject to change.
 
 
-## v1.7.0.a1 - Aug 20, 2020
+## v1.7.0.a1 - Feb 26, 2021
 
 ### CHANGED
+ - Re-write internal code for memory leak-free performance.
  - Piping, or redirecting the output of `lf` will enable machine-readable output (`-1`, `-m`)
 
 
