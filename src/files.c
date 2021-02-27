@@ -526,7 +526,7 @@ int lf_print(lf_files* ctx) {
   for (int i = 0; i < ctx->path_count; i++) {
     struct stat info;
     if (lstat(ctx->paths[i], &info) != 0) {
-      fprintf(stderr, "%s: No such file or directory.\n", ctx->paths[i]);
+      fprintf(stderr, "lf: %s: No such file or directory.\n", ctx->paths[i]);
       rc = 2;
       continue;
     }
@@ -561,11 +561,11 @@ int lf_print(lf_files* ctx) {
     
         if (ctx->mr_output) {
           if (ctx->rel_output) {
-            char r_path[256];
-            r_path[0] = '\0';
-            strcpy(r_path, ctx->paths[i]);
-            strcat(r_path, de->d_name);
+            char* r_path = NULL;
+            catpath(&r_path, ctx->paths[i]);
+            catpath(&r_path, de->d_name);
             printf("%s\n", r_path);
+            free(r_path);
           } else {
             printf("%s\n", de->d_name);
           }
