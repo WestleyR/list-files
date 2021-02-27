@@ -26,9 +26,10 @@
 #include <time.h>
 #include <libgen.h>
 
-#ifndef WITHOUT_NAME_GROUP_OUTPUT
+//#ifndef WITHOUT_NAME_GROUP_OUTPUT
+// TODO: fix internal code to not need this library if without owners/group names
 #include <pwd.h>
-#endif
+//#endif
 
 #include "bool.h"
 #include "catpath.h"
