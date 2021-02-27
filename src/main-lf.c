@@ -13,17 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <dirent.h>
 #include <string.h>
-#include <unistd.h>
-#include <grp.h>
 #include <getopt.h>
-#include <sys/stat.h>
-#include <time.h>
-
-#ifndef WITHOUT_NAME_GROUP_OUTPUT
-#include <pwd.h>
-#endif
 
 #include "files.h"
 #include "bool.h"
@@ -96,7 +87,6 @@ int main(int argc, char** argv) {
 
   // machine readable output
   bool mr_list = false;
-//  bool auto_mr_list = true;
   
   // -p option
   bool rel_path = false;
@@ -110,8 +100,25 @@ int main(int argc, char** argv) {
     color_print = false;
   }
 
-  int opt = 0;
+  // Check if LF_MR_AUTO_OUTPUT is set, and see what its set to
+  char* auto_mr_output = getenv("LF_MR_AUTO_OUTPUT");
+  if (auto_mr_output != NULL) {
+    if (auto_mr_output[0] == '0') {
+      if (color_print == false) {
+        mr_list = true;
+      }
+    } else if (auto_mr_output[0] == '1') {
+      // default
+    } else {
+      fprintf(stderr, "%s: Invalid option for LF_MR_AUTO_OUTPUT: %s\n", argv[0], auto_mr_output);
+    }
+  } else {
+    if (color_print == false) {
+      mr_list = true;
+    }
+  }
 
+  int opt = 0;
   char* color_opt = (char*) malloc(5 * sizeof(char));
 
   static struct option long_options[] = {
@@ -166,24 +173,6 @@ int main(int argc, char** argv) {
     }
   }
 
-  // Check if LF_MR_AUTO_OUTPUT is set, and see what its set to
-  char* auto_mr_output = getenv("LF_MR_AUTO_OUTPUT");
-  if (auto_mr_output != NULL) {
-    if (auto_mr_output[0] == '0') {
-      if (color_print == false) {
-        mr_list = true;
-      }
-    } else if (auto_mr_output[0] == '1') {
-      // default
-    } else {
-      fprintf(stderr, "%s: Invalid option for LF_MR_AUTO_OUTPUT: %s\n", argv[0], auto_mr_output);
-    }
-  } else {
-    if (color_print == false) {
-      mr_list = true;
-    }
-  }
-
   // If the --color option is set
   if (color_opt[0] != '\0') {
     if (strcmp(color_opt, "auto") == 0) {
@@ -215,8 +204,13 @@ int main(int argc, char** argv) {
   lf_set_print_mr_output(ctx, mr_list);
   lf_set_print_color(ctx, color_print);
 
+  // Get the currect formatting spaces before printing the output
   lf_get_max_size_from_path(ctx);
+
+  // Print the files
   int rc = lf_print(ctx);
+
+  // Free the context
   lf_destroy(ctx);
 
   return rc;

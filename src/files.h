@@ -21,11 +21,14 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <pwd.h>
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
 #include <libgen.h>
+
+#ifndef WITHOUT_NAME_GROUP_OUTPUT
+#include <pwd.h>
+#endif
 
 #include "bool.h"
 #include "catpath.h"
@@ -49,10 +52,6 @@ int lf_set_print_color(lf_files* ctx, bool print_color);
 // Printing functions
 int lf_get_max_size_from_path(lf_files* ctx);
 int lf_print(lf_files* ctx);
-
-
-// etc funcs
-char* human_readable_bytes(double bytes);
 
 #endif // WST_FILE__H 
 

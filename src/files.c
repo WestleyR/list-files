@@ -36,10 +36,10 @@ lf_files* lf_new() {
   lf_files* ctx = (lf_files*) malloc(sizeof(lf_files));
   ctx->paths = (char**) malloc(10 * sizeof(char*));
   ctx->path_count = 0;
-  ctx->list_all = false;
   ctx->max_size = 0;
   ctx->max_own_len = 0;
   ctx->max_grup_len = 0;
+  ctx->list_all = false;
   ctx->mr_output = false;
   ctx->rel_output = false;
   ctx->auto_mr_output = true;
@@ -88,6 +88,23 @@ int lf_set_print_color(lf_files* ctx, bool print_color) {
   return 0;
 }
 
+char* human_readable_bytes(double bytes) {
+  int i = 0;
+  char* buf;
+  float size = bytes;
+  buf = (char*) malloc(10 * sizeof(char));
+  const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+  while (size > 1024) {
+    size /= 1024;
+    i++;
+  }
+  sprintf(buf, "%.*f %s", i, size, units[i]);
+
+  return buf;
+}
+
+// TODO: this function could be cleaner
 int lf_get_max_size_from_path(lf_files* ctx) {
   if (ctx == NULL) return -1;
   if (ctx->paths == NULL) return -1;
@@ -315,7 +332,6 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     ctx->max_grup_len = 8;
   }
  
-
   return 0;
 }
 
@@ -335,6 +351,9 @@ char* get_filedate(struct stat finfo) {
   return ret;
 }
 
+// find_link will return an allocated pointer for the linked file.
+// Returned pointer must be freed.
+// TODO: test this function with plain files.
 char* find_link(const char* path) {
   char* symlink_path = NULL;
   size_t link_len;
@@ -441,8 +460,6 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
 
   char* file_bytes = human_readable_bytes(info.st_size);
   if (file_bytes != NULL) {
-    int file_bytes_len = strlen(file_bytes);
-    if (file_bytes_len > ctx->max_size) ctx->max_size = file_bytes_len;
     printf(" %-*s", ctx->max_size, file_bytes);
     free(file_bytes);
   } else {
@@ -563,22 +580,6 @@ int lf_print(lf_files* ctx) {
   }
 
   return rc;
-}
-
-char* human_readable_bytes(double bytes) {
-  int i = 0;
-  char* buf;
-  float size = bytes;
-  buf = (char*) malloc(10 * sizeof(char));
-  const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-
-  while (size > 1024) {
-    size /= 1024;
-    i++;
-  }
-  sprintf(buf, "%.*f %s", i, size, units[i]);
-
-  return buf;
 }
 
 // vim: tabstop=2 shiftwidth=2 expandtab autoindent softtabstop=0
