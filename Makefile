@@ -39,8 +39,13 @@ endif
 
 SRC = $(wildcard src/*.c)
 SRC += $(wildcard deps/*/*.c)
-
 OBJS = $(SRC:.c=.o)
+
+test_files = $(wildcard utests/*.c)
+test_files += $(wildcard src/*.c)
+test_files += $(wildcard deps/*/*.c)
+TEST_SRC = $(filter-out src/main-lf.c,$(test_files))
+TEST_OBJS = $(TEST_SRC:.c=.o)
 
 .PHONY:
 all: $(TARGET)
@@ -65,14 +70,23 @@ options:
 .PHONY:
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
-	
+
 .PHONY:
 %.o: %.c
 	$(CC) $(DEP_FLAG) $(CFLAGS) $(LDFLAGS) -o $@ -c $<
 
 .PHONY:
-test: $(TARGET)
+test: $(TARGET) unit-test
+	@echo "Running end-to-end tests..."
 	@bash ./run-tests
+
+.PHONY:
+unit-test: $(TEST_OBJS)
+	@echo "Running unit tests..."
+	@echo $(TEST_OBJS)
+	$(CC) $(CFLAGS) -o testball $(TEST_OBJS)
+	./testball
+	@rm testball
 
 .PHONY:
 install: $(TARGET)
@@ -81,7 +95,7 @@ install: $(TARGET)
 
 .PHONY:
 clean:
-	 rm -f $(OBJS)
+	 rm -f $(OBJS) $(TEST_OBJS)
 
 .PHONY:
 cleanall:

@@ -54,5 +54,9 @@ int lf_set_print_color(lf_files* ctx, bool print_color);
 int lf_get_max_size_from_path(lf_files* ctx);
 int lf_print(lf_files* ctx);
 
+// Internal, but used for unit tests
+char* human_readable_bytes(double bytes);
+char* find_link(const char* path);
+
 #endif // WST_FILE__H 
 

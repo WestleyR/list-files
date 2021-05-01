@@ -1,0 +1,12 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+chmod 000 tests/testdata/dir_no_perm
+
+run-test "lf no-perm-file" "./lf -r tests/testdata" "dir_no_perm" "d--- ------" 0
+run-test "lf no-perm-file" "./lf -r tests/testdata/dir_no_perm" "" "" 13
+
+chmod 777 tests/testdata/dir_no_perm
+

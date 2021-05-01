@@ -204,6 +204,11 @@ int lf_get_max_size_from_path(lf_files* ctx) {
       // Is a directory
       DIR *dr = opendir(ctx->paths[icount]);
       if (dr == NULL) {
+        // If theres an error opening the directory, the check if we have permission
+        if (!access(ctx->paths[icount], R_OK) == 0) {
+          fprintf(stderr, "lf: %s: Permission denied\n", ctx->paths[icount]);
+          return 13;
+        }
         fprintf(stderr, "%s(): failed to open: %s\n", __func__, ctx->paths[icount]);
         return -1;
       }
@@ -353,7 +358,7 @@ char* get_filedate(struct stat finfo) {
 
 // find_link will return an allocated pointer for the linked file.
 // Returned pointer must be freed.
-// TODO: test this function with plain files.
+// TODO: add null checks where called.
 char* find_link(const char* path) {
   char* symlink_path = NULL;
   size_t link_len;
@@ -364,6 +369,11 @@ char* find_link(const char* path) {
     free(symlink_path);
     symlink_path = (char*) malloc(init_size);
     link_len = readlink(path, symlink_path, init_size);
+
+    if (link_len == -1) {
+      // Error
+      return NULL;
+    }
 
     if (link_len < init_size) {
       break;
@@ -485,7 +495,6 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
 
         catpath(&full_link_path, link_path);
       }
-      free(link_path);
 
       if (access(full_link_path, F_OK) != 0) {
         // If the link is broken
@@ -493,6 +502,7 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
       } else {
         printf("  %s%s%s  ->  %s\n", BOLDCYAN, print_name, COLORRESET, link_path);
       }
+      free(link_path);
       free(full_link_path);
     } else if (S_ISDIR(info.st_mode)) {
       printf("  %s%s%s\n", BOLDBLUE, print_name, COLORRESET);
@@ -550,6 +560,13 @@ int lf_print(lf_files* ctx) {
       }
     } else {
       // Is a directory
+
+      // Check if the dir is readable first.
+      if (!access(ctx->paths[i], R_OK) == 0) {
+        rc = 13;
+        continue;
+      }
+
       DIR* dr = opendir(ctx->paths[i]);
       struct dirent *de;
       while ((de = readdir(dr)) != NULL) {
