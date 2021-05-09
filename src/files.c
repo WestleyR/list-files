@@ -205,11 +205,15 @@ int lf_get_max_size_from_path(lf_files* ctx) {
       // Is a directory
       DIR *dr = opendir(ctx->paths[icount]);
       if (dr == NULL) {
-        // If theres an error opening the directory, the check if we have permission
-        if (!access(ctx->paths[icount], R_OK) == 0) {
+        // Since there was an error opening the dir, check what kind of error and print it
+
+        // Do we have read perm?
+        if (access(ctx->paths[icount], R_OK) != 0) {
           fprintf(stderr, "lf: %s: Permission denied\n", ctx->paths[icount]);
           return 13;
         }
+
+        // Some other error
         fprintf(stderr, "%s(): failed to open: %s\n", __func__, ctx->paths[icount]);
         return -1;
       }
@@ -563,12 +567,10 @@ int lf_print(lf_files* ctx) {
       // Is a directory
 
       // Check if the dir is readable first.
-      if (!access(ctx->paths[i], R_OK) == 0) {
+      if (access(ctx->paths[i], R_OK) != 0) {
         rc = 13;
         continue;
       }
-
-
 
       struct dirent **namelist;
 
@@ -580,10 +582,11 @@ int lf_print(lf_files* ctx) {
         while (n--) {
           if (ctx->list_all == 0) {
             if ((namelist[n]->d_name[0] == '.') || (strcmp(namelist[n]->d_name, "..") == 0)) {
+              free(namelist[n]);
               continue;
             }
           }
-      
+
           if (ctx->mr_output) {
             if (ctx->rel_output) {
               char* r_path = NULL;
@@ -612,7 +615,7 @@ int lf_print(lf_files* ctx) {
 //            continue;
 //          }
 //        }
-//    
+//
 //        if (ctx->mr_output) {
 //          if (ctx->rel_output) {
 //            char* r_path = NULL;
