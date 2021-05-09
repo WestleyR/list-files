@@ -35,6 +35,7 @@ struct lf_files {
 lf_files* lf_new() {
   lf_files* ctx = (lf_files*) malloc(sizeof(lf_files));
   ctx->paths = (char**) malloc(10 * sizeof(char*));
+  // TODO: use path_count and remalloc if needed
   ctx->path_count = 0;
   ctx->max_size = 0;
   ctx->max_own_len = 0;
@@ -567,32 +568,68 @@ int lf_print(lf_files* ctx) {
         continue;
       }
 
-      DIR* dr = opendir(ctx->paths[i]);
-      struct dirent *de;
-      while ((de = readdir(dr)) != NULL) {
-        if (ctx->list_all == 0) {
-          if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
-            continue;
+
+
+      struct dirent **namelist;
+
+      int n = scandir(ctx->paths[i], &namelist, 0, alphasort);
+      if (n < 0) {
+       perror("scandir");
+       continue;
+      } else {
+        while (n--) {
+          if (ctx->list_all == 0) {
+            if ((namelist[n]->d_name[0] == '.') || (strcmp(namelist[n]->d_name, "..") == 0)) {
+              continue;
+            }
           }
-        }
-    
-        if (ctx->mr_output) {
-          if (ctx->rel_output) {
-            char* r_path = NULL;
-            catpath(&r_path, ctx->paths[i]);
-            catpath(&r_path, de->d_name);
-            printf("%s\n", r_path);
-            free(r_path);
+      
+          if (ctx->mr_output) {
+            if (ctx->rel_output) {
+              char* r_path = NULL;
+              catpath(&r_path, ctx->paths[i]);
+              catpath(&r_path, namelist[n]->d_name);
+              printf("%s\n", r_path);
+              free(r_path);
+            } else {
+              printf("%s\n", namelist[n]->d_name);
+            }
           } else {
-            printf("%s\n", de->d_name);
+            if (list_file_info(ctx, ctx->paths[i], namelist[n]->d_name, false) != 0) {
+              printf("ERROR: while listing file: %s\n", namelist[n]->d_name);
+            }
           }
-        } else {
-          if (list_file_info(ctx, ctx->paths[i], de->d_name, false) != 0) {
-            printf("ERROR: while listing file: %s\n", de->d_name);
-          }
+          free(namelist[n]);
         }
+        free(namelist);
       }
-      closedir(dr);
+
+//      DIR* dr = opendir(ctx->paths[i]);
+//      struct dirent *de;
+//      while ((de = readdir(dr)) != NULL) {
+//        if (ctx->list_all == 0) {
+//          if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
+//            continue;
+//          }
+//        }
+//    
+//        if (ctx->mr_output) {
+//          if (ctx->rel_output) {
+//            char* r_path = NULL;
+//            catpath(&r_path, ctx->paths[i]);
+//            catpath(&r_path, de->d_name);
+//            printf("%s\n", r_path);
+//            free(r_path);
+//          } else {
+//            printf("%s\n", de->d_name);
+//          }
+//        } else {
+//          if (list_file_info(ctx, ctx->paths[i], de->d_name, false) != 0) {
+//            printf("ERROR: while listing file: %s\n", de->d_name);
+//          }
+//        }
+//      }
+//      closedir(dr);
     }
   }
 

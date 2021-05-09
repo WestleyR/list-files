@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "utest.h"
 #include "../src/bool.h"
 
@@ -77,6 +78,35 @@ UTEST(files, find_link) {
       EXPECT_STREQ(tests[i].expected, got);
       free(got);
     }
+  }
+}
+
+
+UTEST(file, get_filedate) {
+  struct test_case {
+    char input[256];
+    char expected[256];
+  };
+
+  struct test_case tests[] = {
+    {
+      "tests/testdata/link_to",
+      "202", // for 2021-05-4
+    },
+  };
+
+  for (int i = 0; i < sizeof(tests)/sizeof(tests[0]); i++) {
+    struct stat info;
+
+    if (lstat(tests[i].input, &info) != 0) {
+      printf("error: unable to open stat on: %s\n", tests[i].input);
+      ASSERT_TRUE(false);
+    }
+
+    char* date = get_filedate(info);
+    EXPECT_TRUE(date != NULL);
+
+    EXPECT_STRNEQ(tests[i].expected, date, strlen(tests[i].expected));
   }
 }
 

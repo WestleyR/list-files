@@ -57,6 +57,7 @@ int lf_print(lf_files* ctx);
 // Internal, but used for unit tests
 char* human_readable_bytes(double bytes);
 char* find_link(const char* path);
+char* get_filedate(struct stat finfo);
 
 #endif // WST_FILE__H 
 
