@@ -26,10 +26,13 @@ struct lf_files {
   bool auto_mr_output;
 
   bool rel_output;
-
   bool print_color;
-
   bool list_all;
+  bool sort_by_date;
+};
+
+struct date_sorter {
+  time_t file_date;
 };
 
 lf_files* lf_new() {
@@ -45,6 +48,7 @@ lf_files* lf_new() {
   ctx->rel_output = false;
   ctx->auto_mr_output = true;
   ctx->print_color = true;
+  ctx->sort_by_date = false;
 
   return ctx;
 }
@@ -66,6 +70,11 @@ int lf_add_path(lf_files* ctx, const char* path) {
   strcpy(ctx->paths[ctx->path_count], path);
   ctx->path_count++;
 
+  return 0;
+}
+
+int lf_set_sort_by_date(lf_files* ctx, bool sort_by_date) {
+  ctx->sort_by_date = sort_by_date;
   return 0;
 }
 
@@ -117,16 +126,16 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     int max_pid;
     int end;
   };
-  
+
   // Cache up to 10 diffrant users/groups
   struct max_list ml[10];
-  
+
   ml[0].uid_num = -1;
   ml[0].max_uid = -1;
   ml[0].pid_num = -1;
   ml[0].max_pid = -1;
   ml[0].end = 1;
-  
+
   int mindex = 0;
 
   for (int icount = 0; icount < ctx->path_count; icount++) {
@@ -142,15 +151,15 @@ int lf_get_max_size_from_path(lf_files* ctx) {
       if (mindex >= 9) {
         struct passwd *pw;
         struct group *gr;
-  
+
         pw = getpwuid(info.st_uid);
         gr = getgrgid(info.st_gid);
-  
+
         int own = strlen(pw->pw_name);
         if (own > ctx->max_own_len) {
           ctx->max_own_len = own;
         }
-  
+
         int grup = strlen(gr->gr_name);
         if (grup > ctx->max_grup_len) {
           ctx->max_grup_len = grup;
@@ -163,11 +172,11 @@ int lf_get_max_size_from_path(lf_files* ctx) {
             break;
           }
         }
-  
+
         if (!match) {
           struct passwd *pw;
           struct group *gr;
-  
+
           pw = getpwuid(info.st_uid);
           if (pw != NULL) {
             ml[mindex].uid_num = (int)info.st_uid;
@@ -176,7 +185,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
             ml[mindex].uid_num = (int)info.st_uid;
             ml[mindex].max_uid = 4;
           }
-  
+
           gr = getgrgid(info.st_gid);
           if (pw != NULL) {
             ml[mindex].pid_num = (int)info.st_gid;
@@ -185,13 +194,13 @@ int lf_get_max_size_from_path(lf_files* ctx) {
             ml[mindex].uid_num = (int)info.st_uid;
             ml[mindex].max_uid = 4;
           }
-  
+
           ml[mindex].end = 1;
           mindex++;
         }
-  
+
         match = 0;
-  
+
         if (mindex >= 10) {
           for (int i = 0; i < mindex; i++) {
             if (ml[i].end == 0) break;
@@ -217,7 +226,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
         fprintf(stderr, "%s(): failed to open: %s\n", __func__, ctx->paths[icount]);
         return -1;
       }
-    
+
       struct dirent *de;
       while ((de = readdir(dr)) != NULL) {
         if (ctx->list_all) {
@@ -225,11 +234,11 @@ int lf_get_max_size_from_path(lf_files* ctx) {
             continue;
           }
         }
-    
+
         char* full_file_path = NULL;
         catpath(&full_file_path, ctx->paths[icount]);
         catpath(&full_file_path, de->d_name);
-    
+
         struct stat info;
         if (lstat(full_file_path, &info) != 0) {
           perror("lstat");
@@ -238,26 +247,26 @@ int lf_get_max_size_from_path(lf_files* ctx) {
         }
 
         free(full_file_path);
-    
+
         char* file_bytes = human_readable_bytes(info.st_size);
         if (file_bytes != NULL) {
           int file_bytes_len = strlen(file_bytes);
           if (file_bytes_len > ctx->max_size) ctx->max_size = file_bytes_len;
           free(file_bytes);
         }
-    
+
         if (mindex >= 9) {
           struct passwd *pw;
           struct group *gr;
-    
+
           pw = getpwuid(info.st_uid);
           gr = getgrgid(info.st_gid);
-    
+
           int own = strlen(pw->pw_name);
           if (own > ctx->max_own_len) {
             ctx->max_own_len = own;
           }
-    
+
           int grup = strlen(gr->gr_name);
           if (grup > ctx->max_grup_len) {
             ctx->max_grup_len = grup;
@@ -270,11 +279,11 @@ int lf_get_max_size_from_path(lf_files* ctx) {
               break;
             }
           }
-    
+
           if (!match) {
             struct passwd *pw;
             struct group *gr;
-    
+
             pw = getpwuid(info.st_uid);
             if (pw != NULL) {
               ml[mindex].uid_num = (int)info.st_uid;
@@ -283,7 +292,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
               ml[mindex].uid_num = (int)info.st_uid;
               ml[mindex].max_uid = 4;
             }
-    
+
             gr = getgrgid(info.st_gid);
             if (pw != NULL) {
               ml[mindex].pid_num = (int)info.st_gid;
@@ -292,13 +301,13 @@ int lf_get_max_size_from_path(lf_files* ctx) {
               ml[mindex].uid_num = (int)info.st_uid;
               ml[mindex].max_uid = 4;
             }
-    
+
             ml[mindex].end = 1;
             mindex++;
           }
-    
+
           match = 0;
-    
+
           if (mindex >= 10) {
             for (int i = 0; i < mindex; i++) {
               if (ml[i].end == 0) break;
@@ -309,7 +318,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
           }
         }
       }
-        closedir(dr);
+      closedir(dr);
     }
   }
 
@@ -341,7 +350,7 @@ int lf_get_max_size_from_path(lf_files* ctx) {
     ctx->max_own_len = 8;
     ctx->max_grup_len = 8;
   }
- 
+
   return 0;
 }
 
@@ -536,6 +545,13 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
   return 0;
 }
 
+bool compare_date(time_t date1, time_t date2) {
+  if (difftime(date1, date2) < 0) {
+    return true;
+  }
+  return false;
+}
+
 int lf_print(lf_files* ctx) {
   int rc = 0;
   for (int i = 0; i < ctx->path_count; i++) {
@@ -548,7 +564,7 @@ int lf_print(lf_files* ctx) {
 
     if (!S_ISDIR(info.st_mode)) {
       // Is a normal file
-       if (ctx->mr_output) {
+      if (ctx->mr_output) {
         if (ctx->rel_output) {
           char r_path[256];
           r_path[0] = '\0';
@@ -576,63 +592,113 @@ int lf_print(lf_files* ctx) {
 
       int n = scandir(ctx->paths[i], &namelist, 0, alphasort);
       if (n < 0) {
-       perror("scandir");
-       continue;
-      } else {
-        while (n--) {
+        perror("scandir");
+        continue;
+      }
+
+      // First generate the indexs for the files. We will sort this later if needed.
+      int indexs[n+1];
+      for (int f = 0; f < n; f++) {
+        if (ctx->list_all == 0) {
+          if ((namelist[f]->d_name[0] == '.') || (strcmp(namelist[f]->d_name, "..") == 0)) {
+            indexs[f] = -1;
+            continue;
+          }
+        }
+        indexs[f] = f;
+      }
+
+      // If we want to sort by date
+      if (ctx->sort_by_date) {
+        struct date_sorter time_sort[n+1];
+
+        // Add the filedates to an array, then sort it with our indexs.
+        for (int f = 0; f < n; f++) {
           if (ctx->list_all == 0) {
-            if ((namelist[n]->d_name[0] == '.') || (strcmp(namelist[n]->d_name, "..") == 0)) {
-              free(namelist[n]);
+            if ((namelist[f]->d_name[0] == '.') || (strcmp(namelist[f]->d_name, "..") == 0)) {
               continue;
             }
           }
 
-          if (ctx->mr_output) {
-            if (ctx->rel_output) {
-              char* r_path = NULL;
-              catpath(&r_path, ctx->paths[i]);
-              catpath(&r_path, namelist[n]->d_name);
-              printf("%s\n", r_path);
-              free(r_path);
-            } else {
-              printf("%s\n", namelist[n]->d_name);
+          char* full_path = NULL;
+          catpath(&full_path, ctx->paths[i]);
+          catpath(&full_path, namelist[f]->d_name);
+
+          struct stat info;
+          if (lstat(full_path, &info) != 0) {
+            perror(full_path);
+            printf("FOOBAR\n");
+            continue;
+          }
+
+          struct tm* p = localtime(&info.st_mtime);
+          time_t t = mktime(p);
+          time_sort[f].file_date = t;
+
+          free(full_path);
+        }
+
+        // Now sort the array, and also sort the indexs
+        bool sorting = true;
+        while (sorting) {
+          sorting = false;
+
+          for (int s = 0; s < sizeof(time_sort)/sizeof(time_sort[0]) - 2; s++) {
+            if (indexs[s] == -1) {
+              continue;
             }
-          } else {
-            if (list_file_info(ctx, ctx->paths[i], namelist[n]->d_name, false) != 0) {
-              printf("ERROR: while listing file: %s\n", namelist[n]->d_name);
+            time_t current = time_sort[s].file_date;
+
+            // Find the next valid file, this may be empty for a hidden file
+            int next_index = s + 1;
+            while (indexs[next_index] == -1) next_index++;
+            time_t next = time_sort[next_index].file_date;
+
+            //            printf("INFO: %d -> %d\n", indexs[s], indexs[s+1]);
+            //            printf("INFO: %d -> %d\n", s, next_index);
+            //            printf("\n\n");
+
+            if (compare_date(current, next)) {
+              // Swap the index
+              time_t tmp = current;
+              int tmp_index = indexs[s];
+
+              time_sort[s].file_date = next;
+              indexs[s] = indexs[s+1];
+
+              time_sort[s+1].file_date = tmp;
+              indexs[s+1] = tmp_index;
+
+              sorting = true;
             }
           }
-          free(namelist[n]);
         }
-        free(namelist);
       }
 
-//      DIR* dr = opendir(ctx->paths[i]);
-//      struct dirent *de;
-//      while ((de = readdir(dr)) != NULL) {
-//        if (ctx->list_all == 0) {
-//          if ((*de->d_name == '.') || (strcmp(de->d_name, "..") == 0)) {
-//            continue;
-//          }
-//        }
-//
-//        if (ctx->mr_output) {
-//          if (ctx->rel_output) {
-//            char* r_path = NULL;
-//            catpath(&r_path, ctx->paths[i]);
-//            catpath(&r_path, de->d_name);
-//            printf("%s\n", r_path);
-//            free(r_path);
-//          } else {
-//            printf("%s\n", de->d_name);
-//          }
-//        } else {
-//          if (list_file_info(ctx, ctx->paths[i], de->d_name, false) != 0) {
-//            printf("ERROR: while listing file: %s\n", de->d_name);
-//          }
-//        }
-//      }
-//      closedir(dr);
+      // Finally print the files in the order of indexs
+      for (int s = 0; s < n; s++) {
+        if (indexs[s] == -1) {
+          continue;
+        }
+
+        if (ctx->mr_output) {
+          if (ctx->rel_output) {
+            char* r_path = NULL;
+            catpath(&r_path, ctx->paths[i]);
+            catpath(&r_path, namelist[indexs[s]]->d_name);
+            printf("%s\n", r_path);
+            free(r_path);
+          } else {
+            printf("%s\n", namelist[indexs[s]]->d_name);
+          }
+        } else {
+          if (list_file_info(ctx, ctx->paths[i], namelist[indexs[s]]->d_name, false) != 0) {
+            printf("ERROR: while listing file: %s\n", namelist[indexs[s]]->d_name);
+          }
+        }
+        free(namelist[indexs[s]]);
+      }
+      free(namelist);
     }
   }
 

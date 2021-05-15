@@ -27,7 +27,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define LF_CLI_VERSION "v1.7.0.a1"
+#define LF_CLI_VERSION "v1.7.0.a2"
 
 void help_menu(const char* script_name) {
   printf("Copyright (c) 2019-2021 WestleyR, All rights reserved.\n");
@@ -90,6 +90,9 @@ int main(int argc, char** argv) {
   
   // -p option
   bool rel_path = false;
+
+  // -t option
+  bool sort_by_date = false;
   
   // no color option
   bool color_print = true;
@@ -124,6 +127,7 @@ int main(int argc, char** argv) {
   static struct option long_options[] = {
     {"help", no_argument, 0, 'h'},
     {"rel-path", no_argument, 0, 'p'},
+    {"time", no_argument, 0, 't'},
     {"mr", no_argument, 0, '1'},
     {"mr", no_argument, 0, 'm'},
     {"hr", no_argument, 0, 'r'},
@@ -134,7 +138,7 @@ int main(int argc, char** argv) {
     {NULL, 0, 0, 0}
   };
 
-  while ((opt = getopt_long(argc, argv,"c:1mrabpVhC", long_options, 0)) != -1) {
+  while ((opt = getopt_long(argc, argv,"c:1mrabptVhC", long_options, 0)) != -1) {
     switch (opt) {
       case '1':
         mr_list = true;
@@ -150,7 +154,10 @@ int main(int argc, char** argv) {
         break;
       case 'r':
         // If human-readable output, then disable mr output
-        mr_list = 0;
+        mr_list = false;
+        break;
+      case 't':
+        sort_by_date = true;
         break;
       case 'c':
         strcpy(color_opt, optarg);
@@ -203,6 +210,7 @@ int main(int argc, char** argv) {
   lf_set_print_rel_path(ctx, rel_path);
   lf_set_print_mr_output(ctx, mr_list);
   lf_set_print_color(ctx, color_print);
+  lf_set_sort_by_date(ctx, sort_by_date);
 
   // Get the currect formatting spaces before printing the output
   lf_get_max_size_from_path(ctx);

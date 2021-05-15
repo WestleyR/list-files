@@ -49,6 +49,7 @@ int lf_set_print_all(lf_files* ctx, bool print_all);
 int lf_set_print_rel_path(lf_files* ctx, bool rel_path);
 int lf_set_print_mr_output(lf_files* ctx, bool mr_output);
 int lf_set_print_color(lf_files* ctx, bool print_color);
+int lf_set_sort_by_date(lf_files* ctx, bool sort_by_date);
 
 // Printing functions
 int lf_get_max_size_from_path(lf_files* ctx);
