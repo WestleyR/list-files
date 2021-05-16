@@ -2,7 +2,7 @@
 //  files.c
 //  lf - list files and directories (internal helper functions)
 //
-// Created by WestleyR 2021-02-24
+// Created by WestleyR <westleyr@nym.hush.com> 2021-02-24
 // Source code: https://github.com/WestleyR/list-files
 //
 // Copyright (c) 2021 WestleyR. All rights reserved.

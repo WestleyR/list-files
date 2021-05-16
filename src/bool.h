@@ -2,7 +2,7 @@
 //  bool.h
 //  simple bool header
 //
-// Created by WestleyR on Feb 1, 2021
+// Created by WestleyR <westleyr@nym.hush.com> on 2021-02-01
 // Source code: https://github.com/WestleyR/list-files
 //
 // Copyright (c) 2021 WestleyR. All rights reserved.

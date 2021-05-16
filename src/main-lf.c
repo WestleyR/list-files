@@ -2,7 +2,7 @@
 //  main-lf.c
 //  lf - list files and directories
 //
-// Created by WestleyR on 2019-02-22
+// Created by WestleyR <westleyr@nym.hush.com> on 2019-02-22
 // Source code: https://github.com/WestleyR/lf
 //
 // Copyright (c) 2019-2021 WestleyR. All rights reserved.

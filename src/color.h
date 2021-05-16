@@ -1,16 +1,14 @@
-// Created by: WestleyR
-// Email: westleyr@nym.hush.com
-// Url: https://github.com/WestleyR/list-files
-// Last modified date: 2020-04-11
 //
-// This file is licensed under the terms of
+//  color.h
+//  simple color header
 //
-// The Clear BSD License
+// Created by WestleyR <westleyr@nym.hush.com>> on 2019-11-29
+// Source code: https://github.com/WestleyR/lf
 //
-// Copyright (c) 2019-2020 WestleyR
-// All rights reserved.
-//
-// This software is licensed under a Clear BSD License.
+// Copyright (c) 2019-2021 WestleyR. All rights reserved.
+// This software is licensed under a BSD 3-Clause Clear License.
+// Consult the LICENSE file that came with this software regarding
+// your rights to distribute this software.
 //
 
 #ifndef COLOR_H
