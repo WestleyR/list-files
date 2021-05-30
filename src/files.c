@@ -696,7 +696,11 @@ int lf_print(lf_files* ctx) {
             printf("ERROR: while listing file: %s\n", namelist[indexs[s]]->d_name);
           }
         }
-        free(namelist[indexs[s]]);
+      }
+
+      // Now free the array
+      for (int s = 0; s < n; s++) {
+        free(namelist[s]);
       }
       free(namelist);
     }
