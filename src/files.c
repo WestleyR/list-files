@@ -16,6 +16,7 @@
 struct lf_files {
   char** paths;
   int path_count;
+  int path_alloc;
 
   int max_size;
   int max_own_len;
@@ -37,8 +38,8 @@ struct date_sorter {
 
 lf_files* lf_new() {
   lf_files* ctx = (lf_files*) malloc(sizeof(lf_files));
-  ctx->paths = (char**) malloc(10 * sizeof(char*));
-  // TODO: use path_count and remalloc if needed
+  ctx->path_alloc = 5;
+  ctx->paths = (char**) malloc(ctx->path_alloc * sizeof(char*));
   ctx->path_count = 0;
   ctx->max_size = 0;
   ctx->max_own_len = 0;
@@ -66,6 +67,11 @@ int lf_destroy(lf_files* ctx) {
 }
 
 int lf_add_path(lf_files* ctx, const char* path) {
+  if (ctx->path_count+2 >= ctx->path_alloc) {
+    ctx->path_alloc += 5;
+    ctx->paths = realloc(ctx->paths, ctx->path_alloc * sizeof(char*));
+  }
+
   ctx->paths[ctx->path_count] = (char*) malloc(strlen(path) + 2);
   strcpy(ctx->paths[ctx->path_count], path);
   ctx->path_count++;

@@ -7,12 +7,13 @@ _**NOTES:**_
 subject to change.
 
 
-## v1.7.0.a1 - May 6, 2021
+## v1.7.0.a3 - 2021-10-08
 
 ### CHANGED
  - Re-write internal code for memory leak-free performance.
  - Piping, or redirecting the output of `lf` will enable machine-readable output (`-1`, `-m`)
  - Use `scandir()` for output sorting.
+ - Proper realloc if many paths are supplied
 
 
 ## v1.6.2 - Aug 14, 2020

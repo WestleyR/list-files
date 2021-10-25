@@ -27,7 +27,7 @@
 #define UNCOMMITED_CHANGES "[unknown]"
 #endif
 
-#define LF_CLI_VERSION "v1.7.0.a2"
+#define LF_CLI_VERSION "v1.7.0.a3"
 
 void help_menu(const char* script_name) {
   printf("Copyright (c) 2019-2021 WestleyR, All rights reserved.\n");
