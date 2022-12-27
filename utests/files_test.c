@@ -7,6 +7,38 @@
 
 UTEST_MAIN();
 
+// return most be freed.
+char* octal_int_to_str(int octal) {
+  char ret[12];
+
+  sprintf(ret, "%04o", octal);
+
+  return strdup(ret);
+}
+
+UTEST(files, get_octal_perm) {
+  struct test_case {
+    char input[256];
+    char out[12];
+  };
+
+  struct test_case tests[] = {
+    {
+      "tests/testdata/file1",
+      "0664",
+    },
+  };
+
+  for (int i = 0; i < sizeof(tests)/sizeof(tests[0]); i++) {
+    int got = get_file_octal_perm(tests[i].input);
+
+    char* gotstr = octal_int_to_str(got);
+
+    EXPECT_STREQ(tests[i].out, gotstr);
+    free(gotstr);
+  }
+}
+
 UTEST(files, human_readable_fs) {
   struct test_case {
     char expected[80];
@@ -107,6 +139,7 @@ UTEST(file, get_filedate) {
     EXPECT_TRUE(date != NULL);
 
     EXPECT_STRNEQ(tests[i].expected, date, strlen(tests[i].expected));
+    free(date);
   }
 }
 

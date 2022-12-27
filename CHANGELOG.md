@@ -7,13 +7,16 @@ _**NOTES:**_
 subject to change.
 
 
-## v1.7.0.a3 - 2021-10-08
+## v1.7.0.b2 - 2022-05-09
 
 ### CHANGED
  - Re-write internal code for memory leak-free performance.
  - Piping, or redirecting the output of `lf` will enable machine-readable output (`-1`, `-m`)
  - Use `scandir()` for output sorting.
  - Proper realloc if many paths are supplied
+ - Use `catpath()` instead of fixed size arrays
+ - Always check the max len of owner, group, and bytes when during listing files
+ - Added `-o`, `--octal` flag to print the file permissions in octal
 
 
 ## v1.6.2 - Aug 14, 2020

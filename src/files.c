@@ -5,7 +5,7 @@
 // Created by WestleyR <westleyr@nym.hush.com> 2021-02-24
 // Source code: https://github.com/WestleyR/list-files
 //
-// Copyright (c) 2021 WestleyR. All rights reserved.
+// Copyright (c) 2021-2022 WestleyR. All rights reserved.
 // This software is licensed under a BSD 3-Clause Clear License.
 // Consult the LICENSE file that came with this software regarding
 // your rights to distribute this software.
@@ -30,6 +30,7 @@ struct lf_files {
   bool print_color;
   bool list_all;
   bool sort_by_date;
+  bool octal_perm;
 };
 
 struct date_sorter {
@@ -50,6 +51,7 @@ lf_files* lf_new() {
   ctx->auto_mr_output = true;
   ctx->print_color = true;
   ctx->sort_by_date = false;
+  ctx->octal_perm = false;
 
   return ctx;
 }
@@ -101,6 +103,11 @@ int lf_set_print_mr_output(lf_files* ctx, bool mr_output) {
 
 int lf_set_print_color(lf_files* ctx, bool print_color) {
   ctx->print_color = print_color;
+  return 0;
+}
+
+int lf_set_octal_perm(lf_files* ctx, bool octal_perm) {
+  ctx->octal_perm = octal_perm;
   return 0;
 }
 
@@ -392,6 +399,7 @@ char* find_link(const char* path) {
 
     if (link_len == -1) {
       // Error
+      free(symlink_path);
       return NULL;
     }
 
@@ -423,6 +431,18 @@ bool iszip(const char* filename) {
   return false;
 }
 
+// get_file_octal_perm returns the octal permission (eg. %o -> 755) for a file.
+// NOTE: if perm is 060, will return only 60. Most pad with %04o
+int get_file_octal_perm(const char* filepath) {
+  struct stat buf;
+  if (stat(filepath, &buf) != 0) {
+    perror(filepath);
+    fprintf(stderr, "Error (debug) for file: %s\n", filepath);
+    exit(32);
+  }
+  return buf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
+}
+
 int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bool is_file) {
   struct stat sb;
   struct stat info;
@@ -443,29 +463,45 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
   }
   catpath(&full_file_path, filename);
 
+  // TODO: have cleaner errors for opening invalid files
   if (lstat(full_file_path, &info) != 0) {
     perror("lstat");
     printf("error: unable to open stat on: %s\n", filepath);
     exit(20);
   }
 
-  // TODO: use 'l' for links
-  printf((S_ISDIR(info.st_mode)) ? "d" : "-");
-  printf((info.st_mode & S_IRUSR) ? "r" : "-");
-  printf((info.st_mode & S_IWUSR) ? "w" : "-");
-  printf((info.st_mode & S_IXUSR) ? "x" : "-");
-  printf((info.st_mode & S_IRGRP) ? " r" : " -");
-  printf((info.st_mode & S_IWGRP) ? "w" : "-");
-  printf((info.st_mode & S_IXGRP) ? "x" : "-");
-  printf((info.st_mode & S_IROTH) ? "r" : "-");
-  printf((info.st_mode & S_IWOTH) ? "w" : "-");
-  printf((info.st_mode & S_IXOTH) ? "x" : "-");
+  if (ctx->octal_perm) {
+    printf("%04o", get_file_octal_perm(full_file_path));
+  } else {
+    // TODO: use 'l' for links
+    printf((S_ISDIR(info.st_mode)) ? "d" : "-");
+    printf((info.st_mode & S_IRUSR) ? "r" : "-");
+    printf((info.st_mode & S_IWUSR) ? "w" : "-");
+    printf((info.st_mode & S_IXUSR) ? "x" : "-");
+    printf((info.st_mode & S_IRGRP) ? " r" : " -");
+    printf((info.st_mode & S_IWGRP) ? "w" : "-");
+    printf((info.st_mode & S_IXGRP) ? "x" : "-");
+    printf((info.st_mode & S_IROTH) ? "r" : "-");
+    printf((info.st_mode & S_IWOTH) ? "w" : "-");
+    printf((info.st_mode & S_IXOTH) ? "x" : "-");
+  }
 
 #ifdef WITHOUT_NAME_GROUP_OUTPUT
   printf("  %4d", info.st_uid);
   printf("  %4d ", info.st_gid);
 #else
+
   struct passwd *pw = getpwuid(info.st_uid);
+
+  // Update the largest owner len if needed
+  int st_uid_len = -1;
+  if (pw != NULL) {
+    st_uid_len = strlen(pw->pw_name);
+  }
+  if (ctx->max_own_len < st_uid_len) {
+    ctx->max_own_len = st_uid_len;
+  }
+
   if (pw == NULL) {
     printf("  %*d", ctx->max_own_len, info.st_uid);
   } else {
@@ -473,6 +509,15 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
   }
 
   struct group *gr = getgrgid(info.st_gid);
+
+  // Update the largest group len if needed
+  int gr_len = -1;
+  if (gr != NULL) {
+    gr_len = strlen(gr->gr_name);
+  }
+  if (ctx->max_grup_len < gr_len) {
+    ctx->max_grup_len = gr_len;
+  }
   if (gr == NULL) {
     printf("  %-*d ", ctx->max_grup_len, info.st_gid);
   } else {
@@ -488,8 +533,14 @@ int list_file_info(lf_files* ctx, const char* filepath, const char* filename, bo
     free(file_date);
   }
 
+  // Print the file size in bytes
   char* file_bytes = human_readable_bytes(info.st_size);
+
   if (file_bytes != NULL) {
+    int file_bytes_len = strlen(file_bytes);
+    if (ctx->max_size < file_bytes_len) {
+      ctx->max_size = file_bytes_len;
+    }
     printf(" %-*s", ctx->max_size, file_bytes);
     free(file_bytes);
   } else {
@@ -572,11 +623,12 @@ int lf_print(lf_files* ctx) {
       // Is a normal file
       if (ctx->mr_output) {
         if (ctx->rel_output) {
-          char r_path[256];
-          r_path[0] = '\0';
-          strcpy(r_path, ctx->paths[i]);
-          strcat(r_path, ctx->paths[i]);
+          // TODO: fix this issue here! see test-25
+          char *r_path = NULL;
+          catpath(&r_path, ctx->paths[i]);
+          catpath(&r_path, ctx->paths[i]);
           printf("%s\n", r_path);
+          free(r_path);
         } else {
           printf("%s\n", ctx->paths[i]);
         }
@@ -633,7 +685,6 @@ int lf_print(lf_files* ctx) {
           struct stat info;
           if (lstat(full_path, &info) != 0) {
             perror(full_path);
-            printf("FOOBAR\n");
             continue;
           }
 

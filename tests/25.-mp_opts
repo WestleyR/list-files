@@ -1,0 +1,7 @@
+
+. ./tests-funcs
+
+# run-test <test-name> <test-command> <expect-to-contain-output> <expect-exit-code>
+
+run-test "lf -mp files" "./lf -mp tests/testdata/file1" "$tests/testdata/file1^" "" 0
+

@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <grp.h>
-#include <uuid/uuid.h>
 #include <time.h>
 #include <libgen.h>
 
@@ -50,6 +49,7 @@ int lf_set_print_rel_path(lf_files* ctx, bool rel_path);
 int lf_set_print_mr_output(lf_files* ctx, bool mr_output);
 int lf_set_print_color(lf_files* ctx, bool print_color);
 int lf_set_sort_by_date(lf_files* ctx, bool sort_by_date);
+int lf_set_octal_perm(lf_files* ctx, bool octal_perm);
 
 // Printing functions
 int lf_get_max_size_from_path(lf_files* ctx);
@@ -59,6 +59,7 @@ int lf_print(lf_files* ctx);
 char* human_readable_bytes(double bytes);
 char* find_link(const char* path);
 char* get_filedate(struct stat finfo);
+int get_file_octal_perm(const char* filepath);
 
 #endif // WST_FILE__H 
 

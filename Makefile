@@ -1,16 +1,10 @@
-# Created by: WestleyR
-# Email: westleyr@nym.hush.com
-# Url: https://github.com/WestleyR/list-files
-# Last modified date: 2020-04-26
+# Created by WestleyR <westleyr@nym.hush.com> in 2019
+# Source code: https://github.com/WestleyR/list-files
 #
-# This file is licensed under the terms of
-#
-# The Clear BSD License
-#
-# Copyright (c) 2019-2020 WestleyR
-# All rights reserved.
-#
-# This software is licensed under a Clear BSD License.
+# Copyright (c) 2019-2022 WestleyR. All rights reserved.
+# This software is licensed under a BSD 3-Clause Clear License.
+# Consult the LICENSE file that came with this software regarding
+# your rights to distribute this software.
 #
 
 CC = gcc
@@ -38,12 +32,10 @@ ifeq ($(WITHOUT_ID), true)
 endif
 
 SRC = $(wildcard src/*.c)
-SRC += $(wildcard deps/*/*.c)
 OBJS = $(SRC:.c=.o)
 
 test_files = $(wildcard utests/*.c)
 test_files += $(wildcard src/*.c)
-test_files += $(wildcard deps/*/*.c)
 TEST_SRC = $(filter-out src/main-lf.c,$(test_files))
 TEST_OBJS = $(TEST_SRC:.c=.o)
 
@@ -86,7 +78,6 @@ unit-test: $(TEST_OBJS)
 	@echo $(TEST_OBJS)
 	$(CC) $(CFLAGS) -o testball $(TEST_OBJS)
 	./testball
-	@rm testball
 
 .PHONY:
 install: $(TARGET)
@@ -95,11 +86,11 @@ install: $(TARGET)
 
 .PHONY:
 clean:
-	 rm -f $(OBJS) $(TEST_OBJS)
+	 rm -f $(OBJS) $(TEST_OBJS) || true
 
 .PHONY:
-cleanall:
-	 rm -f $(TARGET) $(OBJS)
+cleanall: clean
+	 rm -f $(TARGET)
 	 rm -rf ./pkg
 
 .PHONY:
